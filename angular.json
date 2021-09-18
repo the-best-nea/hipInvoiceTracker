@@ -109,6 +109,7 @@
   },
   "defaultProject": "hip-invoice-tracker",
   "cli": {
+    "analytics": false,
     "packageManager": "npm"
   }
 }

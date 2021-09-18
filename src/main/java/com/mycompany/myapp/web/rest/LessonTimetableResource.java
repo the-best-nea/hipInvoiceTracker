@@ -4,6 +4,7 @@ import com.mycompany.myapp.domain.LessonInstance;
 import com.mycompany.myapp.domain.LessonTimetable;
 import com.mycompany.myapp.repository.LessonInstanceRepository;
 import com.mycompany.myapp.repository.LessonTimetableRepository;
+import com.mycompany.myapp.service.LessonService;
 import com.mycompany.myapp.web.rest.errors.BadRequestAlertException;
 import java.net.URI;
 import java.net.URISyntaxException;
@@ -11,7 +12,6 @@ import java.time.Instant;
 import java.util.*;
 import javax.validation.Valid;
 import javax.validation.constraints.NotNull;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
@@ -38,10 +38,16 @@ public class LessonTimetableResource {
 
     private final LessonTimetableRepository lessonTimetableRepository;
     private final LessonInstanceRepository lessonInstanceRepository;
+    private final LessonService lessonService;
 
-    public LessonTimetableResource(LessonTimetableRepository lessonTimetableRepository, LessonInstanceRepository lessonInstanceRepository) {
+    public LessonTimetableResource(
+        LessonTimetableRepository lessonTimetableRepository,
+        LessonInstanceRepository lessonInstanceRepository,
+        LessonService lessonService
+    ) {
         this.lessonTimetableRepository = lessonTimetableRepository;
         this.lessonInstanceRepository = lessonInstanceRepository;
+        this.lessonService = lessonService;
     }
 
     /**
@@ -220,23 +226,12 @@ public class LessonTimetableResource {
     @PostMapping("/lesson-timetables/create-instance/{id}")
     public ResponseEntity<LessonInstance> createInstanceLessonTimetable(@PathVariable Long id) {
         log.info(">> REST request to create instance of LessonTimetable : {}", id);
-        LessonTimetable lessonTimetable = lessonTimetableRepository.getOne(id);
-        LessonInstance newInstance = new LessonInstance();
-        newInstance.setLessonName(lessonTimetable.getLessonName());
-        newInstance.setDescription(lessonTimetable.getDescription());
-        newInstance.setDayOfWeek(lessonTimetable.getDayOfWeek());
-        newInstance.setCretedOn(Instant.now());
-        newInstance.setSubject(lessonTimetable.getSubject());
-        newInstance.setStudents(lessonTimetable.getStudents());
 
-        newInstance.setStudents(new HashSet<>(lessonTimetable.getStudents()));
-        newInstance.setStartAt(lessonTimetable.getStartAt());
-        newInstance.setEndAt(lessonTimetable.getEndAt());
+        LessonInstance result = lessonService.createInstance(id);
 
-        LessonInstance result = lessonInstanceRepository.save(newInstance);
         return ResponseEntity
             .ok()
-            .headers(HeaderUtil.createEntityUpdateAlert(applicationName, false, ENTITY_NAME, lessonTimetable.getId().toString()))
+            .headers(HeaderUtil.createEntityUpdateAlert(applicationName, false, ENTITY_NAME, result.getId().toString()))
             .body(result);
     }
 }

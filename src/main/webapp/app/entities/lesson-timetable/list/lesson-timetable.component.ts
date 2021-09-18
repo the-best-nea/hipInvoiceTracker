@@ -6,7 +6,6 @@ import { ILessonTimetable } from '../lesson-timetable.model';
 import { LessonTimetableService } from '../service/lesson-timetable.service';
 import { LessonTimetableDeleteDialogComponent } from '../delete/lesson-timetable-delete-dialog.component';
 
-
 @Component({
   selector: 'jhi-lesson-timetable',
   templateUrl: './lesson-timetable.component.html',
@@ -50,8 +49,7 @@ export class LessonTimetableComponent implements OnInit {
     });
   }
 
-  createInstance(id: any): void {
-    this.lessonTimetableService.createInstance(id);
+  createInstance(lessonTimetable: ILessonTimetable): void {
+    this.lessonTimetableService.createInstance(lessonTimetable).subscribe();
   }
-
 }

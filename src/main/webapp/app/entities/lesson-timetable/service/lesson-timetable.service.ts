@@ -15,7 +15,7 @@ export type EntityArrayResponseType = HttpResponse<ILessonTimetable[]>;
 @Injectable({ providedIn: 'root' })
 export class LessonTimetableService {
   protected resourceUrl = this.applicationConfigService.getEndpointFor('api/lesson-timetables');
-  protected createInstanceResourceUrl = this.applicationConfigService.getEndpointFor('api/lesson-timetables/create-instance')
+  protected createInstanceResourceUrl = this.applicationConfigService.getEndpointFor('api/lesson-timetables/create-instance');
 
   constructor(protected http: HttpClient, protected applicationConfigService: ApplicationConfigService) {}
 
@@ -26,8 +26,8 @@ export class LessonTimetableService {
       .pipe(map((res: EntityResponseType) => this.convertDateFromServer(res)));
   }
 
-  createInstance(id: number): void {
-       this.http.post(`${this.createInstanceResourceUrl}/${id}`, { observe: 'response' });
+  createInstance(lessonTimetable: ILessonTimetable): Observable<EntityResponseType> {
+    return this.http.post(`${this.createInstanceResourceUrl}/${lessonTimetable.id!}`, null, { observe: 'response' });
   }
 
   update(lessonTimetable: ILessonTimetable): Observable<EntityResponseType> {
@@ -64,8 +64,6 @@ export class LessonTimetableService {
   delete(id: number): Observable<HttpResponse<{}>> {
     return this.http.delete(`${this.resourceUrl}/${id}`, { observe: 'response' });
   }
-
-
 
   addLessonTimetableToCollectionIfMissing(
     lessonTimetableCollection: ILessonTimetable[],

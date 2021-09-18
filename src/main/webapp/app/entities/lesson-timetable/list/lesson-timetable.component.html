@@ -94,7 +94,12 @@
                 <span class="d-none d-md-inline">Delete</span>
               </button>
 
-              <button type="submit" (click)="createInstance(lessonTimetable.id)" class="btn btn-info btn-sm" data-cy="entityCreateInstanceButton">
+              <button
+                type="button"
+                (click)="createInstance(lessonTimetable)"
+                class="btn btn-info btn-sm"
+                data-cy="entityCreateInstanceButton"
+              >
                 <fa-icon icon="plus"></fa-icon>
                 <span class="d-none d-md-inline">Create Instance</span>
               </button>
