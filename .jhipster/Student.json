@@ -1,0 +1,81 @@
+{
+  "name": "Student",
+  "fields": [
+    {
+      "fieldName": "firstName",
+      "fieldType": "String",
+      "fieldValidateRules": ["required"]
+    },
+    {
+      "fieldName": "lastName",
+      "fieldType": "String",
+      "fieldValidateRules": ["required"]
+    },
+    {
+      "fieldName": "yearGroup",
+      "fieldType": "Integer",
+      "fieldValidateRules": ["required"]
+    },
+    {
+      "fieldName": "email",
+      "fieldType": "String",
+      "fieldValidateRules": ["required"]
+    },
+    {
+      "fieldName": "phoneNumber",
+      "fieldType": "String"
+    },
+    {
+      "fieldName": "startDate",
+      "fieldType": "Instant",
+      "fieldValidateRules": ["required"]
+    },
+    {
+      "fieldName": "endDate",
+      "fieldType": "Instant"
+    },
+    {
+      "fieldName": "active",
+      "fieldType": "Boolean"
+    },
+    {
+      "fieldName": "createdAt",
+      "fieldType": "Instant",
+      "fieldValidateRules": ["required"]
+    }
+  ],
+  "relationships": [
+    {
+      "relationshipType": "one-to-many",
+      "otherEntityName": "studentRegister",
+      "otherEntityRelationshipName": "student",
+      "relationshipName": "studentRegister"
+    },
+    {
+      "relationshipType": "many-to-many",
+      "otherEntityName": "lessonTimetable",
+      "otherEntityRelationshipName": "student",
+      "relationshipName": "lessonTimetable",
+      "otherEntityField": "lessonName",
+      "ownerSide": true
+    },
+    {
+      "relationshipType": "many-to-many",
+      "otherEntityName": "lessonInstance",
+      "otherEntityRelationshipName": "student",
+      "relationshipName": "lessonInstance",
+      "otherEntityField": "lessonName",
+      "ownerSide": false
+    }
+  ],
+  "entityTableName": "student",
+  "dto": "no",
+  "pagination": "no",
+  "service": "no",
+  "jpaMetamodelFiltering": false,
+  "fluentMethods": true,
+  "readOnly": false,
+  "embedded": false,
+  "applications": "*",
+  "changelogDate": "20210911194201"
+}

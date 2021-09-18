@@ -1,0 +1,90 @@
+<div>
+  <h2 id="page-heading" data-cy="LessonTimetableTeacherHeading">
+    <span>Lesson Timetable Teachers</span>
+
+    <div class="d-flex justify-content-end">
+      <button class="btn btn-info mr-2" (click)="loadAll()" [disabled]="isLoading">
+        <fa-icon icon="sync" [spin]="isLoading"></fa-icon>
+        <span>Refresh List</span>
+      </button>
+
+      <button
+        id="jh-create-entity"
+        data-cy="entityCreateButton"
+        class="btn btn-primary jh-create-entity create-lesson-timetable-teacher"
+        [routerLink]="['/lesson-timetable-teacher/new']"
+      >
+        <fa-icon icon="plus"></fa-icon>
+        <span> Create a new Lesson Timetable Teacher </span>
+      </button>
+    </div>
+  </h2>
+
+  <jhi-alert-error></jhi-alert-error>
+
+  <jhi-alert></jhi-alert>
+
+  <div class="alert alert-warning" id="no-result" *ngIf="lessonTimetableTeachers?.length === 0">
+    <span>No lessonTimetableTeachers found</span>
+  </div>
+
+  <div class="table-responsive" id="entities" *ngIf="lessonTimetableTeachers && lessonTimetableTeachers.length > 0">
+    <table class="table table-striped" aria-describedby="page-heading">
+      <thead>
+        <tr>
+          <th scope="col"><span>ID</span></th>
+          <th scope="col"><span>Pay</span></th>
+          <th scope="col"><span>Lesson Timetable</span></th>
+          <th scope="col"><span>Internal User</span></th>
+          <th scope="col"></th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let lessonTimetableTeacher of lessonTimetableTeachers; trackBy: trackId" data-cy="entityTable">
+          <td>
+            <a [routerLink]="['/lesson-timetable-teacher', lessonTimetableTeacher.id, 'view']">{{ lessonTimetableTeacher.id }}</a>
+          </td>
+          <td>{{ lessonTimetableTeacher.pay }}</td>
+          <td>
+            <div *ngIf="lessonTimetableTeacher.lessonTimetable">
+              <a [routerLink]="['/lesson-timetable', lessonTimetableTeacher.lessonTimetable?.id, 'view']">{{
+                lessonTimetableTeacher.lessonTimetable?.lessonName
+              }}</a>
+            </div>
+          </td>
+          <td>
+            {{ lessonTimetableTeacher.internalUser?.login }}
+          </td>
+          <td class="text-right">
+            <div class="btn-group">
+              <button
+                type="submit"
+                [routerLink]="['/lesson-timetable-teacher', lessonTimetableTeacher.id, 'view']"
+                class="btn btn-info btn-sm"
+                data-cy="entityDetailsButton"
+              >
+                <fa-icon icon="eye"></fa-icon>
+                <span class="d-none d-md-inline">View</span>
+              </button>
+
+              <button
+                type="submit"
+                [routerLink]="['/lesson-timetable-teacher', lessonTimetableTeacher.id, 'edit']"
+                class="btn btn-primary btn-sm"
+                data-cy="entityEditButton"
+              >
+                <fa-icon icon="pencil-alt"></fa-icon>
+                <span class="d-none d-md-inline">Edit</span>
+              </button>
+
+              <button type="submit" (click)="delete(lessonTimetableTeacher)" class="btn btn-danger btn-sm" data-cy="entityDeleteButton">
+                <fa-icon icon="times"></fa-icon>
+                <span class="d-none d-md-inline">Delete</span>
+              </button>
+            </div>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</div>

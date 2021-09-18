@@ -1,0 +1,68 @@
+<div class="row justify-content-center">
+  <div class="col-8">
+    <div *ngIf="lessonTimetable">
+      <h2 data-cy="lessonTimetableDetailsHeading"><span>Lesson Timetable</span></h2>
+
+      <hr />
+
+      <jhi-alert-error></jhi-alert-error>
+
+      <jhi-alert></jhi-alert>
+
+      <dl class="row-md jh-entity-details">
+        <dt><span>ID</span></dt>
+        <dd>
+          <span>{{ lessonTimetable.id }}</span>
+        </dd>
+        <dt><span>Lesson Name</span></dt>
+        <dd>
+          <span>{{ lessonTimetable.lessonName }}</span>
+        </dd>
+        <dt><span>Start At</span></dt>
+        <dd>
+          <span>{{ lessonTimetable.startAt | formatMediumDatetime }}</span>
+        </dd>
+        <dt><span>End At</span></dt>
+        <dd>
+          <span>{{ lessonTimetable.endAt | formatMediumDatetime }}</span>
+        </dd>
+        <dt><span>Day Of Week</span></dt>
+        <dd>
+          <span>{{ lessonTimetable.dayOfWeek }}</span>
+        </dd>
+        <dt><span>Description</span></dt>
+        <dd>
+          <span>{{ lessonTimetable.description }}</span>
+        </dd>
+        <dt><span>Created At</span></dt>
+        <dd>
+          <span>{{ lessonTimetable.createdAt | formatMediumDatetime }}</span>
+        </dd>
+        <dt><span>Active</span></dt>
+        <dd>
+          <span>{{ lessonTimetable.active }}</span>
+        </dd>
+        <dt><span>Location</span></dt>
+        <dd>
+          <div *ngIf="lessonTimetable.location">
+            <a [routerLink]="['/location', lessonTimetable.location?.id, 'view']">{{ lessonTimetable.location?.name }}</a>
+          </div>
+        </dd>
+        <dt><span>Subject</span></dt>
+        <dd>
+          <div *ngIf="lessonTimetable.subject">
+            <a [routerLink]="['/subject', lessonTimetable.subject?.id, 'view']">{{ lessonTimetable.subject?.subjectName }}</a>
+          </div>
+        </dd>
+      </dl>
+
+      <button type="submit" (click)="previousState()" class="btn btn-info" data-cy="entityDetailsBackButton">
+        <fa-icon icon="arrow-left"></fa-icon>&nbsp;<span>Back</span>
+      </button>
+
+      <button type="button" [routerLink]="['/lesson-timetable', lessonTimetable.id, 'edit']" class="btn btn-primary">
+        <fa-icon icon="pencil-alt"></fa-icon>&nbsp;<span>Edit</span>
+      </button>
+    </div>
+  </div>
+</div>

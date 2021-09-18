@@ -1,0 +1,107 @@
+<div>
+  <h2 id="page-heading" data-cy="LessonTimetableHeading">
+    <span>Lesson Timetables</span>
+
+    <div class="d-flex justify-content-end">
+      <button class="btn btn-info mr-2" (click)="loadAll()" [disabled]="isLoading">
+        <fa-icon icon="sync" [spin]="isLoading"></fa-icon>
+        <span>Refresh List</span>
+      </button>
+
+      <button
+        id="jh-create-entity"
+        data-cy="entityCreateButton"
+        class="btn btn-primary jh-create-entity create-lesson-timetable"
+        [routerLink]="['/lesson-timetable/new']"
+      >
+        <fa-icon icon="plus"></fa-icon>
+        <span> Create a new Lesson Timetable </span>
+      </button>
+    </div>
+  </h2>
+
+  <jhi-alert-error></jhi-alert-error>
+
+  <jhi-alert></jhi-alert>
+
+  <div class="alert alert-warning" id="no-result" *ngIf="lessonTimetables?.length === 0">
+    <span>No lessonTimetables found</span>
+  </div>
+
+  <div class="table-responsive" id="entities" *ngIf="lessonTimetables && lessonTimetables.length > 0">
+    <table class="table table-striped" aria-describedby="page-heading">
+      <thead>
+        <tr>
+          <th scope="col"><span>ID</span></th>
+          <th scope="col"><span>Lesson Name</span></th>
+          <th scope="col"><span>Start At</span></th>
+          <th scope="col"><span>End At</span></th>
+          <th scope="col"><span>Day Of Week</span></th>
+          <th scope="col"><span>Description</span></th>
+          <th scope="col"><span>Created At</span></th>
+          <th scope="col"><span>Active</span></th>
+          <th scope="col"><span>Location</span></th>
+          <th scope="col"><span>Subject</span></th>
+          <th scope="col"></th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let lessonTimetable of lessonTimetables; trackBy: trackId" data-cy="entityTable">
+          <td>
+            <a [routerLink]="['/lesson-timetable', lessonTimetable.id, 'view']">{{ lessonTimetable.id }}</a>
+          </td>
+          <td>{{ lessonTimetable.lessonName }}</td>
+          <td>{{ lessonTimetable.startAt | formatMediumDatetime }}</td>
+          <td>{{ lessonTimetable.endAt | formatMediumDatetime }}</td>
+          <td>{{ lessonTimetable.dayOfWeek }}</td>
+          <td>{{ lessonTimetable.description }}</td>
+          <td>{{ lessonTimetable.createdAt | formatMediumDatetime }}</td>
+          <td>{{ lessonTimetable.active }}</td>
+          <td>
+            <div *ngIf="lessonTimetable.location">
+              <a [routerLink]="['/location', lessonTimetable.location?.id, 'view']">{{ lessonTimetable.location?.name }}</a>
+            </div>
+          </td>
+          <td>
+            <div *ngIf="lessonTimetable.subject">
+              <a [routerLink]="['/subject', lessonTimetable.subject?.id, 'view']">{{ lessonTimetable.subject?.subjectName }}</a>
+            </div>
+          </td>
+          <td class="text-right">
+            <div class="btn-group">
+              <button
+                type="submit"
+                [routerLink]="['/lesson-timetable', lessonTimetable.id, 'view']"
+                class="btn btn-info btn-sm"
+                data-cy="entityDetailsButton"
+              >
+                <fa-icon icon="eye"></fa-icon>
+                <span class="d-none d-md-inline">View</span>
+              </button>
+
+              <button
+                type="submit"
+                [routerLink]="['/lesson-timetable', lessonTimetable.id, 'edit']"
+                class="btn btn-primary btn-sm"
+                data-cy="entityEditButton"
+              >
+                <fa-icon icon="pencil-alt"></fa-icon>
+                <span class="d-none d-md-inline">Edit</span>
+              </button>
+
+              <button type="submit" (click)="delete(lessonTimetable)" class="btn btn-danger btn-sm" data-cy="entityDeleteButton">
+                <fa-icon icon="times"></fa-icon>
+                <span class="d-none d-md-inline">Delete</span>
+              </button>
+
+              <button type="submit" (click)="createInstance(lessonTimetable.id)" class="btn btn-info btn-sm" data-cy="entityCreateInstanceButton">
+                <fa-icon icon="plus"></fa-icon>
+                <span class="d-none d-md-inline">Create Instance</span>
+              </button>
+            </div>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</div>

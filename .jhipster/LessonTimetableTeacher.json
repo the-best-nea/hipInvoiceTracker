@@ -1,0 +1,36 @@
+{
+  "name": "LessonTimetableTeacher",
+  "fields": [
+    {
+      "fieldName": "pay",
+      "fieldType": "Float",
+      "fieldValidateRules": ["required"]
+    }
+  ],
+  "relationships": [
+    {
+      "relationshipType": "many-to-one",
+      "otherEntityName": "lessonTimetable",
+      "otherEntityRelationshipName": "lessonTimetableTeacher",
+      "relationshipName": "lessonTimetable",
+      "otherEntityField": "lessonName"
+    },
+    {
+      "relationshipType": "many-to-one",
+      "otherEntityName": "user",
+      "otherEntityRelationshipName": "lessonTimetableTeacher",
+      "relationshipName": "internalUser",
+      "otherEntityField": "login"
+    }
+  ],
+  "entityTableName": "lesson_timetable_teacher",
+  "dto": "no",
+  "pagination": "no",
+  "service": "no",
+  "jpaMetamodelFiltering": false,
+  "fluentMethods": true,
+  "readOnly": false,
+  "embedded": false,
+  "applications": "*",
+  "changelogDate": "20210911194202"
+}

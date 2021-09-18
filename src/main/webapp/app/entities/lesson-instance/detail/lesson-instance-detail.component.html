@@ -1,0 +1,69 @@
+<div class="row justify-content-center">
+  <div class="col-8">
+    <div *ngIf="lessonInstance">
+      <h2 data-cy="lessonInstanceDetailsHeading"><span>Lesson Instance</span></h2>
+
+      <hr />
+
+      <jhi-alert-error></jhi-alert-error>
+
+      <jhi-alert></jhi-alert>
+
+      <dl class="row-md jh-entity-details">
+        <dt><span>ID</span></dt>
+        <dd>
+          <span>{{ lessonInstance.id }}</span>
+        </dd>
+        <dt><span>Lesson Name</span></dt>
+        <dd>
+          <span>{{ lessonInstance.lessonName }}</span>
+        </dd>
+        <dt><span>Start At</span></dt>
+        <dd>
+          <span>{{ lessonInstance.startAt | formatMediumDatetime }}</span>
+        </dd>
+        <dt><span>End At</span></dt>
+        <dd>
+          <span>{{ lessonInstance.endAt | formatMediumDatetime }}</span>
+        </dd>
+        <dt><span>Day Of Week</span></dt>
+        <dd>
+          <span>{{ lessonInstance.dayOfWeek }}</span>
+        </dd>
+        <dt><span>Description</span></dt>
+        <dd>
+          <span>{{ lessonInstance.description }}</span>
+        </dd>
+        <dt><span>Creted On</span></dt>
+        <dd>
+          <span>{{ lessonInstance.cretedOn | formatMediumDatetime }}</span>
+        </dd>
+        <dt><span>Internal User</span></dt>
+        <dd>
+          <span>{{ lessonInstance.internalUser?.login }}</span>
+        </dd>
+        <dt><span>Student</span></dt>
+        <dd>
+          <span *ngFor="let student of lessonInstance.students; let last = last">
+            <a [routerLink]="['/student', student?.id, 'view']">{{ student.firstName }}</a
+            >{{ last ? '' : ', ' }}
+          </span>
+        </dd>
+        <dt><span>Subject</span></dt>
+        <dd>
+          <div *ngIf="lessonInstance.subject">
+            <a [routerLink]="['/subject', lessonInstance.subject?.id, 'view']">{{ lessonInstance.subject?.subjectName }}</a>
+          </div>
+        </dd>
+      </dl>
+
+      <button type="submit" (click)="previousState()" class="btn btn-info" data-cy="entityDetailsBackButton">
+        <fa-icon icon="arrow-left"></fa-icon>&nbsp;<span>Back</span>
+      </button>
+
+      <button type="button" [routerLink]="['/lesson-instance', lessonInstance.id, 'edit']" class="btn btn-primary">
+        <fa-icon icon="pencil-alt"></fa-icon>&nbsp;<span>Edit</span>
+      </button>
+    </div>
+  </div>
+</div>

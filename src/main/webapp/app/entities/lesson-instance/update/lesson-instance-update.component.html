@@ -1,0 +1,177 @@
+<div class="row justify-content-center">
+  <div class="col-8">
+    <form name="editForm" role="form" novalidate (ngSubmit)="save()" [formGroup]="editForm">
+      <h2 id="jhi-lesson-instance-heading" data-cy="LessonInstanceCreateUpdateHeading">Create or edit a Lesson Instance</h2>
+
+      <div>
+        <jhi-alert-error></jhi-alert-error>
+
+        <div class="form-group" [hidden]="editForm.get('id')!.value == null">
+          <label class="form-control-label" for="field_id">ID</label>
+          <input type="number" class="form-control" name="id" id="field_id" data-cy="id" formControlName="id" [readonly]="true" />
+        </div>
+
+        <div class="form-group">
+          <label class="form-control-label" for="field_lessonName">Lesson Name</label>
+          <input
+            type="text"
+            class="form-control"
+            name="lessonName"
+            id="field_lessonName"
+            data-cy="lessonName"
+            formControlName="lessonName"
+          />
+          <div *ngIf="editForm.get('lessonName')!.invalid && (editForm.get('lessonName')!.dirty || editForm.get('lessonName')!.touched)">
+            <small class="form-text text-danger" *ngIf="editForm.get('lessonName')?.errors?.required"> This field is required. </small>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label class="form-control-label" for="field_startAt">Start At</label>
+          <div class="d-flex">
+            <input
+              id="field_startAt"
+              data-cy="startAt"
+              type="datetime-local"
+              class="form-control"
+              name="startAt"
+              formControlName="startAt"
+              placeholder="YYYY-MM-DD HH:mm"
+            />
+          </div>
+          <div *ngIf="editForm.get('startAt')!.invalid && (editForm.get('startAt')!.dirty || editForm.get('startAt')!.touched)">
+            <small class="form-text text-danger" *ngIf="editForm.get('startAt')?.errors?.required"> This field is required. </small>
+            <small class="form-text text-danger" [hidden]="!editForm.get('startAt')?.errors?.ZonedDateTimelocal">
+              This field should be a date and time.
+            </small>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label class="form-control-label" for="field_endAt">End At</label>
+          <div class="d-flex">
+            <input
+              id="field_endAt"
+              data-cy="endAt"
+              type="datetime-local"
+              class="form-control"
+              name="endAt"
+              formControlName="endAt"
+              placeholder="YYYY-MM-DD HH:mm"
+            />
+          </div>
+          <div *ngIf="editForm.get('endAt')!.invalid && (editForm.get('endAt')!.dirty || editForm.get('endAt')!.touched)">
+            <small class="form-text text-danger" *ngIf="editForm.get('endAt')?.errors?.required"> This field is required. </small>
+            <small class="form-text text-danger" [hidden]="!editForm.get('endAt')?.errors?.ZonedDateTimelocal">
+              This field should be a date and time.
+            </small>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label class="form-control-label" for="field_dayOfWeek">Day Of Week</label>
+          <select class="form-control" name="dayOfWeek" formControlName="dayOfWeek" id="field_dayOfWeek" data-cy="dayOfWeek">
+            <option [ngValue]="null"></option>
+            <option value="MONDAY">MONDAY</option>
+            <option value="TUESDAY">TUESDAY</option>
+            <option value="WEDNESDAY">WEDNESDAY</option>
+            <option value="THURSDAY">THURSDAY</option>
+            <option value="FRIDAY">FRIDAY</option>
+            <option value="SATURDAY">SATURDAY</option>
+            <option value="SUNDAY">SUNDAY</option>
+          </select>
+          <div *ngIf="editForm.get('dayOfWeek')!.invalid && (editForm.get('dayOfWeek')!.dirty || editForm.get('dayOfWeek')!.touched)">
+            <small class="form-text text-danger" *ngIf="editForm.get('dayOfWeek')?.errors?.required"> This field is required. </small>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label class="form-control-label" for="field_description">Description</label>
+          <input
+            type="text"
+            class="form-control"
+            name="description"
+            id="field_description"
+            data-cy="description"
+            formControlName="description"
+          />
+        </div>
+
+        <div class="form-group">
+          <label class="form-control-label" for="field_cretedOn">Creted On</label>
+          <div class="d-flex">
+            <input
+              id="field_cretedOn"
+              data-cy="cretedOn"
+              type="datetime-local"
+              class="form-control"
+              name="cretedOn"
+              formControlName="cretedOn"
+              placeholder="YYYY-MM-DD HH:mm"
+            />
+          </div>
+          <div *ngIf="editForm.get('cretedOn')!.invalid && (editForm.get('cretedOn')!.dirty || editForm.get('cretedOn')!.touched)">
+            <small class="form-text text-danger" *ngIf="editForm.get('cretedOn')?.errors?.required"> This field is required. </small>
+            <small class="form-text text-danger" [hidden]="!editForm.get('cretedOn')?.errors?.ZonedDateTimelocal">
+              This field should be a date and time.
+            </small>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label class="form-control-label" for="field_internalUser">Internal User</label>
+          <select class="form-control" id="field_internalUser" data-cy="internalUser" name="internalUser" formControlName="internalUser">
+            <option [ngValue]="null"></option>
+            <option
+              [ngValue]="userOption.id === editForm.get('internalUser')!.value?.id ? editForm.get('internalUser')!.value : userOption"
+              *ngFor="let userOption of usersSharedCollection; trackBy: trackUserById"
+            >
+              {{ userOption.login }}
+            </option>
+          </select>
+        </div>
+
+        <div class="form-group">
+          <label for="field_students">Student</label>
+          <select class="form-control" id="field_students" data-cy="student" multiple name="students" formControlName="students">
+            <option
+              [ngValue]="getSelectedStudent(studentOption, editForm.get('students')!.value)"
+              *ngFor="let studentOption of studentsSharedCollection; trackBy: trackStudentById"
+            >
+              {{ studentOption.firstName }}
+            </option>
+          </select>
+        </div>
+
+        <div class="form-group">
+          <label class="form-control-label" for="field_subject">Subject</label>
+          <select class="form-control" id="field_subject" data-cy="subject" name="subject" formControlName="subject">
+            <option [ngValue]="null"></option>
+            <option
+              [ngValue]="subjectOption.id === editForm.get('subject')!.value?.id ? editForm.get('subject')!.value : subjectOption"
+              *ngFor="let subjectOption of subjectsSharedCollection; trackBy: trackSubjectById"
+            >
+              {{ subjectOption.subjectName }}
+            </option>
+          </select>
+        </div>
+      </div>
+
+      <div>
+        <button type="button" id="cancel-save" data-cy="entityCreateCancelButton" class="btn btn-secondary" (click)="previousState()">
+          <fa-icon icon="ban"></fa-icon>&nbsp;<span>Cancel</span>
+        </button>
+
+        <button
+          type="submit"
+          id="save-entity"
+          data-cy="entityCreateSaveButton"
+          [disabled]="editForm.invalid || isSaving"
+          class="btn btn-primary"
+        >
+          <fa-icon icon="save"></fa-icon>&nbsp;<span>Save</span>
+        </button>
+      </div>
+    </form>
+  </div>
+</div>

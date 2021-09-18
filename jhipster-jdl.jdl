@@ -1,0 +1,96 @@
+entity Subject {
+	subjectName String required,
+    description String,
+    createdAt Instant required,
+    active Boolean
+}
+
+entity LessonTimetable {
+	lessonName String required,
+    startAt Instant required,
+    endAt Instant required,
+    dayOfWeek DayOfWeek required,
+    description String,
+    createdAt Instant required,
+	active Boolean
+}
+
+entity LessonInstance {
+    lessonName String required,
+    startAt Instant required,
+    endAt Instant required,
+    dayOfWeek DayOfWeek required,
+    description String,
+	cretedOn Instant required
+}
+
+entity Student {
+	firstName String required,
+    lastName String required,
+    yearGroup Integer required,
+    email String required,
+    phoneNumber String,
+    startDate Instant required,
+    endDate Instant,
+    active Boolean,
+    createdAt Instant required
+}
+
+entity LessonTimetableTeacher {
+	pay Float required
+}
+
+entity Location {
+	name String required,
+    address String required
+}
+
+entity StudentRegister {
+	dateOfLesson Instant required,
+    attended Boolean,
+    createdOn Instant required,
+    updatedOn Instant required
+}
+
+enum DayOfWeek {
+MONDAY, TUESDAY, WEDNESDAY, THURSDAY, FRIDAY, SATURDAY, SUNDAY
+}
+
+
+
+relationship OneToMany {
+	Student to StudentRegister{ Student(firstName) }
+}
+relationship OneToMany {
+	LessonInstance to StudentRegister{ LessonTimetable(lessonName) }
+}
+
+relationship OneToMany {
+	Location to LessonTimetable{ Location(name) }
+}
+
+relationship OneToMany {
+	Subject to LessonTimetable{ Subject(subjectName) }
+}
+
+relationship OneToMany {
+	Subject to LessonInstance{ Subject(subjectName) }
+}
+
+relationship ManyToMany {
+	Student{ LessonTimetable(lessonName) } to LessonTimetable{ Student(firstName) }
+}
+
+relationship ManyToMany {
+	LessonInstance{ Student(firstName) } to Student{ LessonInstance(lessonName) }
+}
+
+relationship ManyToOne {
+	LessonTimetableTeacher{ LessonTimetable(lessonName) } to LessonTimetable
+}
+relationship ManyToOne {
+	LessonTimetableTeacher{ InternalUser(login) } to User
+}
+relationship ManyToOne {
+	LessonInstance{ InternalUser(login) } to User
+}

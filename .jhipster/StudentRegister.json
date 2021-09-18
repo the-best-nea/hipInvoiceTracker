@@ -1,0 +1,50 @@
+{
+  "name": "StudentRegister",
+  "fields": [
+    {
+      "fieldName": "dateOfLesson",
+      "fieldType": "Instant",
+      "fieldValidateRules": ["required"]
+    },
+    {
+      "fieldName": "attended",
+      "fieldType": "Boolean"
+    },
+    {
+      "fieldName": "createdOn",
+      "fieldType": "Instant",
+      "fieldValidateRules": ["required"]
+    },
+    {
+      "fieldName": "updatedOn",
+      "fieldType": "Instant",
+      "fieldValidateRules": ["required"]
+    }
+  ],
+  "relationships": [
+    {
+      "relationshipType": "many-to-one",
+      "otherEntityName": "student",
+      "otherEntityRelationshipName": "studentRegister",
+      "relationshipName": "student",
+      "otherEntityField": "firstName"
+    },
+    {
+      "relationshipType": "many-to-one",
+      "otherEntityName": "lessonInstance",
+      "otherEntityRelationshipName": "studentRegister",
+      "relationshipName": "lessonTimetable",
+      "otherEntityField": "lessonName"
+    }
+  ],
+  "entityTableName": "student_register",
+  "dto": "no",
+  "pagination": "no",
+  "service": "no",
+  "jpaMetamodelFiltering": false,
+  "fluentMethods": true,
+  "readOnly": false,
+  "embedded": false,
+  "applications": "*",
+  "changelogDate": "20210912121254"
+}

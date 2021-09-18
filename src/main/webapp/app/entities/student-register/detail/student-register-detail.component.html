@@ -1,0 +1,58 @@
+<div class="row justify-content-center">
+  <div class="col-8">
+    <div *ngIf="studentRegister">
+      <h2 data-cy="studentRegisterDetailsHeading"><span>Student Register</span></h2>
+
+      <hr />
+
+      <jhi-alert-error></jhi-alert-error>
+
+      <jhi-alert></jhi-alert>
+
+      <dl class="row-md jh-entity-details">
+        <dt><span>ID</span></dt>
+        <dd>
+          <span>{{ studentRegister.id }}</span>
+        </dd>
+        <dt><span>Date Of Lesson</span></dt>
+        <dd>
+          <span>{{ studentRegister.dateOfLesson | formatMediumDatetime }}</span>
+        </dd>
+        <dt><span>Attended</span></dt>
+        <dd>
+          <span>{{ studentRegister.attended }}</span>
+        </dd>
+        <dt><span>Created On</span></dt>
+        <dd>
+          <span>{{ studentRegister.createdOn | formatMediumDatetime }}</span>
+        </dd>
+        <dt><span>Updated On</span></dt>
+        <dd>
+          <span>{{ studentRegister.updatedOn | formatMediumDatetime }}</span>
+        </dd>
+        <dt><span>Student</span></dt>
+        <dd>
+          <div *ngIf="studentRegister.student">
+            <a [routerLink]="['/student', studentRegister.student?.id, 'view']">{{ studentRegister.student?.firstName }}</a>
+          </div>
+        </dd>
+        <dt><span>Lesson Timetable</span></dt>
+        <dd>
+          <div *ngIf="studentRegister.lessonTimetable">
+            <a [routerLink]="['/lesson-instance', studentRegister.lessonTimetable?.id, 'view']">{{
+              studentRegister.lessonTimetable?.lessonName
+            }}</a>
+          </div>
+        </dd>
+      </dl>
+
+      <button type="submit" (click)="previousState()" class="btn btn-info" data-cy="entityDetailsBackButton">
+        <fa-icon icon="arrow-left"></fa-icon>&nbsp;<span>Back</span>
+      </button>
+
+      <button type="button" [routerLink]="['/student-register', studentRegister.id, 'edit']" class="btn btn-primary">
+        <fa-icon icon="pencil-alt"></fa-icon>&nbsp;<span>Edit</span>
+      </button>
+    </div>
+  </div>
+</div>
