@@ -16,6 +16,7 @@ import { IStudent } from 'app/entities/student/student.model';
 import { StudentService } from 'app/entities/student/service/student.service';
 import { ISubject } from 'app/entities/subject/subject.model';
 import { SubjectService } from 'app/entities/subject/service/subject.service';
+import { IRegistrationDetails } from '../../registration-detail/registration-details.model';
 
 @Component({
   selector: 'jhi-lesson-instance-register',
@@ -23,6 +24,7 @@ import { SubjectService } from 'app/entities/subject/service/subject.service';
 })
 export class LessonInstanceRegisterComponent implements OnInit {
   students?: IStudent[];
+  registrationDetails?: IRegistrationDetails[];
 
   isSaving = false;
 
@@ -41,6 +43,7 @@ export class LessonInstanceRegisterComponent implements OnInit {
     internalUser: [],
     students: [],
     subject: [],
+    registrationDetails: [],
   });
 
   constructor(
@@ -53,8 +56,6 @@ export class LessonInstanceRegisterComponent implements OnInit {
   ) {}
 
   ngOnInit(): void {
-
-
     this.activatedRoute.data.subscribe(({ lessonInstance }) => {
       if (lessonInstance.id === undefined) {
         const today = dayjs().startOf('day');
@@ -67,12 +68,9 @@ export class LessonInstanceRegisterComponent implements OnInit {
 
       this.loadRelationshipsOptions();
 
-      this.studentService.queryByLessonId(lessonInstance.id).subscribe(
-        (res: HttpResponse<IStudent[]>) => {
-          this.students = res.body ?? [];
-        }
-      );
-
+      this.studentService.queryByLessonId(lessonInstance.id).subscribe((res: HttpResponse<IStudent[]>) => {
+        this.students = res.body ?? [];
+      });
     });
   }
 
@@ -91,12 +89,12 @@ export class LessonInstanceRegisterComponent implements OnInit {
   }
 
   register(): void {
-      this.isSaving = true;
-      const lessonInstance = this.createFromForm();
-      if (lessonInstance.id !== undefined) {
-        this.subscribeToSaveResponse(this.lessonInstanceService.register(lessonInstance));
-      }
+    this.isSaving = true;
+    const lessonInstance = this.createFromForm();
+    if (lessonInstance.id !== undefined) {
+      this.subscribeToSaveResponse(this.lessonInstanceService.register(lessonInstance));
     }
+  }
 
   trackUserById(index: number, item: IUser): number {
     return item.id!;
@@ -152,6 +150,7 @@ export class LessonInstanceRegisterComponent implements OnInit {
       internalUser: lessonInstance.internalUser,
       students: lessonInstance.students,
       subject: lessonInstance.subject,
+      registrationDetails: lessonInstance.registrationDetails,
     });
 
     this.usersSharedCollection = this.userService.addUserToCollectionIfMissing(this.usersSharedCollection, lessonInstance.internalUser);
