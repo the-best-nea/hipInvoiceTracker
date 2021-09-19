@@ -5,6 +5,7 @@ import { UserRouteAccessService } from 'app/core/auth/user-route-access.service'
 import { LessonInstanceComponent } from '../list/lesson-instance.component';
 import { LessonInstanceDetailComponent } from '../detail/lesson-instance-detail.component';
 import { LessonInstanceUpdateComponent } from '../update/lesson-instance-update.component';
+import { LessonInstanceRegisterComponent } from '../register/lesson-instance-register.component';
 import { LessonInstanceRoutingResolveService } from './lesson-instance-routing-resolve.service';
 
 const lessonInstanceRoute: Routes = [
@@ -37,6 +38,14 @@ const lessonInstanceRoute: Routes = [
     },
     canActivate: [UserRouteAccessService],
   },
+  {
+      path: ':id/register',
+      component: LessonInstanceRegisterComponent,
+      resolve: {
+        lessonInstance: LessonInstanceRoutingResolveService,
+      },
+      canActivate: [UserRouteAccessService],
+    },
 ];
 
 @NgModule({

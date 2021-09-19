@@ -2,6 +2,7 @@ package com.mycompany.myapp.web.rest;
 
 import com.mycompany.myapp.domain.Student;
 import com.mycompany.myapp.repository.StudentRepository;
+import com.mycompany.myapp.service.StudentService;
 import com.mycompany.myapp.web.rest.errors.BadRequestAlertException;
 import java.net.URI;
 import java.net.URISyntaxException;
@@ -35,9 +36,11 @@ public class StudentResource {
     private String applicationName;
 
     private final StudentRepository studentRepository;
+    private final StudentService studentService;
 
-    public StudentResource(StudentRepository studentRepository) {
+    public StudentResource(StudentRepository studentRepository, StudentService studentService) {
         this.studentRepository = studentRepository;
+        this.studentService = studentService;
     }
 
     /**
@@ -205,4 +208,15 @@ public class StudentResource {
             .headers(HeaderUtil.createEntityDeletionAlert(applicationName, false, ENTITY_NAME, id.toString()))
             .build();
     }
+
+
+    @GetMapping("/students/byLessonId/{id}")
+    public List<Student> getAllStudentByLessonId(@PathVariable Long id) {
+        log.debug("REST request to get Students By Lesson Id : {}", id);
+        List<Student> students = studentService.getAllStudentsByLesson(id);
+        return students;
+    }
+
+
+
 }

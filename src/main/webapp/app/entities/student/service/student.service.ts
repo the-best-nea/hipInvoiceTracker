@@ -52,6 +52,12 @@ export class StudentService {
       .pipe(map((res: EntityArrayResponseType) => this.convertDateArrayFromServer(res)));
   }
 
+  queryByLessonId(id: number): Observable<EntityArrayResponseType> {
+    return this.http
+      .get<IStudent[]>(`${this.resourceUrl}/byLessonId/${id}`, { observe: 'response' })
+      .pipe(map((res: EntityArrayResponseType) => this.convertDateArrayFromServer(res)));
+  }
+
   delete(id: number): Observable<HttpResponse<{}>> {
     return this.http.delete(`${this.resourceUrl}/${id}`, { observe: 'response' });
   }

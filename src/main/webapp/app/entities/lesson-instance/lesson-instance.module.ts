@@ -6,12 +6,16 @@ import { LessonInstanceUpdateComponent } from './update/lesson-instance-update.c
 import { LessonInstanceDeleteDialogComponent } from './delete/lesson-instance-delete-dialog.component';
 import { LessonInstanceRoutingModule } from './route/lesson-instance-routing.module';
 
+import { LessonInstanceRegisterComponent } from './register/lesson-instance-register.component';
+
+
 @NgModule({
   imports: [SharedModule, LessonInstanceRoutingModule],
   declarations: [
     LessonInstanceComponent,
     LessonInstanceDetailComponent,
     LessonInstanceUpdateComponent,
+    LessonInstanceRegisterComponent,
     LessonInstanceDeleteDialogComponent,
   ],
   entryComponents: [LessonInstanceDeleteDialogComponent],

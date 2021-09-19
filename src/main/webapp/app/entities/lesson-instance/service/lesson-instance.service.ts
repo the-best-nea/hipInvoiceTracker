@@ -32,6 +32,13 @@ export class LessonInstanceService {
       .pipe(map((res: EntityResponseType) => this.convertDateFromServer(res)));
   }
 
+  register(lessonInstance: ILessonInstance): Observable<EntityResponseType> {
+      const copy = this.convertDateFromClient(lessonInstance);
+      return this.http
+        .put<ILessonInstance>(`${this.resourceUrl}/${getLessonInstanceIdentifier(lessonInstance) as number}/register`, copy, { observe: 'response' })
+        .pipe(map((res: EntityResponseType) => this.convertDateFromServer(res)));
+    }
+
   partialUpdate(lessonInstance: ILessonInstance): Observable<EntityResponseType> {
     const copy = this.convertDateFromClient(lessonInstance);
     return this.http

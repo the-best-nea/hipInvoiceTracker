@@ -197,4 +197,33 @@ public class LessonInstanceResource {
             .headers(HeaderUtil.createEntityDeletionAlert(applicationName, false, ENTITY_NAME, id.toString()))
             .build();
     }
+
+
+
+    @PutMapping("/lesson-instances/{id}/register")
+    public ResponseEntity<LessonInstance> registerLessonInstance(
+        @PathVariable(value = "id", required = false) final Long id,
+        @Valid @RequestBody LessonInstance lessonInstance
+    ) throws URISyntaxException {
+        log.debug("REST request to update LessonInstance through register : {}, {}", id, lessonInstance);
+        if (lessonInstance.getId() == null) {
+            throw new BadRequestAlertException("Invalid id", ENTITY_NAME, "idnull");
+        }
+        if (!Objects.equals(id, lessonInstance.getId())) {
+            throw new BadRequestAlertException("Invalid ID", ENTITY_NAME, "idinvalid");
+        }
+
+        if (!lessonInstanceRepository.existsById(id)) {
+            throw new BadRequestAlertException("Entity not found", ENTITY_NAME, "idnotfound");
+        }
+
+        //Add service to add register to register table
+
+        LessonInstance result = lessonInstanceRepository.save(lessonInstance);
+        return ResponseEntity
+            .ok()
+            .headers(HeaderUtil.createEntityUpdateAlert(applicationName, false, ENTITY_NAME, lessonInstance.getId().toString()))
+            .body(result);
+    }
+
 }
