@@ -147,28 +147,22 @@
         <div class="table-responsive" id="students">
           <table class="table table-striped" aria-describedby="page-heading">
             <thead>
-            <tr>
-              <th scope="col"><span>First Name</span></th>
-              <th scope="col"><span>Last Name</span></th>
-              <th scope="col"><span>Attendance</span></th>
-            </tr>
+              <tr>
+                <th scope="col"><span>First Name</span></th>
+                <th scope="col"><span>Last Name</span></th>
+                <th scope="col"><span>Attendance</span></th>
+              </tr>
             </thead>
 
             <tbody>
-              <tr *ngFor="let student of students; trackBy: trackStudentById">
+              <tr *ngFor="let student of students; trackBy: trackStudentById; let i = index" [attr.data-index]="i">
                 <td>{{ student.firstName }}</td>
                 <td>{{ student.lastName }}</td>
                 <td></td>
               </tr>
             </tbody>
           </table>
-
         </div>
-
-
-
-
-
 
         <div class="form-group" hidden aria-readonly="true">
           <label class="form-control-label" for="field_subject">Subject</label>

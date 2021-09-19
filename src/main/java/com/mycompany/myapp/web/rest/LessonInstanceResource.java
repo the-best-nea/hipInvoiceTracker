@@ -2,6 +2,7 @@ package com.mycompany.myapp.web.rest;
 
 import com.mycompany.myapp.domain.LessonInstance;
 import com.mycompany.myapp.repository.LessonInstanceRepository;
+import com.mycompany.myapp.service.RegistrationService;
 import com.mycompany.myapp.web.rest.errors.BadRequestAlertException;
 import java.net.URI;
 import java.net.URISyntaxException;
@@ -35,9 +36,11 @@ public class LessonInstanceResource {
     private String applicationName;
 
     private final LessonInstanceRepository lessonInstanceRepository;
+    private final RegistrationService registrationService;
 
-    public LessonInstanceResource(LessonInstanceRepository lessonInstanceRepository) {
+    public LessonInstanceResource(LessonInstanceRepository lessonInstanceRepository, RegistrationService registrationService) {
         this.lessonInstanceRepository = lessonInstanceRepository;
+        this.registrationService = registrationService;
     }
 
     /**
@@ -198,8 +201,6 @@ public class LessonInstanceResource {
             .build();
     }
 
-
-
     @PutMapping("/lesson-instances/{id}/register")
     public ResponseEntity<LessonInstance> registerLessonInstance(
         @PathVariable(value = "id", required = false) final Long id,
@@ -217,13 +218,13 @@ public class LessonInstanceResource {
             throw new BadRequestAlertException("Entity not found", ENTITY_NAME, "idnotfound");
         }
 
-        //Add service to add register to register table
-
         LessonInstance result = lessonInstanceRepository.save(lessonInstance);
+
+        //Add service to add register to register table
+        registrationService.takeRegister(lessonInstance);
         return ResponseEntity
             .ok()
             .headers(HeaderUtil.createEntityUpdateAlert(applicationName, false, ENTITY_NAME, lessonInstance.getId().toString()))
             .body(result);
     }
-
 }

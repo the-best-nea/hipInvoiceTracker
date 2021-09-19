@@ -5,8 +5,10 @@ import com.mycompany.myapp.domain.enumeration.DayOfWeek;
 import java.io.Serializable;
 import java.time.Instant;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 import javax.persistence.*;
+import javax.swing.*;
 import javax.validation.constraints.*;
 
 /**
@@ -65,6 +67,8 @@ public class LessonInstance implements Serializable {
     @ManyToOne
     @JsonIgnoreProperties(value = { "lessonTimetables", "lessonInstances" }, allowSetters = true)
     private Subject subject;
+
+    private List<RegistrationDetails> registrationDetails;
 
     // jhipster-needle-entity-add-field - JHipster will add fields here
     public Long getId() {
@@ -241,6 +245,14 @@ public class LessonInstance implements Serializable {
     }
 
     // jhipster-needle-entity-add-getters-setters - JHipster will add getters and setters here
+
+    public List<RegistrationDetails> getRegistrationDetails() {
+        return registrationDetails;
+    }
+
+    public void setRegistrationDetails(List<RegistrationDetails> registrationDetails) {
+        this.registrationDetails = registrationDetails;
+    }
 
     @Override
     public boolean equals(Object o) {

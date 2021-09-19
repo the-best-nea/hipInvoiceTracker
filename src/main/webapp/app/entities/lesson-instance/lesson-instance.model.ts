@@ -4,6 +4,7 @@ import { IUser } from 'app/entities/user/user.model';
 import { IStudent } from 'app/entities/student/student.model';
 import { ISubject } from 'app/entities/subject/subject.model';
 import { DayOfWeek } from 'app/entities/enumerations/day-of-week.model';
+import { IRegistrationDetails } from '../registration-detail/registration-details.model';
 
 export interface ILessonInstance {
   id?: number;
@@ -17,6 +18,7 @@ export interface ILessonInstance {
   internalUser?: IUser | null;
   students?: IStudent[] | null;
   subject?: ISubject | null;
+  registrationDetails?: IRegistrationDetails[] | null;
 }
 
 export class LessonInstance implements ILessonInstance {
@@ -31,7 +33,8 @@ export class LessonInstance implements ILessonInstance {
     public studentRegisters?: IStudentRegister[] | null,
     public internalUser?: IUser | null,
     public students?: IStudent[] | null,
-    public subject?: ISubject | null
+    public subject?: ISubject | null,
+    public registrationDetails?: IRegistrationDetails[] | null
   ) {}
 }
 
