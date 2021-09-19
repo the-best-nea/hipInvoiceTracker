@@ -68,6 +68,7 @@ public class LessonInstance implements Serializable {
     @JsonIgnoreProperties(value = { "lessonTimetables", "lessonInstances" }, allowSetters = true)
     private Subject subject;
 
+    @Transient
     private List<RegistrationDetails> registrationDetails;
 
     // jhipster-needle-entity-add-field - JHipster will add fields here
@@ -246,7 +247,6 @@ public class LessonInstance implements Serializable {
 
     // jhipster-needle-entity-add-getters-setters - JHipster will add getters and setters here
 
-    @Transient
     public List<RegistrationDetails> getRegistrationDetails() {
         return registrationDetails;
     }
