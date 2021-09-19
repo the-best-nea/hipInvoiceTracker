@@ -1,4 +1,4 @@
-<div class="row justify-content-center">
+<div class="row justify-content-center" xmlns="http://www.w3.org/1999/html">
   <div class="col-8">
     <form name="editForm" role="form" novalidate (ngSubmit)="register()" [formGroup]="editForm">
       <h2 id="jhi-lesson-instance-heading" data-cy="LessonInstanceCreateUpdateHeading">Create or edit a Lesson Instance</h2>
@@ -155,8 +155,14 @@
             </thead>
 
             <tbody>
-              <tr *ngFor="let student of students; trackBy: trackStudentById; let i = index" [attr.data-index]="i">
-                <td [attr.data-id]>{{ student.firstName }} {{ student.lastName }}</td>
+              <tr *ngFor="let student of registerSharedCollection; let i = index">
+                <td>{{ student.id }}</td>
+                <td>{{ student.studentId }}</td>
+                <td>{{ student.firstName }}</td>
+                <td>{{ student.lastName }}</td>
+                <td>
+                  <input type="checkbox" value="{{ i }}" [checked] (change)="trackRegistrationDetail(i, $event, student)" />
+                </td>
               </tr>
             </tbody>
           </table>

@@ -29,7 +29,7 @@ import org.springframework.transaction.annotation.Transactional;
 @IntegrationTest
 @AutoConfigureMockMvc
 @WithMockUser
-class StudentRegisterResourceIT {
+class StudentRegisterItemResourceIT {
 
     private static final Instant DEFAULT_DATE_OF_LESSON = Instant.ofEpochMilli(0L);
     private static final Instant UPDATED_DATE_OF_LESSON = Instant.now().truncatedTo(ChronoUnit.MILLIS);

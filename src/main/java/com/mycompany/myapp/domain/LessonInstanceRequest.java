@@ -3,6 +3,7 @@ package com.mycompany.myapp.domain;
 import com.mycompany.myapp.domain.enumeration.DayOfWeek;
 import java.io.Serializable;
 import java.time.Instant;
+import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -42,7 +43,7 @@ public class LessonInstanceRequest implements Serializable {
 
     private Subject subject;
 
-    private List<RegistrationDetails> registrationDetails;
+    private List<RegistrationDetails> registrationDetails = new ArrayList<>();
 
     public Long getId() {
         return id;
@@ -168,6 +169,7 @@ public class LessonInstanceRequest implements Serializable {
             ", dayOfWeek='" + getDayOfWeek() + "'" +
             ", description='" + getDescription() + "'" +
             ", cretedOn='" + getCretedOn() + "'" +
+            ", registrationDetails='" + getRegistrationDetails() + "'" +
             "}";
     }
 }

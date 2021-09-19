@@ -207,7 +207,7 @@ public class LessonInstanceResource {
         @PathVariable(value = "id", required = false) final Long id,
         @Valid @RequestBody LessonInstanceRequest lessonInstance
     ) throws URISyntaxException {
-        log.debug("REST request to update LessonInstance through register : {}, {}", id, lessonInstance);
+        log.debug("REST blah request to update LessonInstance through register : {}, {}", id, lessonInstance);
         if (lessonInstance.getId() == null) {
             throw new BadRequestAlertException("Invalid id", ENTITY_NAME, "idnull");
         }

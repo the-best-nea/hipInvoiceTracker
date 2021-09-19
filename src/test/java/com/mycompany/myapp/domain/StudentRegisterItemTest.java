@@ -5,7 +5,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import com.mycompany.myapp.web.rest.TestUtil;
 import org.junit.jupiter.api.Test;
 
-class StudentRegisterTest {
+class StudentRegisterItemTest {
 
     @Test
     void equalsVerifier() throws Exception {

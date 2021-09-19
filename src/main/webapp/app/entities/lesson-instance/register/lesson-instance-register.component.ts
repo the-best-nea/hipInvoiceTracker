@@ -16,7 +16,8 @@ import { IStudent } from 'app/entities/student/student.model';
 import { StudentService } from 'app/entities/student/service/student.service';
 import { ISubject } from 'app/entities/subject/subject.model';
 import { SubjectService } from 'app/entities/subject/service/subject.service';
-import { IRegistrationDetails } from '../../registration-detail/registration-details.model';
+import { IRegistrationDetails, RegistrationDetails } from '../../registration-detail/registration-details.model';
+import { IRegister } from '../../registration-detail/registration-items.model';
 
 @Component({
   selector: 'jhi-lesson-instance-register',
@@ -31,6 +32,8 @@ export class LessonInstanceRegisterComponent implements OnInit {
   usersSharedCollection: IUser[] = [];
   studentsSharedCollection: IStudent[] = [];
   subjectsSharedCollection: ISubject[] = [];
+  registrationDetailsSharedCollection: IRegistrationDetails[] = [];
+  registerSharedCollection: IRegistrationDetails[] = [];
 
   editForm = this.fb.group({
     id: [],
@@ -68,8 +71,10 @@ export class LessonInstanceRegisterComponent implements OnInit {
 
       this.loadRelationshipsOptions();
 
-      this.studentService.queryByLessonId(lessonInstance.id).subscribe((res: HttpResponse<IStudent[]>) => {
-        this.students = res.body ?? [];
+      this.studentService.queryByLessonId(lessonInstance.id).subscribe((res: HttpResponse<IRegistrationDetails[]>) => {
+        alert(JSON.stringify(res.body));
+        this.registerSharedCollection = res.body ?? [];
+        //        this.registerSharedCollection.forEach(e => alert(JSON.stringify(e)));
       });
     });
   }
@@ -117,6 +122,23 @@ export class LessonInstanceRegisterComponent implements OnInit {
       }
     }
     return option;
+  }
+
+  trackRegistrationDetail(index: number, ev: any, item: IRegistrationDetails): void {
+    for (let i = 0; i < this.registrationDetailsSharedCollection.length; i++) {
+      if (this.registrationDetailsSharedCollection[i].studentId === item.id) {
+        this.registrationDetailsSharedCollection.splice(i, 1);
+        alert('Deleted...');
+      }
+    }
+
+    if (ev.target.checked === true) {
+      const regDetails = new RegistrationDetails(item.id, item.studentId, item.firstName, item.lastName, true);
+      this.registrationDetailsSharedCollection.push(regDetails);
+    } else {
+      const regDetails = new RegistrationDetails(item.id, item.studentId, item.firstName, item.lastName, false);
+      this.registrationDetailsSharedCollection.push(regDetails);
+    }
   }
 
   protected subscribeToSaveResponse(result: Observable<HttpResponse<ILessonInstance>>): void {
@@ -203,6 +225,7 @@ export class LessonInstanceRegisterComponent implements OnInit {
       internalUser: this.editForm.get(['internalUser'])!.value,
       students: this.editForm.get(['students'])!.value,
       subject: this.editForm.get(['subject'])!.value,
+      registrationDetails: this.registrationDetailsSharedCollection,
     };
   }
 }

@@ -15,10 +15,16 @@ public class LessonService {
 
     private final LessonTimetableRepository lessonTimetableRepository;
     private final LessonInstanceRepository lessonInstanceRepository;
+    private final RegistrationService registrationService;
 
-    public LessonService(LessonTimetableRepository lessonTimetableRepository, LessonInstanceRepository lessonInstanceRepository) {
+    public LessonService(
+        LessonTimetableRepository lessonTimetableRepository,
+        LessonInstanceRepository lessonInstanceRepository,
+        RegistrationService registrationService
+    ) {
         this.lessonTimetableRepository = lessonTimetableRepository;
         this.lessonInstanceRepository = lessonInstanceRepository;
+        this.registrationService = registrationService;
     }
 
     public LessonInstance createInstance(Long id) {
@@ -37,6 +43,10 @@ public class LessonService {
         newInstance.setStartAt(lessonTimetable.getStartAt());
         newInstance.setEndAt(lessonTimetable.getEndAt());
 
-        return lessonInstanceRepository.save(newInstance);
+        LessonInstance savedLessonInstance = lessonInstanceRepository.save(newInstance);
+
+        registrationService.createRegister(savedLessonInstance);
+
+        return savedLessonInstance;
     }
 }

@@ -8,6 +8,7 @@ import { isPresent } from 'app/core/util/operators';
 import { ApplicationConfigService } from 'app/core/config/application-config.service';
 import { createRequestOption } from 'app/core/request/request-util';
 import { ILessonInstance, getLessonInstanceIdentifier } from '../lesson-instance.model';
+import { getRegistrationDetailIdentifier, IRegistrationDetails } from '../../registration-detail/registration-details.model';
 
 export type EntityResponseType = HttpResponse<ILessonInstance>;
 export type EntityArrayResponseType = HttpResponse<ILessonInstance[]>;
@@ -33,11 +34,13 @@ export class LessonInstanceService {
   }
 
   register(lessonInstance: ILessonInstance): Observable<EntityResponseType> {
-      const copy = this.convertDateFromClient(lessonInstance);
-      return this.http
-        .put<ILessonInstance>(`${this.resourceUrl}/${getLessonInstanceIdentifier(lessonInstance) as number}/register`, copy, { observe: 'response' })
-        .pipe(map((res: EntityResponseType) => this.convertDateFromServer(res)));
-    }
+    const copy = this.convertDateFromClient(lessonInstance);
+    return this.http
+      .put<ILessonInstance>(`${this.resourceUrl}/${getLessonInstanceIdentifier(lessonInstance) as number}/register`, copy, {
+        observe: 'response',
+      })
+      .pipe(map((res: EntityResponseType) => this.convertDateFromServer(res)));
+  }
 
   partialUpdate(lessonInstance: ILessonInstance): Observable<EntityResponseType> {
     const copy = this.convertDateFromClient(lessonInstance);
@@ -83,6 +86,28 @@ export class LessonInstanceService {
       return [...lessonInstancesToAdd, ...lessonInstanceCollection];
     }
     return lessonInstanceCollection;
+  }
+
+  addRegistrationDetailsToCollectionIfMissing(
+    registrationDetailCollection: IRegistrationDetails[],
+    ...registrationDetailsToCheck: (IRegistrationDetails | null | undefined)[]
+  ): IRegistrationDetails[] {
+    const registrationDetails: IRegistrationDetails[] = registrationDetailsToCheck.filter(isPresent);
+    if (registrationDetails.length > 0) {
+      const registrationDetailCollectionIdentifiers = registrationDetailCollection.map(
+        registrationDetailItem => getRegistrationDetailIdentifier(registrationDetailItem)!
+      );
+      const registrationDetailToAdd = registrationDetails.filter(registrationDetailItem => {
+        const registrationDetailIdentifier = getRegistrationDetailIdentifier(registrationDetailItem);
+        if (registrationDetailIdentifier == null || registrationDetailCollectionIdentifiers.includes(registrationDetailIdentifier)) {
+          return false;
+        }
+        registrationDetailCollectionIdentifiers.push(registrationDetailIdentifier);
+        return true;
+      });
+      return [...registrationDetailToAdd, ...registrationDetailCollection];
+    }
+    return registrationDetailCollection;
   }
 
   protected convertDateFromClient(lessonInstance: ILessonInstance): ILessonInstance {

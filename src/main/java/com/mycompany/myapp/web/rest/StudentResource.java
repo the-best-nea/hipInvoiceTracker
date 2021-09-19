@@ -1,6 +1,8 @@
 package com.mycompany.myapp.web.rest;
 
+import com.mycompany.myapp.domain.RegisterItem;
 import com.mycompany.myapp.domain.Student;
+import com.mycompany.myapp.domain.StudentRegister;
 import com.mycompany.myapp.repository.StudentRepository;
 import com.mycompany.myapp.service.StudentService;
 import com.mycompany.myapp.web.rest.errors.BadRequestAlertException;
@@ -9,6 +11,7 @@ import java.net.URISyntaxException;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
+import java.util.stream.Collectors;
 import javax.validation.Valid;
 import javax.validation.constraints.NotNull;
 import org.slf4j.Logger;
@@ -66,7 +69,7 @@ public class StudentResource {
     /**
      * {@code PUT  /students/:id} : Updates an existing student.
      *
-     * @param id the id of the student to save.
+     * @param id      the id of the student to save.
      * @param student the student to update.
      * @return the {@link ResponseEntity} with status {@code 200 (OK)} and with body the updated student,
      * or with status {@code 400 (Bad Request)} if the student is not valid,
@@ -100,7 +103,7 @@ public class StudentResource {
     /**
      * {@code PATCH  /students/:id} : Partial updates given fields of an existing student, field will ignore if it is null
      *
-     * @param id the id of the student to save.
+     * @param id      the id of the student to save.
      * @param student the student to update.
      * @return the {@link ResponseEntity} with status {@code 200 (OK)} and with body the updated student,
      * or with status {@code 400 (Bad Request)} if the student is not valid,
@@ -209,14 +212,31 @@ public class StudentResource {
             .build();
     }
 
-
     @GetMapping("/students/byLessonId/{id}")
-    public List<Student> getAllStudentByLessonId(@PathVariable Long id) {
+    public List<RegisterItem> getAllStudentByLessonId(@PathVariable Long id) {
         log.debug("REST request to get Students By Lesson Id : {}", id);
-        List<Student> students = studentService.getAllStudentsByLesson(id);
-        return students;
+
+        List<StudentRegister> allStudentsByLesson = studentService.getAllStudentsByLesson(id);
+
+        List<RegisterItem> registerItems = allStudentsByLesson
+            .stream()
+            .map(
+                r ->
+                    new RegisterItem()
+                        .setId(r.getId())
+                        .setStudentId(r.getStudent().getId())
+                        .setFirstName(r.getStudent().getFirstName())
+                        .setLastName(r.getStudent().getLastName())
+                        .setAttended(r.getAttended())
+            )
+            .collect(Collectors.toList());
+
+        registerItems.forEach(System.out::println);
+
+        return registerItems;
+        //        RegisterResponse registerResponse = new RegisterResponse().setRegister(registerItems);
+        //
+        //
+        //        return ResponseUtil.wrapOrNotFound(Optional.of(registerResponse));
     }
-
-
-
 }

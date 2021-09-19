@@ -1,4 +1,4 @@
-export interface IRegistrationDetails {
+export interface IRegister {
   id?: number;
   studentId?: number;
   firstName?: string;
@@ -6,7 +6,7 @@ export interface IRegistrationDetails {
   attended?: boolean | null;
 }
 
-export class RegistrationDetails implements IRegistrationDetails {
+export class Register implements IRegister {
   constructor(
     public id?: number,
     public studentId?: number,
@@ -18,6 +18,6 @@ export class RegistrationDetails implements IRegistrationDetails {
   }
 }
 
-export function getRegistrationDetailIdentifier(registrationDetail: IRegistrationDetails): number | undefined {
+export function getRegisterIdentifier(registrationDetail: IRegister): number | undefined {
   return registrationDetail.id;
 }
