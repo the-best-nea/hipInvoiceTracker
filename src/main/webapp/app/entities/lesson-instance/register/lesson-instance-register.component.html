@@ -156,9 +156,7 @@
 
             <tbody>
               <tr *ngFor="let student of students; trackBy: trackStudentById; let i = index" [attr.data-index]="i">
-                <td>{{ student.firstName }}</td>
-                <td>{{ student.lastName }}</td>
-                <td></td>
+                <td [attr.data-id]>{{ student.firstName }} {{ student.lastName }}</td>
               </tr>
             </tbody>
           </table>
