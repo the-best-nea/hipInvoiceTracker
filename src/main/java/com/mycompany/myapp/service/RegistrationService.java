@@ -1,9 +1,6 @@
 package com.mycompany.myapp.service;
 
-import com.mycompany.myapp.domain.LessonInstance;
-import com.mycompany.myapp.domain.RegistrationDetails;
-import com.mycompany.myapp.domain.Student;
-import com.mycompany.myapp.domain.StudentRegister;
+import com.mycompany.myapp.domain.*;
 import com.mycompany.myapp.repository.StudentRegisterRepository;
 import java.time.Instant;
 import java.util.List;
@@ -18,7 +15,7 @@ public class RegistrationService {
         this.studentRegisterRepository = studentRegisterRepository;
     }
 
-    public void takeRegister(LessonInstance lessonInstance) {
+    public void takeRegister(LessonInstanceRequest lessonInstance) {
         List<RegistrationDetails> registrationDetails = lessonInstance.getRegistrationDetails();
         registrationDetails.forEach(
             detail -> {
@@ -26,7 +23,11 @@ public class RegistrationService {
                 student.setId(detail.getStudentId());
 
                 StudentRegister studentRegister = new StudentRegister();
-                studentRegister.setLessonTimetable(lessonInstance);
+
+                LessonInstance lessonInstance1 = new LessonInstance();
+                lessonInstance1.setId(lessonInstance.getId());
+
+                studentRegister.setLessonTimetable(lessonInstance1);
                 studentRegister.setStudent(student);
                 studentRegister.setAttended(detail.isAttended());
                 studentRegister.setDateOfLesson(Instant.now());

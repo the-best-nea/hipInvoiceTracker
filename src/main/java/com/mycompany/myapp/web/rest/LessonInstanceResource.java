@@ -1,6 +1,7 @@
 package com.mycompany.myapp.web.rest;
 
 import com.mycompany.myapp.domain.LessonInstance;
+import com.mycompany.myapp.domain.LessonInstanceRequest;
 import com.mycompany.myapp.repository.LessonInstanceRepository;
 import com.mycompany.myapp.service.RegistrationService;
 import com.mycompany.myapp.web.rest.errors.BadRequestAlertException;
@@ -204,7 +205,7 @@ public class LessonInstanceResource {
     @PutMapping("/lesson-instances/{id}/register")
     public ResponseEntity<LessonInstance> registerLessonInstance(
         @PathVariable(value = "id", required = false) final Long id,
-        @Valid @RequestBody LessonInstance lessonInstance
+        @Valid @RequestBody LessonInstanceRequest lessonInstance
     ) throws URISyntaxException {
         log.debug("REST request to update LessonInstance through register : {}, {}", id, lessonInstance);
         if (lessonInstance.getId() == null) {
@@ -218,13 +219,14 @@ public class LessonInstanceResource {
             throw new BadRequestAlertException("Entity not found", ENTITY_NAME, "idnotfound");
         }
 
-        LessonInstance result = lessonInstanceRepository.save(lessonInstance);
+        LessonInstance lessonInstance1 = new LessonInstance();
+        lessonInstance1.setId(lessonInstance.getId());
 
         //Add service to add register to register table
         registrationService.takeRegister(lessonInstance);
         return ResponseEntity
             .ok()
             .headers(HeaderUtil.createEntityUpdateAlert(applicationName, false, ENTITY_NAME, lessonInstance.getId().toString()))
-            .body(result);
+            .body(lessonInstance1);
     }
 }
