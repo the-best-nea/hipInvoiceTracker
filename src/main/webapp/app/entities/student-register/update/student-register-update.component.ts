@@ -28,6 +28,7 @@ export class StudentRegisterUpdateComponent implements OnInit {
   editForm = this.fb.group({
     id: [],
     dateOfLesson: [null, [Validators.required]],
+    pay: [],
     attended: [],
     createdOn: [null, [Validators.required]],
     updatedOn: [null, [Validators.required]],
@@ -103,6 +104,7 @@ export class StudentRegisterUpdateComponent implements OnInit {
     this.editForm.patchValue({
       id: studentRegister.id,
       dateOfLesson: studentRegister.dateOfLesson ? studentRegister.dateOfLesson.format(DATE_TIME_FORMAT) : null,
+      pay: studentRegister.pay,
       attended: studentRegister.attended,
       createdOn: studentRegister.createdOn ? studentRegister.createdOn.format(DATE_TIME_FORMAT) : null,
       updatedOn: studentRegister.updatedOn ? studentRegister.updatedOn.format(DATE_TIME_FORMAT) : null,
@@ -147,6 +149,7 @@ export class StudentRegisterUpdateComponent implements OnInit {
       dateOfLesson: this.editForm.get(['dateOfLesson'])!.value
         ? dayjs(this.editForm.get(['dateOfLesson'])!.value, DATE_TIME_FORMAT)
         : undefined,
+      pay: this.editForm.get(['pay'])!.value,
       attended: this.editForm.get(['attended'])!.value,
       createdOn: this.editForm.get(['createdOn'])!.value ? dayjs(this.editForm.get(['createdOn'])!.value, DATE_TIME_FORMAT) : undefined,
       updatedOn: this.editForm.get(['updatedOn'])!.value ? dayjs(this.editForm.get(['updatedOn'])!.value, DATE_TIME_FORMAT) : undefined,

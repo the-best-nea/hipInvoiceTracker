@@ -54,18 +54,12 @@ public class Student implements Serializable {
     @Column(name = "created_at", nullable = false)
     private Instant createdAt;
 
+    @Column(name = "balance")
+    private Float balance;
+
     @OneToMany(mappedBy = "student")
     @JsonIgnoreProperties(value = { "student", "lessonTimetable" }, allowSetters = true)
     private Set<StudentRegister> studentRegisters = new HashSet<>();
-
-    @ManyToMany
-    @JoinTable(
-        name = "rel_student__lesson_timetable",
-        joinColumns = @JoinColumn(name = "student_id"),
-        inverseJoinColumns = @JoinColumn(name = "lesson_timetable_id")
-    )
-    @JsonIgnoreProperties(value = { "location", "subject", "students" }, allowSetters = true)
-    private Set<LessonTimetable> lessonTimetables = new HashSet<>();
 
     @ManyToMany(mappedBy = "students")
     @JsonIgnoreProperties(value = { "studentRegisters", "internalUser", "students", "subject" }, allowSetters = true)
@@ -202,6 +196,19 @@ public class Student implements Serializable {
         this.createdAt = createdAt;
     }
 
+    public Float getBalance() {
+        return this.balance;
+    }
+
+    public Student balance(Float balance) {
+        this.balance = balance;
+        return this;
+    }
+
+    public void setBalance(Float balance) {
+        this.balance = balance;
+    }
+
     public Set<StudentRegister> getStudentRegisters() {
         return this.studentRegisters;
     }
@@ -231,31 +238,6 @@ public class Student implements Serializable {
             studentRegisters.forEach(i -> i.setStudent(this));
         }
         this.studentRegisters = studentRegisters;
-    }
-
-    public Set<LessonTimetable> getLessonTimetables() {
-        return this.lessonTimetables;
-    }
-
-    public Student lessonTimetables(Set<LessonTimetable> lessonTimetables) {
-        this.setLessonTimetables(lessonTimetables);
-        return this;
-    }
-
-    public Student addLessonTimetable(LessonTimetable lessonTimetable) {
-        this.lessonTimetables.add(lessonTimetable);
-        lessonTimetable.getStudents().add(this);
-        return this;
-    }
-
-    public Student removeLessonTimetable(LessonTimetable lessonTimetable) {
-        this.lessonTimetables.remove(lessonTimetable);
-        lessonTimetable.getStudents().remove(this);
-        return this;
-    }
-
-    public void setLessonTimetables(Set<LessonTimetable> lessonTimetables) {
-        this.lessonTimetables = lessonTimetables;
     }
 
     public Set<LessonInstance> getLessonInstances() {
@@ -322,6 +304,7 @@ public class Student implements Serializable {
             ", endDate='" + getEndDate() + "'" +
             ", active='" + getActive() + "'" +
             ", createdAt='" + getCreatedAt() + "'" +
+            ", balance=" + getBalance() +
             "}";
     }
 }

@@ -8,16 +8,16 @@
     -->
     <changeSet id="20210911194201-2" author="jhipster">
 
-        <addForeignKeyConstraint baseColumnNames="student_id"
-                                 baseTableName="rel_student__lesson_timetable"
-                                 constraintName="fk_rel_student__lesson_timetable__student_id"
-                                 referencedColumnNames="id"
-                                 referencedTableName="student"/>
+<!--        <addForeignKeyConstraint baseColumnNames="student_id"-->
+<!--                                 baseTableName="rel_student__lesson_timetable"-->
+<!--                                 constraintName="fk_rel_student__lesson_timetable__student_id"-->
+<!--                                 referencedColumnNames="id"-->
+<!--                                 referencedTableName="student"/>-->
 
-        <addForeignKeyConstraint baseColumnNames="lesson_timetable_id"
-                                 baseTableName="rel_student__lesson_timetable"
-                                 constraintName="fk_rel_student__lesson_timetable__lesson_timetable_id"
-                                 referencedColumnNames="id"
-                                 referencedTableName="lesson_timetable"/>
+<!--        <addForeignKeyConstraint baseColumnNames="lesson_timetable_id"-->
+<!--                                 baseTableName="rel_student__lesson_timetable"-->
+<!--                                 constraintName="fk_rel_student__lesson_timetable__lesson_timetable_id"-->
+<!--                                 referencedColumnNames="id"-->
+<!--                                 referencedTableName="lesson_timetable"/>-->
     </changeSet>
 </databaseChangeLog>

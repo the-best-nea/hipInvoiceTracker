@@ -1,11 +1,11 @@
-id;first_name;last_name;year_group;email;phone_number;start_date;end_date;active;created_at
-1;Ricardo;Kutch;32783;Opal_Green86@gmail.com;whiteboard;2021-09-10T23:00:06;2021-09-11T10:52:53;false;2021-09-11T11:00:37
-2;Trenton;Smitham;27204;Jasper_Conroy26@gmail.com;Monitored Tasty Forward;2021-09-11T01:14:29;2021-09-11T07:46:11;false;2021-09-10T22:45:46
-3;Nathan;Kuhn;15342;Myra97@gmail.com;Incredible Iowa;2021-09-10T21:11:37;2021-09-11T05:35:41;true;2021-09-11T00:10:49
-4;Eric;Barrows;75435;Oscar.Marquardt32@yahoo.com;distributed;2021-09-11T18:57:06;2021-09-11T17:34:01;true;2021-09-10T22:36:16
-5;Milton;Gleason;55896;Rocio83@yahoo.com;Uzbekistan;2021-09-11T07:00:05;2021-09-11T09:49:34;true;2021-09-11T05:32:22
-6;Karine;Walter;96074;Kirk65@hotmail.com;management bluetooth revolutionary;2021-09-11T12:41:48;2021-09-10T23:52:25;true;2021-09-11T03:35:24
-7;Dovie;Fritsch;1020;Lisa89@hotmail.com;mindshare driver Chief;2021-09-11T05:05:04;2021-09-11T16:32:10;false;2021-09-11T04:46:31
-8;Jamel;Schroeder;47535;Michelle_Kirlin32@yahoo.com;Web indexing;2021-09-11T15:46:57;2021-09-11T17:07:42;false;2021-09-11T16:38:31
-9;Whitney;Hamill;50247;Ima.Wiegand10@yahoo.com;Euro copying Handcrafted;2021-09-11T01:49:34;2021-09-11T19:00:11;false;2021-09-10T22:06:07
-10;Gonzalo;Thompson;58467;Leora_Greenholt87@gmail.com;Operative Health cutting-edge;2021-09-11T03:17:07;2021-09-10T20:45:10;true;2021-09-10T22:36:27
+id;first_name;last_name;year_group;email;phone_number;start_date;end_date;active;created_at;balance
+1;Ricardo;Kutch;32783;Opal_Green86@gmail.com;whiteboard;2021-09-10T23:00:06;2021-09-11T10:52:53;false;2021-09-11T11:00:37;93710
+2;Rogelio;Goldner;17945;Bryce.Wolff@yahoo.com;Monitored Tasty Forward;2021-09-11T01:14:29;2021-09-11T07:46:11;false;2021-09-10T22:45:46;74479
+3;Jeffry;Cremin;1588;Jefferey.Farrell11@hotmail.com;Planner invoice;2021-09-11T05:50:00;2021-09-11T00:10:49;false;2021-09-11T19:00:47;75435
+4;Kariane;Sauer;57180;Dominic35@hotmail.com;algorithm circuit;2021-09-11T13:19:08;2021-09-11T06:17:06;false;2021-09-10T23:38:24;98195
+5;Arnoldo;Sipes;6835;Rosetta.Abernathy@hotmail.com;Nevada Accounts Electronics;2021-09-11T00:44:54;2021-09-11T12:27:36;false;2021-09-11T01:13:36;78819
+6;Lorna;Reinger;36552;Isabell_Greenholt67@gmail.com;Advanced;2021-09-11T04:40:35;2021-09-11T02:00:10;false;2021-09-10T22:08:50;73399
+7;Ignatius;Ratke;97428;Abel_Veum13@hotmail.com;Concrete Station;2021-09-11T10:17:28;2021-09-11T02:30:10;false;2021-09-10T23:30:56;56393
+8;Erin;Heathcote;93862;Christian.Stamm@yahoo.com;Rustic;2021-09-10T20:15:16;2021-09-11T12:04:43;true;2021-09-11T10:02:07;44243
+9;Valerie;Turner;46843;Nina46@gmail.com;world-class Account Garden;2021-09-11T10:11:39;2021-09-10T22:33:50;true;2021-09-11T13:41:45;61247
+10;Elbert;Reinger;91279;Norma_Ferry@hotmail.com;Buckinghamshire;2021-09-10T23:01:43;2021-09-11T11:00:24;true;2021-09-10T20:45:10;57001

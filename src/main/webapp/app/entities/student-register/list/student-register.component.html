@@ -34,6 +34,7 @@
         <tr>
           <th scope="col"><span>ID</span></th>
           <th scope="col"><span>Date Of Lesson</span></th>
+          <th scope="col"><span>Pay</span></th>
           <th scope="col"><span>Attended</span></th>
           <th scope="col"><span>Created On</span></th>
           <th scope="col"><span>Updated On</span></th>
@@ -48,6 +49,7 @@
             <a [routerLink]="['/student-register', studentRegister.id, 'view']">{{ studentRegister.id }}</a>
           </td>
           <td>{{ studentRegister.dateOfLesson | formatMediumDatetime }}</td>
+          <td>{{ studentRegister.pay }}</td>
           <td>{{ studentRegister.attended }}</td>
           <td>{{ studentRegister.createdOn | formatMediumDatetime }}</td>
           <td>{{ studentRegister.updatedOn | formatMediumDatetime }}</td>

@@ -35,6 +35,7 @@ describe('Service Tests', () => {
         endDate: currentDate,
         active: false,
         createdAt: currentDate,
+        balance: 0,
       };
     });
 
@@ -96,6 +97,7 @@ describe('Service Tests', () => {
             endDate: currentDate.format(DATE_TIME_FORMAT),
             active: true,
             createdAt: currentDate.format(DATE_TIME_FORMAT),
+            balance: 1,
           },
           elemDefault
         );
@@ -122,6 +124,7 @@ describe('Service Tests', () => {
             firstName: 'BBBBBB',
             phoneNumber: 'BBBBBB',
             startDate: currentDate.format(DATE_TIME_FORMAT),
+            balance: 1,
           },
           new Student()
         );
@@ -157,6 +160,7 @@ describe('Service Tests', () => {
             endDate: currentDate.format(DATE_TIME_FORMAT),
             active: true,
             createdAt: currentDate.format(DATE_TIME_FORMAT),
+            balance: 1,
           },
           elemDefault
         );
@@ -215,7 +219,7 @@ describe('Service Tests', () => {
         });
 
         it('should add only unique Student to an array', () => {
-          const studentArray: IStudent[] = [{ id: 123 }, { id: 456 }, { id: 51152 }];
+          const studentArray: IStudent[] = [{ id: 123 }, { id: 456 }, { id: 45885 }];
           const studentCollection: IStudent[] = [{ id: 123 }];
           expectedResult = service.addStudentToCollectionIfMissing(studentCollection, ...studentArray);
           expect(expectedResult).toHaveLength(3);

@@ -23,6 +23,7 @@
     <include file="config/liquibase/changelog/20210911194203_added_entity_Location.xml" relativeToChangelogFile="false"/>
     <include file="config/liquibase/changelog/20210912121254_added_entity_StudentRegister.xml" relativeToChangelogFile="false"/>
     <include file="config/liquibase/changelog/20210914105732_added_entity_LessonInstance.xml" relativeToChangelogFile="false"/>
+    <include file="config/liquibase/changelog/20210920115406_added_entity_LessonTimetableStudent.xml" relativeToChangelogFile="false"/>
     <!-- jhipster-needle-liquibase-add-changelog - JHipster will add liquibase changelogs here -->
     <include file="config/liquibase/changelog/20210911155142_added_entity_constraints_Lesson.xml" relativeToChangelogFile="false"/>
     <include file="config/liquibase/changelog/20210911194200_added_entity_constraints_LessonTimetable.xml" relativeToChangelogFile="false"/>
@@ -30,6 +31,7 @@
     <include file="config/liquibase/changelog/20210911194202_added_entity_constraints_LessonTimetableTeacher.xml" relativeToChangelogFile="false"/>
     <include file="config/liquibase/changelog/20210912121254_added_entity_constraints_StudentRegister.xml" relativeToChangelogFile="false"/>
     <include file="config/liquibase/changelog/20210914105732_added_entity_constraints_LessonInstance.xml" relativeToChangelogFile="false"/>
+    <include file="config/liquibase/changelog/20210920115406_added_entity_constraints_LessonTimetableStudent.xml" relativeToChangelogFile="false"/>
     <!-- jhipster-needle-liquibase-add-constraints-changelog - JHipster will add liquibase constraints changelogs here -->
     <!-- jhipster-needle-liquibase-add-incremental-changelog - JHipster will add incremental liquibase changelogs here -->
 </databaseChangeLog>

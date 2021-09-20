@@ -2,6 +2,7 @@ package com.mycompany.myapp.web.rest;
 
 import com.mycompany.myapp.domain.Location;
 import com.mycompany.myapp.repository.LocationRepository;
+import com.mycompany.myapp.security.AuthoritiesConstants;
 import com.mycompany.myapp.web.rest.errors.BadRequestAlertException;
 import java.net.URI;
 import java.net.URISyntaxException;
@@ -14,6 +15,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 import tech.jhipster.web.util.HeaderUtil;
@@ -25,6 +27,7 @@ import tech.jhipster.web.util.ResponseUtil;
 @RestController
 @RequestMapping("/api")
 @Transactional
+@PreAuthorize("hasRole(\"" + AuthoritiesConstants.ADMIN + "\")")
 public class LocationResource {
 
     private final Logger log = LoggerFactory.getLogger(LocationResource.class);

@@ -2,7 +2,6 @@ package com.mycompany.myapp.web.rest;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.hamcrest.Matchers.hasItem;
-import static org.mockito.Mockito.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
@@ -11,20 +10,14 @@ import com.mycompany.myapp.domain.Student;
 import com.mycompany.myapp.repository.StudentRepository;
 import java.time.Instant;
 import java.time.temporal.ChronoUnit;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 import java.util.concurrent.atomic.AtomicLong;
 import javax.persistence.EntityManager;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.Mock;
-import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
-import org.springframework.data.domain.PageImpl;
-import org.springframework.data.domain.PageRequest;
 import org.springframework.http.MediaType;
 import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.web.servlet.MockMvc;
@@ -34,7 +27,6 @@ import org.springframework.transaction.annotation.Transactional;
  * Integration tests for the {@link StudentResource} REST controller.
  */
 @IntegrationTest
-@ExtendWith(MockitoExtension.class)
 @AutoConfigureMockMvc
 @WithMockUser
 class StudentResourceIT {
@@ -66,6 +58,9 @@ class StudentResourceIT {
     private static final Instant DEFAULT_CREATED_AT = Instant.ofEpochMilli(0L);
     private static final Instant UPDATED_CREATED_AT = Instant.now().truncatedTo(ChronoUnit.MILLIS);
 
+    private static final Float DEFAULT_BALANCE = 1F;
+    private static final Float UPDATED_BALANCE = 2F;
+
     private static final String ENTITY_API_URL = "/api/students";
     private static final String ENTITY_API_URL_ID = ENTITY_API_URL + "/{id}";
 
@@ -74,9 +69,6 @@ class StudentResourceIT {
 
     @Autowired
     private StudentRepository studentRepository;
-
-    @Mock
-    private StudentRepository studentRepositoryMock;
 
     @Autowired
     private EntityManager em;
@@ -102,7 +94,8 @@ class StudentResourceIT {
             .startDate(DEFAULT_START_DATE)
             .endDate(DEFAULT_END_DATE)
             .active(DEFAULT_ACTIVE)
-            .createdAt(DEFAULT_CREATED_AT);
+            .createdAt(DEFAULT_CREATED_AT)
+            .balance(DEFAULT_BALANCE);
         return student;
     }
 
@@ -122,7 +115,8 @@ class StudentResourceIT {
             .startDate(UPDATED_START_DATE)
             .endDate(UPDATED_END_DATE)
             .active(UPDATED_ACTIVE)
-            .createdAt(UPDATED_CREATED_AT);
+            .createdAt(UPDATED_CREATED_AT)
+            .balance(UPDATED_BALANCE);
         return student;
     }
 
@@ -153,6 +147,7 @@ class StudentResourceIT {
         assertThat(testStudent.getEndDate()).isEqualTo(DEFAULT_END_DATE);
         assertThat(testStudent.getActive()).isEqualTo(DEFAULT_ACTIVE);
         assertThat(testStudent.getCreatedAt()).isEqualTo(DEFAULT_CREATED_AT);
+        assertThat(testStudent.getBalance()).isEqualTo(DEFAULT_BALANCE);
     }
 
     @Test
@@ -295,25 +290,8 @@ class StudentResourceIT {
             .andExpect(jsonPath("$.[*].startDate").value(hasItem(DEFAULT_START_DATE.toString())))
             .andExpect(jsonPath("$.[*].endDate").value(hasItem(DEFAULT_END_DATE.toString())))
             .andExpect(jsonPath("$.[*].active").value(hasItem(DEFAULT_ACTIVE.booleanValue())))
-            .andExpect(jsonPath("$.[*].createdAt").value(hasItem(DEFAULT_CREATED_AT.toString())));
-    }
-
-    @SuppressWarnings({ "unchecked" })
-    void getAllStudentsWithEagerRelationshipsIsEnabled() throws Exception {
-        when(studentRepositoryMock.findAllWithEagerRelationships(any())).thenReturn(new PageImpl(new ArrayList<>()));
-
-        restStudentMockMvc.perform(get(ENTITY_API_URL + "?eagerload=true")).andExpect(status().isOk());
-
-        verify(studentRepositoryMock, times(1)).findAllWithEagerRelationships(any());
-    }
-
-    @SuppressWarnings({ "unchecked" })
-    void getAllStudentsWithEagerRelationshipsIsNotEnabled() throws Exception {
-        when(studentRepositoryMock.findAllWithEagerRelationships(any())).thenReturn(new PageImpl(new ArrayList<>()));
-
-        restStudentMockMvc.perform(get(ENTITY_API_URL + "?eagerload=true")).andExpect(status().isOk());
-
-        verify(studentRepositoryMock, times(1)).findAllWithEagerRelationships(any());
+            .andExpect(jsonPath("$.[*].createdAt").value(hasItem(DEFAULT_CREATED_AT.toString())))
+            .andExpect(jsonPath("$.[*].balance").value(hasItem(DEFAULT_BALANCE.doubleValue())));
     }
 
     @Test
@@ -336,7 +314,8 @@ class StudentResourceIT {
             .andExpect(jsonPath("$.startDate").value(DEFAULT_START_DATE.toString()))
             .andExpect(jsonPath("$.endDate").value(DEFAULT_END_DATE.toString()))
             .andExpect(jsonPath("$.active").value(DEFAULT_ACTIVE.booleanValue()))
-            .andExpect(jsonPath("$.createdAt").value(DEFAULT_CREATED_AT.toString()));
+            .andExpect(jsonPath("$.createdAt").value(DEFAULT_CREATED_AT.toString()))
+            .andExpect(jsonPath("$.balance").value(DEFAULT_BALANCE.doubleValue()));
     }
 
     @Test
@@ -367,7 +346,8 @@ class StudentResourceIT {
             .startDate(UPDATED_START_DATE)
             .endDate(UPDATED_END_DATE)
             .active(UPDATED_ACTIVE)
-            .createdAt(UPDATED_CREATED_AT);
+            .createdAt(UPDATED_CREATED_AT)
+            .balance(UPDATED_BALANCE);
 
         restStudentMockMvc
             .perform(
@@ -390,6 +370,7 @@ class StudentResourceIT {
         assertThat(testStudent.getEndDate()).isEqualTo(UPDATED_END_DATE);
         assertThat(testStudent.getActive()).isEqualTo(UPDATED_ACTIVE);
         assertThat(testStudent.getCreatedAt()).isEqualTo(UPDATED_CREATED_AT);
+        assertThat(testStudent.getBalance()).isEqualTo(UPDATED_BALANCE);
     }
 
     @Test
@@ -487,6 +468,7 @@ class StudentResourceIT {
         assertThat(testStudent.getEndDate()).isEqualTo(DEFAULT_END_DATE);
         assertThat(testStudent.getActive()).isEqualTo(DEFAULT_ACTIVE);
         assertThat(testStudent.getCreatedAt()).isEqualTo(UPDATED_CREATED_AT);
+        assertThat(testStudent.getBalance()).isEqualTo(DEFAULT_BALANCE);
     }
 
     @Test
@@ -510,7 +492,8 @@ class StudentResourceIT {
             .startDate(UPDATED_START_DATE)
             .endDate(UPDATED_END_DATE)
             .active(UPDATED_ACTIVE)
-            .createdAt(UPDATED_CREATED_AT);
+            .createdAt(UPDATED_CREATED_AT)
+            .balance(UPDATED_BALANCE);
 
         restStudentMockMvc
             .perform(
@@ -533,6 +516,7 @@ class StudentResourceIT {
         assertThat(testStudent.getEndDate()).isEqualTo(UPDATED_END_DATE);
         assertThat(testStudent.getActive()).isEqualTo(UPDATED_ACTIVE);
         assertThat(testStudent.getCreatedAt()).isEqualTo(UPDATED_CREATED_AT);
+        assertThat(testStudent.getBalance()).isEqualTo(UPDATED_BALANCE);
     }
 
     @Test

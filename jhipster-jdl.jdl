@@ -33,11 +33,16 @@ entity Student {
     startDate Instant required,
     endDate Instant,
     active Boolean,
-    createdAt Instant required
+    createdAt Instant required,
+    balance Float,
 }
 
 entity LessonTimetableTeacher {
 	pay Float required
+}
+
+entity LessonTimetableStudent {
+	pay Float
 }
 
 entity Location {
@@ -47,9 +52,10 @@ entity Location {
 
 entity StudentRegister {
 	dateOfLesson Instant required,
+    pay Float,
     attended Boolean,
     createdOn Instant required,
-    updatedOn Instant required
+    updatedOn Instant required,
 }
 
 enum DayOfWeek {
@@ -78,19 +84,25 @@ relationship OneToMany {
 }
 
 relationship ManyToMany {
-	Student{ LessonTimetable(lessonName) } to LessonTimetable{ Student(firstName) }
-}
-
-relationship ManyToMany {
 	LessonInstance{ Student(firstName) } to Student{ LessonInstance(lessonName) }
 }
 
 relationship ManyToOne {
 	LessonTimetableTeacher{ LessonTimetable(lessonName) } to LessonTimetable
 }
+
 relationship ManyToOne {
 	LessonTimetableTeacher{ InternalUser(login) } to User
 }
+
+relationship ManyToOne {
+	LessonTimetableStudent{ Student(firstName) } to Student
+}
+
+relationship ManyToOne {
+	LessonTimetableStudent{ LessonTimetable(lessonName) } to LessonTimetable
+}
+
 relationship ManyToOne {
 	LessonInstance{ InternalUser(login) } to User
 }

@@ -121,22 +121,8 @@
         </div>
 
         <div class="form-group">
-          <label for="field_lessonTimetables">Lesson Timetable</label>
-          <select
-            class="form-control"
-            id="field_lessonTimetables"
-            data-cy="lessonTimetable"
-            multiple
-            name="lessonTimetables"
-            formControlName="lessonTimetables"
-          >
-            <option
-              [ngValue]="getSelectedLessonTimetable(lessonTimetableOption, editForm.get('lessonTimetables')!.value)"
-              *ngFor="let lessonTimetableOption of lessonTimetablesSharedCollection; trackBy: trackLessonTimetableById"
-            >
-              {{ lessonTimetableOption.lessonName }}
-            </option>
-          </select>
+          <label class="form-control-label" for="field_balance">Balance</label>
+          <input type="number" class="form-control" name="balance" id="field_balance" data-cy="balance" formControlName="balance" />
         </div>
       </div>
 

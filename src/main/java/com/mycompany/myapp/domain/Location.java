@@ -29,7 +29,7 @@ public class Location implements Serializable {
     private String address;
 
     @OneToMany(mappedBy = "location")
-    @JsonIgnoreProperties(value = { "location", "subject", "students" }, allowSetters = true)
+    @JsonIgnoreProperties(value = { "location", "subject" }, allowSetters = true)
     private Set<LessonTimetable> lessonTimetables = new HashSet<>();
 
     // jhipster-needle-entity-add-field - JHipster will add fields here

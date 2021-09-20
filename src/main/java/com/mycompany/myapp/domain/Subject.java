@@ -36,7 +36,7 @@ public class Subject implements Serializable {
     private Boolean active;
 
     @OneToMany(mappedBy = "subject")
-    @JsonIgnoreProperties(value = { "location", "subject", "students" }, allowSetters = true)
+    @JsonIgnoreProperties(value = { "location", "subject" }, allowSetters = true)
     private Set<LessonTimetable> lessonTimetables = new HashSet<>();
 
     @OneToMany(mappedBy = "subject")

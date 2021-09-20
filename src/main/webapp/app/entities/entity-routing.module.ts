@@ -10,11 +10,6 @@ import { RouterModule } from '@angular/router';
         loadChildren: () => import('./subject/subject.module').then(m => m.SubjectModule),
       },
       {
-        path: 'lesson',
-        data: { pageTitle: 'Lessons' },
-        loadChildren: () => import('./lesson/lesson.module').then(m => m.LessonModule),
-      },
-      {
         path: 'lesson-timetable',
         data: { pageTitle: 'LessonTimetables' },
         loadChildren: () => import('./lesson-timetable/lesson-timetable.module').then(m => m.LessonTimetableModule),
@@ -43,6 +38,11 @@ import { RouterModule } from '@angular/router';
         path: 'lesson-instance',
         data: { pageTitle: 'LessonInstances' },
         loadChildren: () => import('./lesson-instance/lesson-instance.module').then(m => m.LessonInstanceModule),
+      },
+      {
+        path: 'lesson-timetable-student',
+        data: { pageTitle: 'LessonTimetableStudents' },
+        loadChildren: () => import('./lesson-timetable-student/lesson-timetable-student.module').then(m => m.LessonTimetableStudentModule),
       },
       /* jhipster-needle-add-entity-route - JHipster will add entity modules routes here */
     ]),

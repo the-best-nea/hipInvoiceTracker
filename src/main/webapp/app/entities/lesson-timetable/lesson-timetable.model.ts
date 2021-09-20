@@ -1,7 +1,6 @@
 import * as dayjs from 'dayjs';
 import { ILocation } from 'app/entities/location/location.model';
 import { ISubject } from 'app/entities/subject/subject.model';
-import { IStudent } from 'app/entities/student/student.model';
 import { DayOfWeek } from 'app/entities/enumerations/day-of-week.model';
 
 export interface ILessonTimetable {
@@ -15,7 +14,6 @@ export interface ILessonTimetable {
   active?: boolean | null;
   location?: ILocation | null;
   subject?: ISubject | null;
-  students?: IStudent[] | null;
 }
 
 export class LessonTimetable implements ILessonTimetable {
@@ -29,8 +27,7 @@ export class LessonTimetable implements ILessonTimetable {
     public createdAt?: dayjs.Dayjs,
     public active?: boolean | null,
     public location?: ILocation | null,
-    public subject?: ISubject | null,
-    public students?: IStudent[] | null
+    public subject?: ISubject | null
   ) {
     this.active = this.active ?? false;
   }

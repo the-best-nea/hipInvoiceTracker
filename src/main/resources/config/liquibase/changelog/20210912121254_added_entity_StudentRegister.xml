@@ -17,6 +17,9 @@
             <column name="date_of_lesson" type="${datetimeType}">
                 <constraints nullable="false" />
             </column>
+            <column name="pay" type="${floatType}">
+                <constraints nullable="true" />
+            </column>
             <column name="attended" type="boolean">
                 <constraints nullable="true" />
             </column>
@@ -56,6 +59,7 @@
                   tableName="student_register">
             <column name="id" type="numeric"/>
             <column name="date_of_lesson" type="${datetimeType}"/>
+            <column name="pay" type="numeric"/>
             <column name="attended" type="boolean"/>
             <column name="created_on" type="${datetimeType}"/>
             <column name="updated_on" type="${datetimeType}"/>

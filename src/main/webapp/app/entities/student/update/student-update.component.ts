@@ -3,15 +3,13 @@ import { HttpResponse } from '@angular/common/http';
 import { FormBuilder, Validators } from '@angular/forms';
 import { ActivatedRoute } from '@angular/router';
 import { Observable } from 'rxjs';
-import { finalize, map } from 'rxjs/operators';
+import { finalize } from 'rxjs/operators';
 
 import * as dayjs from 'dayjs';
 import { DATE_TIME_FORMAT } from 'app/config/input.constants';
 
 import { IStudent, Student } from '../student.model';
 import { StudentService } from '../service/student.service';
-import { ILessonTimetable } from 'app/entities/lesson-timetable/lesson-timetable.model';
-import { LessonTimetableService } from 'app/entities/lesson-timetable/service/lesson-timetable.service';
 
 @Component({
   selector: 'jhi-student-update',
@@ -19,8 +17,6 @@ import { LessonTimetableService } from 'app/entities/lesson-timetable/service/le
 })
 export class StudentUpdateComponent implements OnInit {
   isSaving = false;
-
-  lessonTimetablesSharedCollection: ILessonTimetable[] = [];
 
   editForm = this.fb.group({
     id: [],
@@ -33,15 +29,10 @@ export class StudentUpdateComponent implements OnInit {
     endDate: [],
     active: [],
     createdAt: [null, [Validators.required]],
-    lessonTimetables: [],
+    balance: [],
   });
 
-  constructor(
-    protected studentService: StudentService,
-    protected lessonTimetableService: LessonTimetableService,
-    protected activatedRoute: ActivatedRoute,
-    protected fb: FormBuilder
-  ) {}
+  constructor(protected studentService: StudentService, protected activatedRoute: ActivatedRoute, protected fb: FormBuilder) {}
 
   ngOnInit(): void {
     this.activatedRoute.data.subscribe(({ student }) => {
@@ -53,8 +44,6 @@ export class StudentUpdateComponent implements OnInit {
       }
 
       this.updateForm(student);
-
-      this.loadRelationshipsOptions();
     });
   }
 
@@ -70,21 +59,6 @@ export class StudentUpdateComponent implements OnInit {
     } else {
       this.subscribeToSaveResponse(this.studentService.create(student));
     }
-  }
-
-  trackLessonTimetableById(index: number, item: ILessonTimetable): number {
-    return item.id!;
-  }
-
-  getSelectedLessonTimetable(option: ILessonTimetable, selectedVals?: ILessonTimetable[]): ILessonTimetable {
-    if (selectedVals) {
-      for (const selectedVal of selectedVals) {
-        if (option.id === selectedVal.id) {
-          return selectedVal;
-        }
-      }
-    }
-    return option;
   }
 
   protected subscribeToSaveResponse(result: Observable<HttpResponse<IStudent>>): void {
@@ -118,28 +92,8 @@ export class StudentUpdateComponent implements OnInit {
       endDate: student.endDate ? student.endDate.format(DATE_TIME_FORMAT) : null,
       active: student.active,
       createdAt: student.createdAt ? student.createdAt.format(DATE_TIME_FORMAT) : null,
-      lessonTimetables: student.lessonTimetables,
+      balance: student.balance,
     });
-
-    this.lessonTimetablesSharedCollection = this.lessonTimetableService.addLessonTimetableToCollectionIfMissing(
-      this.lessonTimetablesSharedCollection,
-      ...(student.lessonTimetables ?? [])
-    );
-  }
-
-  protected loadRelationshipsOptions(): void {
-    this.lessonTimetableService
-      .query()
-      .pipe(map((res: HttpResponse<ILessonTimetable[]>) => res.body ?? []))
-      .pipe(
-        map((lessonTimetables: ILessonTimetable[]) =>
-          this.lessonTimetableService.addLessonTimetableToCollectionIfMissing(
-            lessonTimetables,
-            ...(this.editForm.get('lessonTimetables')!.value ?? [])
-          )
-        )
-      )
-      .subscribe((lessonTimetables: ILessonTimetable[]) => (this.lessonTimetablesSharedCollection = lessonTimetables));
   }
 
   protected createFromForm(): IStudent {
@@ -155,7 +109,7 @@ export class StudentUpdateComponent implements OnInit {
       endDate: this.editForm.get(['endDate'])!.value ? dayjs(this.editForm.get(['endDate'])!.value, DATE_TIME_FORMAT) : undefined,
       active: this.editForm.get(['active'])!.value,
       createdAt: this.editForm.get(['createdAt'])!.value ? dayjs(this.editForm.get(['createdAt'])!.value, DATE_TIME_FORMAT) : undefined,
-      lessonTimetables: this.editForm.get(['lessonTimetables'])!.value,
+      balance: this.editForm.get(['balance'])!.value,
     };
   }
 }

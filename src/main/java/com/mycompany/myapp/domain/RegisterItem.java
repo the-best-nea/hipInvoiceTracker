@@ -9,6 +9,17 @@ public class RegisterItem {
     private String firstName;
     private String lastName;
     private boolean attended;
+    private Float pay;
+
+    public Float getPay() {
+        return pay;
+    }
+
+    public void setPay(Float pay) {
+        this.pay = pay;
+    }
+
+
 
     public Long getId() {
         return id;

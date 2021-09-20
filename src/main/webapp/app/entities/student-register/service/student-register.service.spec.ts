@@ -27,6 +27,7 @@ describe('Service Tests', () => {
       elemDefault = {
         id: 0,
         dateOfLesson: currentDate,
+        pay: 0,
         attended: false,
         createdOn: currentDate,
         updatedOn: currentDate,
@@ -83,6 +84,7 @@ describe('Service Tests', () => {
           {
             id: 1,
             dateOfLesson: currentDate.format(DATE_TIME_FORMAT),
+            pay: 1,
             attended: true,
             createdOn: currentDate.format(DATE_TIME_FORMAT),
             updatedOn: currentDate.format(DATE_TIME_FORMAT),
@@ -109,8 +111,8 @@ describe('Service Tests', () => {
       it('should partial update a StudentRegister', () => {
         const patchObject = Object.assign(
           {
+            pay: 1,
             attended: true,
-            createdOn: currentDate.format(DATE_TIME_FORMAT),
           },
           new StudentRegister()
         );
@@ -138,6 +140,7 @@ describe('Service Tests', () => {
           {
             id: 1,
             dateOfLesson: currentDate.format(DATE_TIME_FORMAT),
+            pay: 1,
             attended: true,
             createdOn: currentDate.format(DATE_TIME_FORMAT),
             updatedOn: currentDate.format(DATE_TIME_FORMAT),
@@ -199,7 +202,7 @@ describe('Service Tests', () => {
         });
 
         it('should add only unique StudentRegister to an array', () => {
-          const studentRegisterArray: IStudentRegister[] = [{ id: 123 }, { id: 456 }, { id: 43522 }];
+          const studentRegisterArray: IStudentRegister[] = [{ id: 123 }, { id: 456 }, { id: 78074 }];
           const studentRegisterCollection: IStudentRegister[] = [{ id: 123 }];
           expectedResult = service.addStudentRegisterToCollectionIfMissing(studentRegisterCollection, ...studentRegisterArray);
           expect(expectedResult).toHaveLength(3);

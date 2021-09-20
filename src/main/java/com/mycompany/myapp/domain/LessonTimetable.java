@@ -4,8 +4,6 @@ import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.mycompany.myapp.domain.enumeration.DayOfWeek;
 import java.io.Serializable;
 import java.time.Instant;
-import java.util.HashSet;
-import java.util.Set;
 import javax.persistence.*;
 import javax.validation.constraints.*;
 
@@ -56,10 +54,6 @@ public class LessonTimetable implements Serializable {
     @ManyToOne
     @JsonIgnoreProperties(value = { "lessonTimetables", "lessonInstances" }, allowSetters = true)
     private Subject subject;
-
-    @ManyToMany(mappedBy = "lessonTimetables")
-    @JsonIgnoreProperties(value = { "studentRegisters", "lessonTimetables", "lessonInstances" }, allowSetters = true)
-    private Set<Student> students = new HashSet<>();
 
     // jhipster-needle-entity-add-field - JHipster will add fields here
     public Long getId() {
@@ -190,37 +184,6 @@ public class LessonTimetable implements Serializable {
 
     public void setSubject(Subject subject) {
         this.subject = subject;
-    }
-
-    public Set<Student> getStudents() {
-        return this.students;
-    }
-
-    public LessonTimetable students(Set<Student> students) {
-        this.setStudents(students);
-        return this;
-    }
-
-    public LessonTimetable addStudent(Student student) {
-        this.students.add(student);
-        student.getLessonTimetables().add(this);
-        return this;
-    }
-
-    public LessonTimetable removeStudent(Student student) {
-        this.students.remove(student);
-        student.getLessonTimetables().remove(this);
-        return this;
-    }
-
-    public void setStudents(Set<Student> students) {
-        if (this.students != null) {
-            this.students.forEach(i -> i.removeLessonTimetable(this));
-        }
-        if (students != null) {
-            students.forEach(i -> i.addLessonTimetable(this));
-        }
-        this.students = students;
     }
 
     // jhipster-needle-entity-add-getters-setters - JHipster will add getters and setters here

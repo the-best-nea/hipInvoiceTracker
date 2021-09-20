@@ -14,15 +14,16 @@ import org.springframework.stereotype.Repository;
  */
 @Repository
 public interface StudentRepository extends JpaRepository<Student, Long> {
-    @Query(
-        value = "select distinct student from Student student left join fetch student.lessonTimetables",
-        countQuery = "select count(distinct student) from Student student"
-    )
-    Page<Student> findAllWithEagerRelationships(Pageable pageable);
-
-    @Query("select distinct student from Student student left join fetch student.lessonTimetables")
-    List<Student> findAllWithEagerRelationships();
-
-    @Query("select student from Student student left join fetch student.lessonTimetables where student.id =:id")
-    Optional<Student> findOneWithEagerRelationships(@Param("id") Long id);
+//    @Query(
+//        value = "select distinct student from Student student left join fetch student.lessonTimetables",
+//        countQuery = "select count(distinct student) from Student student"
+//    )
+//    Page<Student> findAllWithEagerRelationships(Pageable pageable);
+//
+//    @Query("select distinct student from Student student left join fetch student.lessonTimetables")
+//    List<Student> findAllWithEagerRelationships();
+//
+//    @Query("select student from Student student left join fetch student.lessonTimetableStudents where student.id =:id")
+//    Optional<Student> findOneWithEagerRelationships(@Param("id") Long id);
+    Page<Student> findAll(Pageable pageable);
 }

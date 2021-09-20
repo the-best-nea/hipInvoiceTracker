@@ -42,6 +42,10 @@
       "fieldName": "createdAt",
       "fieldType": "Instant",
       "fieldValidateRules": ["required"]
+    },
+    {
+      "fieldName": "balance",
+      "fieldType": "Float"
     }
   ],
   "relationships": [
@@ -50,14 +54,6 @@
       "otherEntityName": "studentRegister",
       "otherEntityRelationshipName": "student",
       "relationshipName": "studentRegister"
-    },
-    {
-      "relationshipType": "many-to-many",
-      "otherEntityName": "lessonTimetable",
-      "otherEntityRelationshipName": "student",
-      "relationshipName": "lessonTimetable",
-      "otherEntityField": "lessonName",
-      "ownerSide": true
     },
     {
       "relationshipType": "many-to-many",

@@ -5,6 +5,7 @@ import { ILessonInstance } from 'app/entities/lesson-instance/lesson-instance.mo
 export interface IStudentRegister {
   id?: number;
   dateOfLesson?: dayjs.Dayjs;
+  pay?: number | null;
   attended?: boolean | null;
   createdOn?: dayjs.Dayjs;
   updatedOn?: dayjs.Dayjs;
@@ -16,6 +17,7 @@ export class StudentRegister implements IStudentRegister {
   constructor(
     public id?: number,
     public dateOfLesson?: dayjs.Dayjs,
+    public pay?: number | null,
     public attended?: boolean | null,
     public createdOn?: dayjs.Dayjs,
     public updatedOn?: dayjs.Dayjs,

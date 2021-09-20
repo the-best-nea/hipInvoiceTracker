@@ -23,6 +23,9 @@ public class StudentRegister implements Serializable {
     @Column(name = "date_of_lesson", nullable = false)
     private Instant dateOfLesson;
 
+    @Column(name = "pay")
+    private Float pay;
+
     @Column(name = "attended")
     private Boolean attended;
 
@@ -35,7 +38,7 @@ public class StudentRegister implements Serializable {
     private Instant updatedOn;
 
     @ManyToOne
-    @JsonIgnoreProperties(value = { "studentRegisters", "lessonTimetables", "lessonInstances" }, allowSetters = true)
+    @JsonIgnoreProperties(value = { "studentRegisters", "lessonInstances" }, allowSetters = true)
     private Student student;
 
     @ManyToOne
@@ -67,6 +70,19 @@ public class StudentRegister implements Serializable {
 
     public void setDateOfLesson(Instant dateOfLesson) {
         this.dateOfLesson = dateOfLesson;
+    }
+
+    public Float getPay() {
+        return this.pay;
+    }
+
+    public StudentRegister pay(Float pay) {
+        this.pay = pay;
+        return this;
+    }
+
+    public void setPay(Float pay) {
+        this.pay = pay;
     }
 
     public Boolean getAttended() {
@@ -159,6 +175,7 @@ public class StudentRegister implements Serializable {
         return "StudentRegister{" +
             "id=" + getId() +
             ", dateOfLesson='" + getDateOfLesson() + "'" +
+            ", pay=" + getPay() +
             ", attended='" + getAttended() + "'" +
             ", createdOn='" + getCreatedOn() + "'" +
             ", updatedOn='" + getUpdatedOn() + "'" +

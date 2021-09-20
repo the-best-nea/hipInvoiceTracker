@@ -32,10 +32,8 @@ public class RegistrationService {
                 StudentRegister studentRegister = new StudentRegister();
                 if (detail.getId() != null) {
                     studentRegister.setId(detail.getId());
-                    studentRegister.setCreatedOn(Instant.now());
-                } else {
-                    studentRegister.setCreatedOn(Instant.now());
                 }
+                studentRegister.setCreatedOn(Instant.now());
 
                 LessonInstance lessonInstance1 = new LessonInstance();
                 lessonInstance1.setId(lessonInstance.getId());
@@ -67,6 +65,7 @@ public class RegistrationService {
                     studentRegister.setDateOfLesson(Instant.now());
                     studentRegister.setCreatedOn(Instant.now());
                     studentRegister.setUpdatedOn(Instant.now());
+                    //studentRegister.setPay();
 
                     studentRegisterRepository.save(studentRegister);
                 }

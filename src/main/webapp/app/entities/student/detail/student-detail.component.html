@@ -50,12 +50,9 @@
         <dd>
           <span>{{ student.createdAt | formatMediumDatetime }}</span>
         </dd>
-        <dt><span>Lesson Timetable</span></dt>
+        <dt><span>Balance</span></dt>
         <dd>
-          <span *ngFor="let lessonTimetable of student.lessonTimetables; let last = last">
-            <a [routerLink]="['/lesson-timetable', lessonTimetable?.id, 'view']">{{ lessonTimetable.lessonName }}</a
-            >{{ last ? '' : ', ' }}
-          </span>
+          <span>{{ student.balance }}</span>
         </dd>
       </dl>
 

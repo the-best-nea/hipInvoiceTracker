@@ -7,6 +7,10 @@
       "fieldValidateRules": ["required"]
     },
     {
+      "fieldName": "pay",
+      "fieldType": "Float"
+    },
+    {
       "fieldName": "attended",
       "fieldType": "Boolean"
     },

@@ -1,5 +1,6 @@
 package com.mycompany.myapp.repository;
 
+import com.mycompany.myapp.domain.LessonTimetable;
 import com.mycompany.myapp.domain.LessonTimetableTeacher;
 import java.util.List;
 import org.springframework.data.jpa.repository.*;
@@ -15,4 +16,6 @@ public interface LessonTimetableTeacherRepository extends JpaRepository<LessonTi
         "select lessonTimetableTeacher from LessonTimetableTeacher lessonTimetableTeacher where lessonTimetableTeacher.internalUser.login = ?#{principal.username}"
     )
     List<LessonTimetableTeacher> findByInternalUserIsCurrentUser();
+
+    LessonTimetableTeacher findByLessonTimetable(LessonTimetable lessonTimetable);
 }

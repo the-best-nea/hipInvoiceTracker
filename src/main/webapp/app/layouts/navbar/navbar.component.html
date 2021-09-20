@@ -58,18 +58,6 @@
           <li>
             <a
               class="dropdown-item"
-              routerLink="lesson"
-              routerLinkActive="active"
-              [routerLinkActiveOptions]="{ exact: true }"
-              (click)="collapseNavbar()"
-            >
-              <fa-icon icon="asterisk" [fixedWidth]="true"></fa-icon>
-              <span>Lesson</span>
-            </a>
-          </li>
-          <li>
-            <a
-              class="dropdown-item"
               routerLink="lesson-timetable"
               routerLinkActive="active"
               [routerLinkActiveOptions]="{ exact: true }"
@@ -89,11 +77,12 @@
               (click)="collapseNavbar()"
             >
               <fa-icon icon="asterisk" [fixedWidth]="true"></fa-icon>
-              <span>Student</span>
+              <span>Students</span>
             </a>
           </li>
           <li>
             <a
+              *jhiHasAnyAuthority="'ROLE_ADMIN'"
               class="dropdown-item"
               routerLink="lesson-timetable-teacher"
               routerLinkActive="active"
@@ -101,7 +90,7 @@
               (click)="collapseNavbar()"
             >
               <fa-icon icon="asterisk" [fixedWidth]="true"></fa-icon>
-              <span>Lesson Timetable Teacher</span>
+              <span>Assign Teacher</span>
             </a>
           </li>
           <li>
@@ -119,6 +108,7 @@
           </li>
           <li>
             <a
+              *jhiHasAnyAuthority="'ROLE_ADMIN'"
               class="dropdown-item"
               routerLink="student-register"
               routerLinkActive="active"
@@ -138,7 +128,20 @@
               (click)="collapseNavbar()"
             >
               <fa-icon icon="asterisk" [fixedWidth]="true"></fa-icon>
-              <span>Lesson Instance</span>
+              <span>Lesson History</span>
+            </a>
+          </li>
+          <li>
+            <a
+              *jhiHasAnyAuthority="'ROLE_ADMIN'"
+              class="dropdown-item"
+              routerLink="lesson-timetable-student"
+              routerLinkActive="active"
+              [routerLinkActiveOptions]="{ exact: true }"
+              (click)="collapseNavbar()"
+            >
+              <fa-icon icon="asterisk" [fixedWidth]="true"></fa-icon>
+              <span>Assign Student</span>
             </a>
           </li>
           <!-- jhipster-needle-add-entity-to-menu - JHipster will add entities to the menu here -->

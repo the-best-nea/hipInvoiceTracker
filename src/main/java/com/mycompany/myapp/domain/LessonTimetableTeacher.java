@@ -23,7 +23,7 @@ public class LessonTimetableTeacher implements Serializable {
     private Float pay;
 
     @ManyToOne
-    @JsonIgnoreProperties(value = { "location", "subject", "students" }, allowSetters = true)
+    @JsonIgnoreProperties(value = { "location", "subject" }, allowSetters = true)
     private LessonTimetable lessonTimetable;
 
     @ManyToOne

@@ -50,14 +50,6 @@
       "otherEntityRelationshipName": "lessonTimetable",
       "relationshipName": "subject",
       "otherEntityField": "subjectName"
-    },
-    {
-      "relationshipType": "many-to-many",
-      "otherEntityName": "student",
-      "otherEntityRelationshipName": "lessonTimetable",
-      "relationshipName": "student",
-      "otherEntityField": "firstName",
-      "ownerSide": false
     }
   ],
   "entityTableName": "lesson_timetable",

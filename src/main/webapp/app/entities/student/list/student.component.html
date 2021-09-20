@@ -42,7 +42,7 @@
           <th scope="col"><span>End Date</span></th>
           <th scope="col"><span>Active</span></th>
           <th scope="col"><span>Created At</span></th>
-          <th scope="col"><span>Lesson Timetable</span></th>
+          <th scope="col"><span>Balance</span></th>
           <th scope="col"></th>
         </tr>
       </thead>
@@ -60,14 +60,7 @@
           <td>{{ student.endDate | formatMediumDatetime }}</td>
           <td>{{ student.active }}</td>
           <td>{{ student.createdAt | formatMediumDatetime }}</td>
-          <td>
-            <span *ngFor="let lessonTimetable of student.lessonTimetables; let last = last">
-              <a class="form-control-static" [routerLink]="['/lesson-timetable', lessonTimetable.id, 'view']">{{
-                lessonTimetable.lessonName
-              }}</a
-              >{{ last ? '' : ', ' }}
-            </span>
-          </td>
+          <td>{{ student.balance }}</td>
           <td class="text-right">
             <div class="btn-group">
               <button

@@ -4,6 +4,7 @@ import com.mycompany.myapp.domain.RegisterItem;
 import com.mycompany.myapp.domain.Student;
 import com.mycompany.myapp.domain.StudentRegister;
 import com.mycompany.myapp.repository.StudentRepository;
+import com.mycompany.myapp.security.AuthoritiesConstants;
 import com.mycompany.myapp.service.StudentService;
 import com.mycompany.myapp.web.rest.errors.BadRequestAlertException;
 import java.net.URI;
@@ -18,6 +19,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 import tech.jhipster.web.util.HeaderUtil;
@@ -54,6 +56,7 @@ public class StudentResource {
      * @throws URISyntaxException if the Location URI syntax is incorrect.
      */
     @PostMapping("/students")
+    @PreAuthorize("hasRole(\"" + AuthoritiesConstants.ADMIN + "\")")
     public ResponseEntity<Student> createStudent(@Valid @RequestBody Student student) throws URISyntaxException {
         log.debug("REST request to save Student : {}", student);
         if (student.getId() != null) {
@@ -77,6 +80,7 @@ public class StudentResource {
      * @throws URISyntaxException if the Location URI syntax is incorrect.
      */
     @PutMapping("/students/{id}")
+    @PreAuthorize("hasRole(\"" + AuthoritiesConstants.ADMIN + "\")")
     public ResponseEntity<Student> updateStudent(
         @PathVariable(value = "id", required = false) final Long id,
         @Valid @RequestBody Student student
@@ -112,6 +116,7 @@ public class StudentResource {
      * @throws URISyntaxException if the Location URI syntax is incorrect.
      */
     @PatchMapping(value = "/students/{id}", consumes = "application/merge-patch+json")
+    @PreAuthorize("hasRole(\"" + AuthoritiesConstants.ADMIN + "\")")
     public ResponseEntity<Student> partialUpdateStudent(
         @PathVariable(value = "id", required = false) final Long id,
         @NotNull @RequestBody Student student
@@ -159,6 +164,10 @@ public class StudentResource {
                     if (student.getCreatedAt() != null) {
                         existingStudent.setCreatedAt(student.getCreatedAt());
                     }
+                    if (student.getBalance() != null) {
+                        existingStudent.setBalance(student.getBalance());
+                    }
+
 
                     return existingStudent;
                 }
@@ -174,13 +183,12 @@ public class StudentResource {
     /**
      * {@code GET  /students} : get all the students.
      *
-     * @param eagerload flag to eager load entities from relationships (This is applicable for many-to-many).
      * @return the {@link ResponseEntity} with status {@code 200 (OK)} and the list of students in body.
      */
     @GetMapping("/students")
-    public List<Student> getAllStudents(@RequestParam(required = false, defaultValue = "false") boolean eagerload) {
+    public List<Student> getAllStudents() {
         log.debug("REST request to get all Students");
-        return studentRepository.findAllWithEagerRelationships();
+        return studentRepository.findAll();
     }
 
     /**
@@ -190,9 +198,10 @@ public class StudentResource {
      * @return the {@link ResponseEntity} with status {@code 200 (OK)} and with body the student, or with status {@code 404 (Not Found)}.
      */
     @GetMapping("/students/{id}")
+    @PreAuthorize("hasRole(\"" + AuthoritiesConstants.ADMIN + "\")")
     public ResponseEntity<Student> getStudent(@PathVariable Long id) {
         log.debug("REST request to get Student : {}", id);
-        Optional<Student> student = studentRepository.findOneWithEagerRelationships(id);
+        Optional<Student> student = studentRepository.findById(id);
         return ResponseUtil.wrapOrNotFound(student);
     }
 
@@ -203,6 +212,7 @@ public class StudentResource {
      * @return the {@link ResponseEntity} with status {@code 204 (NO_CONTENT)}.
      */
     @DeleteMapping("/students/{id}")
+    @PreAuthorize("hasRole(\"" + AuthoritiesConstants.ADMIN + "\")")
     public ResponseEntity<Void> deleteStudent(@PathVariable Long id) {
         log.debug("REST request to delete Student : {}", id);
         studentRepository.deleteById(id);
@@ -228,6 +238,7 @@ public class StudentResource {
                         .setFirstName(r.getStudent().getFirstName())
                         .setLastName(r.getStudent().getLastName())
                         .setAttended(r.getAttended())
+                        //.setPay(r.getPay())
             )
             .collect(Collectors.toList());
 

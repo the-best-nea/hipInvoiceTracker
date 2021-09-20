@@ -52,8 +52,9 @@
       "LessonTimetableTeacher",
       "Location",
       "StudentRegister",
-      "LessonInstance"
+      "LessonInstance",
+      "LessonTimetableStudent"
     ],
-    "lastLiquibaseTimestamp": 1631617052000
+    "lastLiquibaseTimestamp": 1632138846000
   }
 }

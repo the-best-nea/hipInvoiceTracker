@@ -61,7 +61,7 @@ public class LessonInstance implements Serializable {
         joinColumns = @JoinColumn(name = "lesson_instance_id"),
         inverseJoinColumns = @JoinColumn(name = "student_id")
     )
-    @JsonIgnoreProperties(value = { "studentRegisters", "lessonTimetables", "lessonInstances" }, allowSetters = true)
+    @JsonIgnoreProperties(value = { "studentRegisters", "lessonInstances" }, allowSetters = true)
     private Set<Student> students = new HashSet<>();
 
     @ManyToOne
