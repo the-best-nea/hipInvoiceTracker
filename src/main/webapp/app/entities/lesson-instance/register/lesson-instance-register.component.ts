@@ -27,6 +27,8 @@ export class LessonInstanceRegisterComponent implements OnInit {
   students?: IStudent[];
   registrationDetails?: IRegistrationDetails[];
 
+  cbStatus: boolean[] = [];
+
   isSaving = false;
 
   usersSharedCollection: IUser[] = [];
@@ -72,9 +74,10 @@ export class LessonInstanceRegisterComponent implements OnInit {
       this.loadRelationshipsOptions();
 
       this.studentService.queryByLessonId(lessonInstance.id).subscribe((res: HttpResponse<IRegistrationDetails[]>) => {
-        alert(JSON.stringify(res.body));
         this.registerSharedCollection = res.body ?? [];
         //        this.registerSharedCollection.forEach(e => alert(JSON.stringify(e)));
+        this.registerSharedCollection.forEach(e => this.cbStatus.push(e.attended!));
+        alert(this.cbStatus);
       });
     });
   }
@@ -128,7 +131,6 @@ export class LessonInstanceRegisterComponent implements OnInit {
     for (let i = 0; i < this.registrationDetailsSharedCollection.length; i++) {
       if (this.registrationDetailsSharedCollection[i].studentId === item.id) {
         this.registrationDetailsSharedCollection.splice(i, 1);
-        alert('Deleted...');
       }
     }
 

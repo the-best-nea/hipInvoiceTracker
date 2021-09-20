@@ -3,8 +3,11 @@ import { HttpResponse } from '@angular/common/http';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 
 import { ILessonTimetable } from '../lesson-timetable.model';
+import { ILessonInstance } from 'app/entities/lesson-instance/lesson-instance.model';
 import { LessonTimetableService } from '../service/lesson-timetable.service';
 import { LessonTimetableDeleteDialogComponent } from '../delete/lesson-timetable-delete-dialog.component';
+
+import {Router} from '@angular/router';
 
 @Component({
   selector: 'jhi-lesson-timetable',
@@ -14,7 +17,7 @@ export class LessonTimetableComponent implements OnInit {
   lessonTimetables?: ILessonTimetable[];
   isLoading = false;
 
-  constructor(protected lessonTimetableService: LessonTimetableService, protected modalService: NgbModal) {}
+  constructor(protected lessonTimetableService: LessonTimetableService, protected modalService: NgbModal, private router: Router) {}
 
   loadAll(): void {
     this.isLoading = true;
@@ -50,6 +53,10 @@ export class LessonTimetableComponent implements OnInit {
   }
 
   createInstance(lessonTimetable: ILessonTimetable): void {
-    this.lessonTimetableService.createInstance(lessonTimetable).subscribe();
+    const createdInstance = this.lessonTimetableService.createInstance(lessonTimetable).subscribe(response => {
+      const resString = JSON.stringify(response.body!.id);
+      this.router.navigateByUrl('/lesson-instance/' + resString + '/register');
+    } );
+
   }
 }

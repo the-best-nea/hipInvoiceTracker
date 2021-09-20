@@ -65,19 +65,6 @@ public class LessonTimetableResource {
             throw new BadRequestAlertException("A new lessonTimetable cannot already have an ID", ENTITY_NAME, "idexists");
         }
         LessonTimetable result = lessonTimetableRepository.save(lessonTimetable);
-        LessonInstance newInstance = new LessonInstance();
-        newInstance.setLessonName(lessonTimetable.getLessonName());
-        newInstance.setDescription(lessonTimetable.getDescription());
-        newInstance.setDayOfWeek(lessonTimetable.getDayOfWeek());
-        newInstance.setCretedOn(Instant.now());
-        newInstance.setSubject(lessonTimetable.getSubject());
-        newInstance.setStudents(lessonTimetable.getStudents());
-
-        newInstance.setStudents(new HashSet<>(lessonTimetable.getStudents()));
-        newInstance.setStartAt(lessonTimetable.getStartAt());
-        newInstance.setEndAt(lessonTimetable.getEndAt());
-
-        LessonInstance result2 = lessonInstanceRepository.save(newInstance);
         return ResponseEntity
             .created(new URI("/api/lesson-timetables/" + result.getId()))
             .headers(HeaderUtil.createEntityCreationAlert(applicationName, false, ENTITY_NAME, result.getId().toString()))

@@ -69,7 +69,7 @@
           </div>
         </div>
 
-        <div class="form-group" hidden>
+        <div class="form-group" hidden aria-readonly="true">
           <label class="form-control-label" for="field_dayOfWeek">Day Of Week</label>
           <select class="form-control" name="dayOfWeek" formControlName="dayOfWeek" id="field_dayOfWeek" data-cy="dayOfWeek">
             <option [ngValue]="null"></option>
@@ -98,7 +98,7 @@
           />
         </div>
 
-        <div class="form-group" hidden>
+        <div class="form-group" hidden aria-readonly="true">
           <label class="form-control-label" for="field_cretedOn">Created On</label>
           <div class="d-flex">
             <input
@@ -119,7 +119,7 @@
           </div>
         </div>
 
-        <div class="form-group" hidden>
+        <div class="form-group" hidden aria-readonly="true">
           <label class="form-control-label" for="field_internalUser">Internal User</label>
           <select class="form-control" id="field_internalUser" data-cy="internalUser" name="internalUser" formControlName="internalUser">
             <option [ngValue]="null"></option>
@@ -148,6 +148,7 @@
           <table class="table table-striped" aria-describedby="page-heading">
             <thead>
               <tr>
+                <th scope="col"><span>Student Id</span></th>
                 <th scope="col"><span>First Name</span></th>
                 <th scope="col"><span>Last Name</span></th>
                 <th scope="col"><span>Attendance</span></th>
@@ -156,12 +157,11 @@
 
             <tbody>
               <tr *ngFor="let student of registerSharedCollection; let i = index">
-                <td>{{ student.id }}</td>
                 <td>{{ student.studentId }}</td>
                 <td>{{ student.firstName }}</td>
                 <td>{{ student.lastName }}</td>
                 <td>
-                  <input type="checkbox" value="{{ i }}" [checked] (change)="trackRegistrationDetail(i, $event, student)" />
+                  <input type="checkbox" value="{{ i }}" (checked)="cbStatus[i]" (change)="trackRegistrationDetail(i, $event, student)" />
                 </td>
               </tr>
             </tbody>

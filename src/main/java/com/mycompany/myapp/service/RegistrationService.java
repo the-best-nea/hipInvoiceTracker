@@ -2,7 +2,8 @@ package com.mycompany.myapp.service;
 
 import com.mycompany.myapp.domain.*;
 import com.mycompany.myapp.repository.StudentRegisterRepository;
-import java.time.Instant;
+
+import java.time.*;
 import java.util.List;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Service;
@@ -31,6 +32,9 @@ public class RegistrationService {
                 StudentRegister studentRegister = new StudentRegister();
                 if (detail.getId() != null) {
                     studentRegister.setId(detail.getId());
+                    studentRegister.setCreatedOn(Instant.now());
+                } else {
+                    studentRegister.setCreatedOn(Instant.now());
                 }
 
                 LessonInstance lessonInstance1 = new LessonInstance();
@@ -40,7 +44,6 @@ public class RegistrationService {
                 studentRegister.setStudent(student);
                 studentRegister.setAttended(detail.isAttended());
                 studentRegister.setDateOfLesson(Instant.now());
-                studentRegister.setCreatedOn(Instant.now());
                 studentRegister.setUpdatedOn(Instant.now());
 
                 studentRegisterRepository.save(studentRegister);

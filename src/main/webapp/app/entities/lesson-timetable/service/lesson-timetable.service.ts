@@ -8,6 +8,7 @@ import { isPresent } from 'app/core/util/operators';
 import { ApplicationConfigService } from 'app/core/config/application-config.service';
 import { createRequestOption } from 'app/core/request/request-util';
 import { ILessonTimetable, getLessonTimetableIdentifier } from '../lesson-timetable.model';
+import { ILessonInstance } from 'app/entities/lesson-instance/lesson-instance.model';
 
 export type EntityResponseType = HttpResponse<ILessonTimetable>;
 export type EntityArrayResponseType = HttpResponse<ILessonTimetable[]>;
@@ -27,7 +28,9 @@ export class LessonTimetableService {
   }
 
   createInstance(lessonTimetable: ILessonTimetable): Observable<EntityResponseType> {
-    return this.http.post(`${this.createInstanceResourceUrl}/${lessonTimetable.id!}`, null, { observe: 'response' });
+    return this.http
+      .post<ILessonInstance>(`${this.createInstanceResourceUrl}/${lessonTimetable.id!}`, null, { observe: 'response' })
+      .pipe(map((res: EntityResponseType) => this.convertDateFromServer(res)));
   }
 
   update(lessonTimetable: ILessonTimetable): Observable<EntityResponseType> {
