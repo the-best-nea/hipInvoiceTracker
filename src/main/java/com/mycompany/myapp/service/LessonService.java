@@ -22,25 +22,29 @@ public class LessonService {
     private final LessonTimetableStudentRepository lessonTimetableStudentRepository;
     private final LessonTimetableTeacherRepository lessonTimetableTeacherRepository;
     private final RegistrationService registrationService;
+    private final LessonTimetableService lessonTimetableServie;
 
     public LessonService(
         LessonTimetableRepository lessonTimetableRepository,
         LessonInstanceRepository lessonInstanceRepository,
         LessonTimetableStudentRepository lessonTimetableStudentRepository,
         LessonTimetableTeacherRepository lessonTimetableTeacherRepository,
-        RegistrationService registrationService
-    ) {
+        RegistrationService registrationService,
+        LessonTimetableService lessonTimetableServie) {
         this.lessonTimetableRepository = lessonTimetableRepository;
         this.lessonInstanceRepository = lessonInstanceRepository;
         this.lessonTimetableStudentRepository = lessonTimetableStudentRepository;
         this.lessonTimetableTeacherRepository = lessonTimetableTeacherRepository;
         this.registrationService = registrationService;
+        this.lessonTimetableServie = lessonTimetableServie;
     }
 
     public LessonInstance createInstance(Long id) {
         LessonTimetable lessonTimetable = lessonTimetableRepository.getOne(id);
+        lessonTimetable.setRegisterTaken(true);
+        lessonTimetableServie.partialUpdate(lessonTimetable);
 
-        List<LessonTimetableStudent> lessonTimetableStudents = lessonTimetableStudentRepository.findAllByLessonTimetable(lessonTimetable); //todo: findAllByLessonTimetable
+        List<LessonTimetableStudent> lessonTimetableStudents = lessonTimetableStudentRepository.findAllByLessonTimetable(lessonTimetable);
 
         //System.out.println(lessonTimetableStudents);
         Set<Student> newInstanceStudents = new HashSet<Student>();

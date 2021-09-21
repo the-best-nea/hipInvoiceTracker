@@ -2,7 +2,9 @@ package com.mycompany.myapp.web.rest;
 
 import com.mycompany.myapp.domain.Location;
 import com.mycompany.myapp.repository.LocationRepository;
-import com.mycompany.myapp.security.AuthoritiesConstants;
+import com.mycompany.myapp.service.LocationQueryService;
+import com.mycompany.myapp.service.LocationService;
+import com.mycompany.myapp.service.criteria.LocationCriteria;
 import com.mycompany.myapp.web.rest.errors.BadRequestAlertException;
 import java.net.URI;
 import java.net.URISyntaxException;
@@ -15,8 +17,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 import tech.jhipster.web.util.HeaderUtil;
 import tech.jhipster.web.util.ResponseUtil;
@@ -26,8 +26,6 @@ import tech.jhipster.web.util.ResponseUtil;
  */
 @RestController
 @RequestMapping("/api")
-@Transactional
-@PreAuthorize("hasRole(\"" + AuthoritiesConstants.ADMIN + "\")")
 public class LocationResource {
 
     private final Logger log = LoggerFactory.getLogger(LocationResource.class);
@@ -37,10 +35,20 @@ public class LocationResource {
     @Value("${jhipster.clientApp.name}")
     private String applicationName;
 
+    private final LocationService locationService;
+
     private final LocationRepository locationRepository;
 
-    public LocationResource(LocationRepository locationRepository) {
+    private final LocationQueryService locationQueryService;
+
+    public LocationResource(
+        LocationService locationService,
+        LocationRepository locationRepository,
+        LocationQueryService locationQueryService
+    ) {
+        this.locationService = locationService;
         this.locationRepository = locationRepository;
+        this.locationQueryService = locationQueryService;
     }
 
     /**
@@ -56,7 +64,7 @@ public class LocationResource {
         if (location.getId() != null) {
             throw new BadRequestAlertException("A new location cannot already have an ID", ENTITY_NAME, "idexists");
         }
-        Location result = locationRepository.save(location);
+        Location result = locationService.save(location);
         return ResponseEntity
             .created(new URI("/api/locations/" + result.getId()))
             .headers(HeaderUtil.createEntityCreationAlert(applicationName, false, ENTITY_NAME, result.getId().toString()))
@@ -90,7 +98,7 @@ public class LocationResource {
             throw new BadRequestAlertException("Entity not found", ENTITY_NAME, "idnotfound");
         }
 
-        Location result = locationRepository.save(location);
+        Location result = locationService.save(location);
         return ResponseEntity
             .ok()
             .headers(HeaderUtil.createEntityUpdateAlert(applicationName, false, ENTITY_NAME, location.getId().toString()))
@@ -125,21 +133,7 @@ public class LocationResource {
             throw new BadRequestAlertException("Entity not found", ENTITY_NAME, "idnotfound");
         }
 
-        Optional<Location> result = locationRepository
-            .findById(location.getId())
-            .map(
-                existingLocation -> {
-                    if (location.getName() != null) {
-                        existingLocation.setName(location.getName());
-                    }
-                    if (location.getAddress() != null) {
-                        existingLocation.setAddress(location.getAddress());
-                    }
-
-                    return existingLocation;
-                }
-            )
-            .map(locationRepository::save);
+        Optional<Location> result = locationService.partialUpdate(location);
 
         return ResponseUtil.wrapOrNotFound(
             result,
@@ -150,12 +144,26 @@ public class LocationResource {
     /**
      * {@code GET  /locations} : get all the locations.
      *
+     * @param criteria the criteria which the requested entities should match.
      * @return the {@link ResponseEntity} with status {@code 200 (OK)} and the list of locations in body.
      */
     @GetMapping("/locations")
-    public List<Location> getAllLocations() {
-        log.debug("REST request to get all Locations");
-        return locationRepository.findAll();
+    public ResponseEntity<List<Location>> getAllLocations(LocationCriteria criteria) {
+        log.debug("REST request to get Locations by criteria: {}", criteria);
+        List<Location> entityList = locationQueryService.findByCriteria(criteria);
+        return ResponseEntity.ok().body(entityList);
+    }
+
+    /**
+     * {@code GET  /locations/count} : count all the locations.
+     *
+     * @param criteria the criteria which the requested entities should match.
+     * @return the {@link ResponseEntity} with status {@code 200 (OK)} and the count in body.
+     */
+    @GetMapping("/locations/count")
+    public ResponseEntity<Long> countLocations(LocationCriteria criteria) {
+        log.debug("REST request to count Locations by criteria: {}", criteria);
+        return ResponseEntity.ok().body(locationQueryService.countByCriteria(criteria));
     }
 
     /**
@@ -167,7 +175,7 @@ public class LocationResource {
     @GetMapping("/locations/{id}")
     public ResponseEntity<Location> getLocation(@PathVariable Long id) {
         log.debug("REST request to get Location : {}", id);
-        Optional<Location> location = locationRepository.findById(id);
+        Optional<Location> location = locationService.findOne(id);
         return ResponseUtil.wrapOrNotFound(location);
     }
 
@@ -180,7 +188,7 @@ public class LocationResource {
     @DeleteMapping("/locations/{id}")
     public ResponseEntity<Void> deleteLocation(@PathVariable Long id) {
         log.debug("REST request to delete Location : {}", id);
-        locationRepository.deleteById(id);
+        locationService.delete(id);
         return ResponseEntity
             .noContent()
             .headers(HeaderUtil.createEntityDeletionAlert(applicationName, false, ENTITY_NAME, id.toString()))

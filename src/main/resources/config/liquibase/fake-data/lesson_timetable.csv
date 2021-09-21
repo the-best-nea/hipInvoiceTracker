@@ -1,11 +1,11 @@
-id;lesson_name;start_at;end_at;day_of_week;description;created_at;active
-1;feed connecting;2021-09-11T13:36:23;2021-09-10T21:39:17;SATURDAY;middleware;2021-09-11T17:10:27;false
-2;generate circuit;2021-09-11T07:01:01;2021-09-11T04:25:49;SATURDAY;Locks firewall;2021-09-10T22:28:56;false
-3;wireless real-time;2021-09-11T13:08:36;2021-09-11T16:17:16;SUNDAY;Missouri;2021-09-11T14:20:04;false
-4;Dynamic indigo;2021-09-11T14:20:21;2021-09-11T08:29:07;MONDAY;Tools Response;2021-09-11T12:00:05;false
-5;calculating;2021-09-11T14:19:23;2021-09-11T14:28:08;WEDNESDAY;radical;2021-09-11T05:50:31;false
-6;Designer;2021-09-11T06:58:44;2021-09-11T13:11:28;TUESDAY;Legacy Legacy Handmade;2021-09-11T07:21:52;true
-7;Texas;2021-09-11T09:36:13;2021-09-11T16:03:37;MONDAY;gold;2021-09-11T02:26:31;false
-8;Handcrafted static;2021-09-11T14:25:48;2021-09-11T06:04:23;MONDAY;zero Granite pixel;2021-09-11T08:31:41;false
-9;deposit Account;2021-09-11T07:07:00;2021-09-11T15:24:38;TUESDAY;Towels Albania Consultant;2021-09-11T00:46:55;true
-10;Gloves;2021-09-11T04:07:36;2021-09-11T01:37:53;SUNDAY;Fantastic repurpose;2021-09-11T00:30:06;true
+id;lesson_name;start_at;end_at;day_of_week;description;created_at;active;register_taken
+1;feed connecting;2021-09-11T13:36:23;2021-09-10T21:39:17;SATURDAY;middleware;2021-09-11T17:10:27;false;true
+2;Bedfordshire JSON payment;2021-09-11T08:34:50;2021-09-11T08:46:10;THURSDAY;Italy mesh Ouguiya;2021-09-11T01:17:55;true;false
+3;Specialist;2021-09-11T07:43:19;2021-09-10T21:45:55;TUESDAY;Loan mission-critical;2021-09-11T07:25:53;false;false
+4;Angola;2021-09-11T01:46:35;2021-09-10T21:20:39;TUESDAY;circuit;2021-09-10T23:31:01;true;true
+5;grey;2021-09-11T13:21:06;2021-09-11T01:33:15;WEDNESDAY;monetize Massachusetts;2021-09-11T13:11:28;false;true
+6;panel port calculate;2021-09-11T03:06:03;2021-09-11T15:31:07;THURSDAY;index Incredible microchip;2021-09-11T17:50:42;true;false
+7;backing;2021-09-11T06:04:23;2021-09-11T18:12:03;SATURDAY;Analyst;2021-09-11T19:16:44;true;true
+8;pixel Curve;2021-09-11T04:26:26;2021-09-11T18:23:38;WEDNESDAY;website Keyboard;2021-09-11T15:32:24;true;true
+9;Beauty back-end;2021-09-11T05:18:22;2021-09-11T17:15:56;TUESDAY;Handcrafted;2021-09-10T20:57:10;false;false
+10;Infrastructure repurpose;2021-09-11T00:30:06;2021-09-11T04:53:41;MONDAY;dot-com Shoes;2021-09-11T11:22:26;false;false

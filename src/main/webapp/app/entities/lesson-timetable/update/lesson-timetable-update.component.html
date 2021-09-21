@@ -124,6 +124,18 @@
         </div>
 
         <div class="form-group">
+          <label class="form-control-label" for="field_registerTaken">Register Taken</label>
+          <input
+            type="checkbox"
+            class="form-check"
+            name="registerTaken"
+            id="field_registerTaken"
+            data-cy="registerTaken"
+            formControlName="registerTaken"
+          />
+        </div>
+
+        <div class="form-group">
           <label class="form-control-label" for="field_location">Location</label>
           <select class="form-control" id="field_location" data-cy="location" name="location" formControlName="location">
             <option [ngValue]="null"></option>

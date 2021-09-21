@@ -3,7 +3,10 @@ package com.mycompany.myapp.web.rest;
 import com.mycompany.myapp.domain.LessonInstance;
 import com.mycompany.myapp.domain.LessonInstanceRequest;
 import com.mycompany.myapp.repository.LessonInstanceRepository;
+import com.mycompany.myapp.service.LessonInstanceQueryService;
+import com.mycompany.myapp.service.LessonInstanceService;
 import com.mycompany.myapp.service.RegistrationService;
+import com.mycompany.myapp.service.criteria.LessonInstanceCriteria;
 import com.mycompany.myapp.web.rest.errors.BadRequestAlertException;
 import java.net.URI;
 import java.net.URISyntaxException;
@@ -16,7 +19,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.ResponseEntity;
-import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 import tech.jhipster.web.util.HeaderUtil;
 import tech.jhipster.web.util.ResponseUtil;
@@ -26,7 +28,6 @@ import tech.jhipster.web.util.ResponseUtil;
  */
 @RestController
 @RequestMapping("/api")
-@Transactional
 public class LessonInstanceResource {
 
     private final Logger log = LoggerFactory.getLogger(LessonInstanceResource.class);
@@ -36,11 +37,21 @@ public class LessonInstanceResource {
     @Value("${jhipster.clientApp.name}")
     private String applicationName;
 
+    private final LessonInstanceService lessonInstanceService;
+
     private final LessonInstanceRepository lessonInstanceRepository;
+
+    private final LessonInstanceQueryService lessonInstanceQueryService;
     private final RegistrationService registrationService;
 
-    public LessonInstanceResource(LessonInstanceRepository lessonInstanceRepository, RegistrationService registrationService) {
+    public LessonInstanceResource(
+        LessonInstanceService lessonInstanceService,
+        LessonInstanceRepository lessonInstanceRepository,
+        LessonInstanceQueryService lessonInstanceQueryService,
+        RegistrationService registrationService) {
+        this.lessonInstanceService = lessonInstanceService;
         this.lessonInstanceRepository = lessonInstanceRepository;
+        this.lessonInstanceQueryService = lessonInstanceQueryService;
         this.registrationService = registrationService;
     }
 
@@ -58,7 +69,7 @@ public class LessonInstanceResource {
         if (lessonInstance.getId() != null) {
             throw new BadRequestAlertException("A new lessonInstance cannot already have an ID", ENTITY_NAME, "idexists");
         }
-        LessonInstance result = lessonInstanceRepository.save(lessonInstance);
+        LessonInstance result = lessonInstanceService.save(lessonInstance);
         return ResponseEntity
             .created(new URI("/api/lesson-instances/" + result.getId()))
             .headers(HeaderUtil.createEntityCreationAlert(applicationName, false, ENTITY_NAME, result.getId().toString()))
@@ -92,7 +103,7 @@ public class LessonInstanceResource {
             throw new BadRequestAlertException("Entity not found", ENTITY_NAME, "idnotfound");
         }
 
-        LessonInstance result = lessonInstanceRepository.save(lessonInstance);
+        LessonInstance result = lessonInstanceService.save(lessonInstance);
         return ResponseEntity
             .ok()
             .headers(HeaderUtil.createEntityUpdateAlert(applicationName, false, ENTITY_NAME, lessonInstance.getId().toString()))
@@ -127,33 +138,7 @@ public class LessonInstanceResource {
             throw new BadRequestAlertException("Entity not found", ENTITY_NAME, "idnotfound");
         }
 
-        Optional<LessonInstance> result = lessonInstanceRepository
-            .findById(lessonInstance.getId())
-            .map(
-                existingLessonInstance -> {
-                    if (lessonInstance.getLessonName() != null) {
-                        existingLessonInstance.setLessonName(lessonInstance.getLessonName());
-                    }
-                    if (lessonInstance.getStartAt() != null) {
-                        existingLessonInstance.setStartAt(lessonInstance.getStartAt());
-                    }
-                    if (lessonInstance.getEndAt() != null) {
-                        existingLessonInstance.setEndAt(lessonInstance.getEndAt());
-                    }
-                    if (lessonInstance.getDayOfWeek() != null) {
-                        existingLessonInstance.setDayOfWeek(lessonInstance.getDayOfWeek());
-                    }
-                    if (lessonInstance.getDescription() != null) {
-                        existingLessonInstance.setDescription(lessonInstance.getDescription());
-                    }
-                    if (lessonInstance.getCretedOn() != null) {
-                        existingLessonInstance.setCretedOn(lessonInstance.getCretedOn());
-                    }
-
-                    return existingLessonInstance;
-                }
-            )
-            .map(lessonInstanceRepository::save);
+        Optional<LessonInstance> result = lessonInstanceService.partialUpdate(lessonInstance);
 
         return ResponseUtil.wrapOrNotFound(
             result,
@@ -164,13 +149,26 @@ public class LessonInstanceResource {
     /**
      * {@code GET  /lesson-instances} : get all the lessonInstances.
      *
-     * @param eagerload flag to eager load entities from relationships (This is applicable for many-to-many).
+     * @param criteria the criteria which the requested entities should match.
      * @return the {@link ResponseEntity} with status {@code 200 (OK)} and the list of lessonInstances in body.
      */
     @GetMapping("/lesson-instances")
-    public List<LessonInstance> getAllLessonInstances(@RequestParam(required = false, defaultValue = "false") boolean eagerload) {
-        log.debug("REST request to get all LessonInstances");
-        return lessonInstanceRepository.findAllWithEagerRelationships();
+    public ResponseEntity<List<LessonInstance>> getAllLessonInstances(LessonInstanceCriteria criteria) {
+        log.debug("REST request to get LessonInstances by criteria: {}", criteria);
+        List<LessonInstance> entityList = lessonInstanceQueryService.findByCriteria(criteria);
+        return ResponseEntity.ok().body(entityList);
+    }
+
+    /**
+     * {@code GET  /lesson-instances/count} : count all the lessonInstances.
+     *
+     * @param criteria the criteria which the requested entities should match.
+     * @return the {@link ResponseEntity} with status {@code 200 (OK)} and the count in body.
+     */
+    @GetMapping("/lesson-instances/count")
+    public ResponseEntity<Long> countLessonInstances(LessonInstanceCriteria criteria) {
+        log.debug("REST request to count LessonInstances by criteria: {}", criteria);
+        return ResponseEntity.ok().body(lessonInstanceQueryService.countByCriteria(criteria));
     }
 
     /**
@@ -182,7 +180,7 @@ public class LessonInstanceResource {
     @GetMapping("/lesson-instances/{id}")
     public ResponseEntity<LessonInstance> getLessonInstance(@PathVariable Long id) {
         log.debug("REST request to get LessonInstance : {}", id);
-        Optional<LessonInstance> lessonInstance = lessonInstanceRepository.findOneWithEagerRelationships(id);
+        Optional<LessonInstance> lessonInstance = lessonInstanceService.findOne(id);
         return ResponseUtil.wrapOrNotFound(lessonInstance);
     }
 
@@ -195,7 +193,7 @@ public class LessonInstanceResource {
     @DeleteMapping("/lesson-instances/{id}")
     public ResponseEntity<Void> deleteLessonInstance(@PathVariable Long id) {
         log.debug("REST request to delete LessonInstance : {}", id);
-        lessonInstanceRepository.deleteById(id);
+        lessonInstanceService.delete(id);
         return ResponseEntity
             .noContent()
             .headers(HeaderUtil.createEntityDeletionAlert(applicationName, false, ENTITY_NAME, id.toString()))
@@ -222,7 +220,7 @@ public class LessonInstanceResource {
         LessonInstance lessonInstance1 = new LessonInstance();
         lessonInstance1.setId(lessonInstance.getId());
 
-        //Add service to add register to register table
+        //service to add register to register table
         registrationService.takeRegister(lessonInstance);
         return ResponseEntity
             .ok()

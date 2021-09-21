@@ -2,7 +2,9 @@ package com.mycompany.myapp.web.rest;
 
 import com.mycompany.myapp.domain.StudentRegister;
 import com.mycompany.myapp.repository.StudentRegisterRepository;
-import com.mycompany.myapp.security.AuthoritiesConstants;
+import com.mycompany.myapp.service.StudentRegisterQueryService;
+import com.mycompany.myapp.service.StudentRegisterService;
+import com.mycompany.myapp.service.criteria.StudentRegisterCriteria;
 import com.mycompany.myapp.web.rest.errors.BadRequestAlertException;
 import java.net.URI;
 import java.net.URISyntaxException;
@@ -15,8 +17,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 import tech.jhipster.web.util.HeaderUtil;
 import tech.jhipster.web.util.ResponseUtil;
@@ -26,8 +26,6 @@ import tech.jhipster.web.util.ResponseUtil;
  */
 @RestController
 @RequestMapping("/api")
-@Transactional
-@PreAuthorize("hasRole(\"" + AuthoritiesConstants.ADMIN + "\")")
 public class StudentRegisterResource {
 
     private final Logger log = LoggerFactory.getLogger(StudentRegisterResource.class);
@@ -37,10 +35,20 @@ public class StudentRegisterResource {
     @Value("${jhipster.clientApp.name}")
     private String applicationName;
 
+    private final StudentRegisterService studentRegisterService;
+
     private final StudentRegisterRepository studentRegisterRepository;
 
-    public StudentRegisterResource(StudentRegisterRepository studentRegisterRepository) {
+    private final StudentRegisterQueryService studentRegisterQueryService;
+
+    public StudentRegisterResource(
+        StudentRegisterService studentRegisterService,
+        StudentRegisterRepository studentRegisterRepository,
+        StudentRegisterQueryService studentRegisterQueryService
+    ) {
+        this.studentRegisterService = studentRegisterService;
         this.studentRegisterRepository = studentRegisterRepository;
+        this.studentRegisterQueryService = studentRegisterQueryService;
     }
 
     /**
@@ -57,7 +65,7 @@ public class StudentRegisterResource {
         if (studentRegister.getId() != null) {
             throw new BadRequestAlertException("A new studentRegister cannot already have an ID", ENTITY_NAME, "idexists");
         }
-        StudentRegister result = studentRegisterRepository.save(studentRegister);
+        StudentRegister result = studentRegisterService.save(studentRegister);
         return ResponseEntity
             .created(new URI("/api/student-registers/" + result.getId()))
             .headers(HeaderUtil.createEntityCreationAlert(applicationName, false, ENTITY_NAME, result.getId().toString()))
@@ -91,7 +99,7 @@ public class StudentRegisterResource {
             throw new BadRequestAlertException("Entity not found", ENTITY_NAME, "idnotfound");
         }
 
-        StudentRegister result = studentRegisterRepository.save(studentRegister);
+        StudentRegister result = studentRegisterService.save(studentRegister);
         return ResponseEntity
             .ok()
             .headers(HeaderUtil.createEntityUpdateAlert(applicationName, false, ENTITY_NAME, studentRegister.getId().toString()))
@@ -126,30 +134,7 @@ public class StudentRegisterResource {
             throw new BadRequestAlertException("Entity not found", ENTITY_NAME, "idnotfound");
         }
 
-        Optional<StudentRegister> result = studentRegisterRepository
-            .findById(studentRegister.getId())
-            .map(
-                existingStudentRegister -> {
-                    if (studentRegister.getDateOfLesson() != null) {
-                        existingStudentRegister.setDateOfLesson(studentRegister.getDateOfLesson());
-                    }
-                    if (studentRegister.getPay() != null) {
-                        existingStudentRegister.setPay(studentRegister.getPay());
-                    }
-                    if (studentRegister.getAttended() != null) {
-                        existingStudentRegister.setAttended(studentRegister.getAttended());
-                    }
-                    if (studentRegister.getCreatedOn() != null) {
-                        existingStudentRegister.setCreatedOn(studentRegister.getCreatedOn());
-                    }
-                    if (studentRegister.getUpdatedOn() != null) {
-                        existingStudentRegister.setUpdatedOn(studentRegister.getUpdatedOn());
-                    }
-
-                    return existingStudentRegister;
-                }
-            )
-            .map(studentRegisterRepository::save);
+        Optional<StudentRegister> result = studentRegisterService.partialUpdate(studentRegister);
 
         return ResponseUtil.wrapOrNotFound(
             result,
@@ -160,12 +145,26 @@ public class StudentRegisterResource {
     /**
      * {@code GET  /student-registers} : get all the studentRegisters.
      *
+     * @param criteria the criteria which the requested entities should match.
      * @return the {@link ResponseEntity} with status {@code 200 (OK)} and the list of studentRegisters in body.
      */
     @GetMapping("/student-registers")
-    public List<StudentRegister> getAllStudentRegisters() {
-        log.debug("REST request to get all StudentRegisters");
-        return studentRegisterRepository.findAll();
+    public ResponseEntity<List<StudentRegister>> getAllStudentRegisters(StudentRegisterCriteria criteria) {
+        log.debug("REST request to get StudentRegisters by criteria: {}", criteria);
+        List<StudentRegister> entityList = studentRegisterQueryService.findByCriteria(criteria);
+        return ResponseEntity.ok().body(entityList);
+    }
+
+    /**
+     * {@code GET  /student-registers/count} : count all the studentRegisters.
+     *
+     * @param criteria the criteria which the requested entities should match.
+     * @return the {@link ResponseEntity} with status {@code 200 (OK)} and the count in body.
+     */
+    @GetMapping("/student-registers/count")
+    public ResponseEntity<Long> countStudentRegisters(StudentRegisterCriteria criteria) {
+        log.debug("REST request to count StudentRegisters by criteria: {}", criteria);
+        return ResponseEntity.ok().body(studentRegisterQueryService.countByCriteria(criteria));
     }
 
     /**
@@ -177,7 +176,7 @@ public class StudentRegisterResource {
     @GetMapping("/student-registers/{id}")
     public ResponseEntity<StudentRegister> getStudentRegister(@PathVariable Long id) {
         log.debug("REST request to get StudentRegister : {}", id);
-        Optional<StudentRegister> studentRegister = studentRegisterRepository.findById(id);
+        Optional<StudentRegister> studentRegister = studentRegisterService.findOne(id);
         return ResponseUtil.wrapOrNotFound(studentRegister);
     }
 
@@ -190,7 +189,7 @@ public class StudentRegisterResource {
     @DeleteMapping("/student-registers/{id}")
     public ResponseEntity<Void> deleteStudentRegister(@PathVariable Long id) {
         log.debug("REST request to delete StudentRegister : {}", id);
-        studentRegisterRepository.deleteById(id);
+        studentRegisterService.delete(id);
         return ResponseEntity
             .noContent()
             .headers(HeaderUtil.createEntityDeletionAlert(applicationName, false, ENTITY_NAME, id.toString()))

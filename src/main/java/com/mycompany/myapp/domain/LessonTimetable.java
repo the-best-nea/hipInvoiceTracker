@@ -47,6 +47,9 @@ public class LessonTimetable implements Serializable {
     @Column(name = "active")
     private Boolean active;
 
+    @Column(name = "register_taken")
+    private Boolean registerTaken;
+
     @ManyToOne
     @JsonIgnoreProperties(value = { "lessonTimetables" }, allowSetters = true)
     private Location location;
@@ -160,6 +163,19 @@ public class LessonTimetable implements Serializable {
         this.active = active;
     }
 
+    public Boolean getRegisterTaken() {
+        return this.registerTaken;
+    }
+
+    public LessonTimetable registerTaken(Boolean registerTaken) {
+        this.registerTaken = registerTaken;
+        return this;
+    }
+
+    public void setRegisterTaken(Boolean registerTaken) {
+        this.registerTaken = registerTaken;
+    }
+
     public Location getLocation() {
         return this.location;
     }
@@ -217,6 +233,7 @@ public class LessonTimetable implements Serializable {
             ", description='" + getDescription() + "'" +
             ", createdAt='" + getCreatedAt() + "'" +
             ", active='" + getActive() + "'" +
+            ", registerTaken='" + getRegisterTaken() + "'" +
             "}";
     }
 }

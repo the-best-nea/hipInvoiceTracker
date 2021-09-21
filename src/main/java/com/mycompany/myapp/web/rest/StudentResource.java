@@ -4,8 +4,9 @@ import com.mycompany.myapp.domain.RegisterItem;
 import com.mycompany.myapp.domain.Student;
 import com.mycompany.myapp.domain.StudentRegister;
 import com.mycompany.myapp.repository.StudentRepository;
-import com.mycompany.myapp.security.AuthoritiesConstants;
+import com.mycompany.myapp.service.StudentQueryService;
 import com.mycompany.myapp.service.StudentService;
+import com.mycompany.myapp.service.criteria.StudentCriteria;
 import com.mycompany.myapp.web.rest.errors.BadRequestAlertException;
 import java.net.URI;
 import java.net.URISyntaxException;
@@ -19,8 +20,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 import tech.jhipster.web.util.HeaderUtil;
 import tech.jhipster.web.util.ResponseUtil;
@@ -30,7 +29,6 @@ import tech.jhipster.web.util.ResponseUtil;
  */
 @RestController
 @RequestMapping("/api")
-@Transactional
 public class StudentResource {
 
     private final Logger log = LoggerFactory.getLogger(StudentResource.class);
@@ -40,12 +38,16 @@ public class StudentResource {
     @Value("${jhipster.clientApp.name}")
     private String applicationName;
 
-    private final StudentRepository studentRepository;
     private final StudentService studentService;
 
-    public StudentResource(StudentRepository studentRepository, StudentService studentService) {
-        this.studentRepository = studentRepository;
+    private final StudentRepository studentRepository;
+
+    private final StudentQueryService studentQueryService;
+
+    public StudentResource(StudentService studentService, StudentRepository studentRepository, StudentQueryService studentQueryService) {
         this.studentService = studentService;
+        this.studentRepository = studentRepository;
+        this.studentQueryService = studentQueryService;
     }
 
     /**
@@ -56,13 +58,12 @@ public class StudentResource {
      * @throws URISyntaxException if the Location URI syntax is incorrect.
      */
     @PostMapping("/students")
-    @PreAuthorize("hasRole(\"" + AuthoritiesConstants.ADMIN + "\")")
     public ResponseEntity<Student> createStudent(@Valid @RequestBody Student student) throws URISyntaxException {
         log.debug("REST request to save Student : {}", student);
         if (student.getId() != null) {
             throw new BadRequestAlertException("A new student cannot already have an ID", ENTITY_NAME, "idexists");
         }
-        Student result = studentRepository.save(student);
+        Student result = studentService.save(student);
         return ResponseEntity
             .created(new URI("/api/students/" + result.getId()))
             .headers(HeaderUtil.createEntityCreationAlert(applicationName, false, ENTITY_NAME, result.getId().toString()))
@@ -72,7 +73,7 @@ public class StudentResource {
     /**
      * {@code PUT  /students/:id} : Updates an existing student.
      *
-     * @param id      the id of the student to save.
+     * @param id the id of the student to save.
      * @param student the student to update.
      * @return the {@link ResponseEntity} with status {@code 200 (OK)} and with body the updated student,
      * or with status {@code 400 (Bad Request)} if the student is not valid,
@@ -80,7 +81,6 @@ public class StudentResource {
      * @throws URISyntaxException if the Location URI syntax is incorrect.
      */
     @PutMapping("/students/{id}")
-    @PreAuthorize("hasRole(\"" + AuthoritiesConstants.ADMIN + "\")")
     public ResponseEntity<Student> updateStudent(
         @PathVariable(value = "id", required = false) final Long id,
         @Valid @RequestBody Student student
@@ -97,7 +97,7 @@ public class StudentResource {
             throw new BadRequestAlertException("Entity not found", ENTITY_NAME, "idnotfound");
         }
 
-        Student result = studentRepository.save(student);
+        Student result = studentService.save(student);
         return ResponseEntity
             .ok()
             .headers(HeaderUtil.createEntityUpdateAlert(applicationName, false, ENTITY_NAME, student.getId().toString()))
@@ -107,7 +107,7 @@ public class StudentResource {
     /**
      * {@code PATCH  /students/:id} : Partial updates given fields of an existing student, field will ignore if it is null
      *
-     * @param id      the id of the student to save.
+     * @param id the id of the student to save.
      * @param student the student to update.
      * @return the {@link ResponseEntity} with status {@code 200 (OK)} and with body the updated student,
      * or with status {@code 400 (Bad Request)} if the student is not valid,
@@ -116,7 +116,6 @@ public class StudentResource {
      * @throws URISyntaxException if the Location URI syntax is incorrect.
      */
     @PatchMapping(value = "/students/{id}", consumes = "application/merge-patch+json")
-    @PreAuthorize("hasRole(\"" + AuthoritiesConstants.ADMIN + "\")")
     public ResponseEntity<Student> partialUpdateStudent(
         @PathVariable(value = "id", required = false) final Long id,
         @NotNull @RequestBody Student student
@@ -133,46 +132,7 @@ public class StudentResource {
             throw new BadRequestAlertException("Entity not found", ENTITY_NAME, "idnotfound");
         }
 
-        Optional<Student> result = studentRepository
-            .findById(student.getId())
-            .map(
-                existingStudent -> {
-                    if (student.getFirstName() != null) {
-                        existingStudent.setFirstName(student.getFirstName());
-                    }
-                    if (student.getLastName() != null) {
-                        existingStudent.setLastName(student.getLastName());
-                    }
-                    if (student.getYearGroup() != null) {
-                        existingStudent.setYearGroup(student.getYearGroup());
-                    }
-                    if (student.getEmail() != null) {
-                        existingStudent.setEmail(student.getEmail());
-                    }
-                    if (student.getPhoneNumber() != null) {
-                        existingStudent.setPhoneNumber(student.getPhoneNumber());
-                    }
-                    if (student.getStartDate() != null) {
-                        existingStudent.setStartDate(student.getStartDate());
-                    }
-                    if (student.getEndDate() != null) {
-                        existingStudent.setEndDate(student.getEndDate());
-                    }
-                    if (student.getActive() != null) {
-                        existingStudent.setActive(student.getActive());
-                    }
-                    if (student.getCreatedAt() != null) {
-                        existingStudent.setCreatedAt(student.getCreatedAt());
-                    }
-                    if (student.getBalance() != null) {
-                        existingStudent.setBalance(student.getBalance());
-                    }
-
-
-                    return existingStudent;
-                }
-            )
-            .map(studentRepository::save);
+        Optional<Student> result = studentService.partialUpdate(student);
 
         return ResponseUtil.wrapOrNotFound(
             result,
@@ -183,12 +143,26 @@ public class StudentResource {
     /**
      * {@code GET  /students} : get all the students.
      *
+     * @param criteria the criteria which the requested entities should match.
      * @return the {@link ResponseEntity} with status {@code 200 (OK)} and the list of students in body.
      */
     @GetMapping("/students")
-    public List<Student> getAllStudents() {
-        log.debug("REST request to get all Students");
-        return studentRepository.findAll();
+    public ResponseEntity<List<Student>> getAllStudents(StudentCriteria criteria) {
+        log.debug("REST request to get Students by criteria: {}", criteria);
+        List<Student> entityList = studentQueryService.findByCriteria(criteria);
+        return ResponseEntity.ok().body(entityList);
+    }
+
+    /**
+     * {@code GET  /students/count} : count all the students.
+     *
+     * @param criteria the criteria which the requested entities should match.
+     * @return the {@link ResponseEntity} with status {@code 200 (OK)} and the count in body.
+     */
+    @GetMapping("/students/count")
+    public ResponseEntity<Long> countStudents(StudentCriteria criteria) {
+        log.debug("REST request to count Students by criteria: {}", criteria);
+        return ResponseEntity.ok().body(studentQueryService.countByCriteria(criteria));
     }
 
     /**
@@ -198,10 +172,9 @@ public class StudentResource {
      * @return the {@link ResponseEntity} with status {@code 200 (OK)} and with body the student, or with status {@code 404 (Not Found)}.
      */
     @GetMapping("/students/{id}")
-    @PreAuthorize("hasRole(\"" + AuthoritiesConstants.ADMIN + "\")")
     public ResponseEntity<Student> getStudent(@PathVariable Long id) {
         log.debug("REST request to get Student : {}", id);
-        Optional<Student> student = studentRepository.findById(id);
+        Optional<Student> student = studentService.findOne(id);
         return ResponseUtil.wrapOrNotFound(student);
     }
 
@@ -212,10 +185,9 @@ public class StudentResource {
      * @return the {@link ResponseEntity} with status {@code 204 (NO_CONTENT)}.
      */
     @DeleteMapping("/students/{id}")
-    @PreAuthorize("hasRole(\"" + AuthoritiesConstants.ADMIN + "\")")
     public ResponseEntity<Void> deleteStudent(@PathVariable Long id) {
         log.debug("REST request to delete Student : {}", id);
-        studentRepository.deleteById(id);
+        studentService.delete(id);
         return ResponseEntity
             .noContent()
             .headers(HeaderUtil.createEntityDeletionAlert(applicationName, false, ENTITY_NAME, id.toString()))
@@ -238,7 +210,7 @@ public class StudentResource {
                         .setFirstName(r.getStudent().getFirstName())
                         .setLastName(r.getStudent().getLastName())
                         .setAttended(r.getAttended())
-                        //.setPay(r.getPay())
+                //.setPay(r.getPay())
             )
             .collect(Collectors.toList());
 
@@ -250,4 +222,5 @@ public class StudentResource {
         //
         //        return ResponseUtil.wrapOrNotFound(Optional.of(registerResponse));
     }
+
 }

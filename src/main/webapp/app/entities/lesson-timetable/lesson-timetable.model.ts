@@ -12,6 +12,7 @@ export interface ILessonTimetable {
   description?: string | null;
   createdAt?: dayjs.Dayjs;
   active?: boolean | null;
+  registerTaken?: boolean | null;
   location?: ILocation | null;
   subject?: ISubject | null;
 }
@@ -26,10 +27,12 @@ export class LessonTimetable implements ILessonTimetable {
     public description?: string | null,
     public createdAt?: dayjs.Dayjs,
     public active?: boolean | null,
+    public registerTaken?: boolean | null,
     public location?: ILocation | null,
     public subject?: ISubject | null
   ) {
     this.active = this.active ?? false;
+    this.registerTaken = this.registerTaken ?? false;
   }
 }
 

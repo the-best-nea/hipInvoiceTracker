@@ -2,7 +2,9 @@ package com.mycompany.myapp.web.rest;
 
 import com.mycompany.myapp.domain.Subject;
 import com.mycompany.myapp.repository.SubjectRepository;
-import com.mycompany.myapp.security.AuthoritiesConstants;
+import com.mycompany.myapp.service.SubjectQueryService;
+import com.mycompany.myapp.service.SubjectService;
+import com.mycompany.myapp.service.criteria.SubjectCriteria;
 import com.mycompany.myapp.web.rest.errors.BadRequestAlertException;
 import java.net.URI;
 import java.net.URISyntaxException;
@@ -15,8 +17,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 import tech.jhipster.web.util.HeaderUtil;
 import tech.jhipster.web.util.ResponseUtil;
@@ -26,7 +26,6 @@ import tech.jhipster.web.util.ResponseUtil;
  */
 @RestController
 @RequestMapping("/api")
-@Transactional
 public class SubjectResource {
 
     private final Logger log = LoggerFactory.getLogger(SubjectResource.class);
@@ -36,10 +35,16 @@ public class SubjectResource {
     @Value("${jhipster.clientApp.name}")
     private String applicationName;
 
+    private final SubjectService subjectService;
+
     private final SubjectRepository subjectRepository;
 
-    public SubjectResource(SubjectRepository subjectRepository) {
+    private final SubjectQueryService subjectQueryService;
+
+    public SubjectResource(SubjectService subjectService, SubjectRepository subjectRepository, SubjectQueryService subjectQueryService) {
+        this.subjectService = subjectService;
         this.subjectRepository = subjectRepository;
+        this.subjectQueryService = subjectQueryService;
     }
 
     /**
@@ -50,13 +55,12 @@ public class SubjectResource {
      * @throws URISyntaxException if the Location URI syntax is incorrect.
      */
     @PostMapping("/subjects")
-    @PreAuthorize("hasRole(\"" + AuthoritiesConstants.ADMIN + "\")")
     public ResponseEntity<Subject> createSubject(@Valid @RequestBody Subject subject) throws URISyntaxException {
         log.debug("REST request to save Subject : {}", subject);
         if (subject.getId() != null) {
             throw new BadRequestAlertException("A new subject cannot already have an ID", ENTITY_NAME, "idexists");
         }
-        Subject result = subjectRepository.save(subject);
+        Subject result = subjectService.save(subject);
         return ResponseEntity
             .created(new URI("/api/subjects/" + result.getId()))
             .headers(HeaderUtil.createEntityCreationAlert(applicationName, false, ENTITY_NAME, result.getId().toString()))
@@ -74,7 +78,6 @@ public class SubjectResource {
      * @throws URISyntaxException if the Location URI syntax is incorrect.
      */
     @PutMapping("/subjects/{id}")
-    @PreAuthorize("hasRole(\"" + AuthoritiesConstants.ADMIN + "\")")
     public ResponseEntity<Subject> updateSubject(
         @PathVariable(value = "id", required = false) final Long id,
         @Valid @RequestBody Subject subject
@@ -91,22 +94,11 @@ public class SubjectResource {
             throw new BadRequestAlertException("Entity not found", ENTITY_NAME, "idnotfound");
         }
 
-        Subject result = subjectRepository.save(subject);
+        Subject result = subjectService.save(subject);
         return ResponseEntity
             .ok()
             .headers(HeaderUtil.createEntityUpdateAlert(applicationName, false, ENTITY_NAME, subject.getId().toString()))
             .body(result);
-    }
-
-    /**
-     * {@code GET  /subjects} : get all the subjects.
-     *
-     * @return the {@link ResponseEntity} with status {@code 200 (OK)} and the list of subjects in body.
-     */
-    @GetMapping("/subjects")
-    public List<Subject> getAllSubjects() {
-        log.debug("REST request to get all Subjects");
-        return subjectRepository.findAll();
     }
 
     /**
@@ -121,7 +113,6 @@ public class SubjectResource {
      * @throws URISyntaxException if the Location URI syntax is incorrect.
      */
     @PatchMapping(value = "/subjects/{id}", consumes = "application/merge-patch+json")
-    @PreAuthorize("hasRole(\"" + AuthoritiesConstants.ADMIN + "\")")
     public ResponseEntity<Subject> partialUpdateSubject(
         @PathVariable(value = "id", required = false) final Long id,
         @NotNull @RequestBody Subject subject
@@ -138,32 +129,37 @@ public class SubjectResource {
             throw new BadRequestAlertException("Entity not found", ENTITY_NAME, "idnotfound");
         }
 
-        Optional<Subject> result = subjectRepository
-            .findById(subject.getId())
-            .map(
-                existingSubject -> {
-                    if (subject.getSubjectName() != null) {
-                        existingSubject.setSubjectName(subject.getSubjectName());
-                    }
-                    if (subject.getDescription() != null) {
-                        existingSubject.setDescription(subject.getDescription());
-                    }
-                    if (subject.getCreatedAt() != null) {
-                        existingSubject.setCreatedAt(subject.getCreatedAt());
-                    }
-                    if (subject.getActive() != null) {
-                        existingSubject.setActive(subject.getActive());
-                    }
-
-                    return existingSubject;
-                }
-            )
-            .map(subjectRepository::save);
+        Optional<Subject> result = subjectService.partialUpdate(subject);
 
         return ResponseUtil.wrapOrNotFound(
             result,
             HeaderUtil.createEntityUpdateAlert(applicationName, false, ENTITY_NAME, subject.getId().toString())
         );
+    }
+
+    /**
+     * {@code GET  /subjects} : get all the subjects.
+     *
+     * @param criteria the criteria which the requested entities should match.
+     * @return the {@link ResponseEntity} with status {@code 200 (OK)} and the list of subjects in body.
+     */
+    @GetMapping("/subjects")
+    public ResponseEntity<List<Subject>> getAllSubjects(SubjectCriteria criteria) {
+        log.debug("REST request to get Subjects by criteria: {}", criteria);
+        List<Subject> entityList = subjectQueryService.findByCriteria(criteria);
+        return ResponseEntity.ok().body(entityList);
+    }
+
+    /**
+     * {@code GET  /subjects/count} : count all the subjects.
+     *
+     * @param criteria the criteria which the requested entities should match.
+     * @return the {@link ResponseEntity} with status {@code 200 (OK)} and the count in body.
+     */
+    @GetMapping("/subjects/count")
+    public ResponseEntity<Long> countSubjects(SubjectCriteria criteria) {
+        log.debug("REST request to count Subjects by criteria: {}", criteria);
+        return ResponseEntity.ok().body(subjectQueryService.countByCriteria(criteria));
     }
 
     /**
@@ -173,10 +169,9 @@ public class SubjectResource {
      * @return the {@link ResponseEntity} with status {@code 200 (OK)} and with body the subject, or with status {@code 404 (Not Found)}.
      */
     @GetMapping("/subjects/{id}")
-    @PreAuthorize("hasRole(\"" + AuthoritiesConstants.ADMIN + "\")")
     public ResponseEntity<Subject> getSubject(@PathVariable Long id) {
         log.debug("REST request to get Subject : {}", id);
-        Optional<Subject> subject = subjectRepository.findById(id);
+        Optional<Subject> subject = subjectService.findOne(id);
         return ResponseUtil.wrapOrNotFound(subject);
     }
 
@@ -187,10 +182,9 @@ public class SubjectResource {
      * @return the {@link ResponseEntity} with status {@code 204 (NO_CONTENT)}.
      */
     @DeleteMapping("/subjects/{id}")
-    @PreAuthorize("hasRole(\"" + AuthoritiesConstants.ADMIN + "\")")
     public ResponseEntity<Void> deleteSubject(@PathVariable Long id) {
         log.debug("REST request to delete Subject : {}", id);
-        subjectRepository.deleteById(id);
+        subjectService.delete(id);
         return ResponseEntity
             .noContent()
             .headers(HeaderUtil.createEntityDeletionAlert(applicationName, false, ENTITY_NAME, id.toString()))

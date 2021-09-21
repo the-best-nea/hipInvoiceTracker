@@ -6,8 +6,11 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 import com.mycompany.myapp.IntegrationTest;
+import com.mycompany.myapp.domain.LessonInstance;
+import com.mycompany.myapp.domain.LessonTimetable;
 import com.mycompany.myapp.domain.Subject;
 import com.mycompany.myapp.repository.SubjectRepository;
+import com.mycompany.myapp.service.criteria.SubjectCriteria;
 import java.time.Instant;
 import java.time.temporal.ChronoUnit;
 import java.util.List;
@@ -200,6 +203,363 @@ class SubjectResourceIT {
             .andExpect(jsonPath("$.description").value(DEFAULT_DESCRIPTION))
             .andExpect(jsonPath("$.createdAt").value(DEFAULT_CREATED_AT.toString()))
             .andExpect(jsonPath("$.active").value(DEFAULT_ACTIVE.booleanValue()));
+    }
+
+    @Test
+    @Transactional
+    void getSubjectsByIdFiltering() throws Exception {
+        // Initialize the database
+        subjectRepository.saveAndFlush(subject);
+
+        Long id = subject.getId();
+
+        defaultSubjectShouldBeFound("id.equals=" + id);
+        defaultSubjectShouldNotBeFound("id.notEquals=" + id);
+
+        defaultSubjectShouldBeFound("id.greaterThanOrEqual=" + id);
+        defaultSubjectShouldNotBeFound("id.greaterThan=" + id);
+
+        defaultSubjectShouldBeFound("id.lessThanOrEqual=" + id);
+        defaultSubjectShouldNotBeFound("id.lessThan=" + id);
+    }
+
+    @Test
+    @Transactional
+    void getAllSubjectsBySubjectNameIsEqualToSomething() throws Exception {
+        // Initialize the database
+        subjectRepository.saveAndFlush(subject);
+
+        // Get all the subjectList where subjectName equals to DEFAULT_SUBJECT_NAME
+        defaultSubjectShouldBeFound("subjectName.equals=" + DEFAULT_SUBJECT_NAME);
+
+        // Get all the subjectList where subjectName equals to UPDATED_SUBJECT_NAME
+        defaultSubjectShouldNotBeFound("subjectName.equals=" + UPDATED_SUBJECT_NAME);
+    }
+
+    @Test
+    @Transactional
+    void getAllSubjectsBySubjectNameIsNotEqualToSomething() throws Exception {
+        // Initialize the database
+        subjectRepository.saveAndFlush(subject);
+
+        // Get all the subjectList where subjectName not equals to DEFAULT_SUBJECT_NAME
+        defaultSubjectShouldNotBeFound("subjectName.notEquals=" + DEFAULT_SUBJECT_NAME);
+
+        // Get all the subjectList where subjectName not equals to UPDATED_SUBJECT_NAME
+        defaultSubjectShouldBeFound("subjectName.notEquals=" + UPDATED_SUBJECT_NAME);
+    }
+
+    @Test
+    @Transactional
+    void getAllSubjectsBySubjectNameIsInShouldWork() throws Exception {
+        // Initialize the database
+        subjectRepository.saveAndFlush(subject);
+
+        // Get all the subjectList where subjectName in DEFAULT_SUBJECT_NAME or UPDATED_SUBJECT_NAME
+        defaultSubjectShouldBeFound("subjectName.in=" + DEFAULT_SUBJECT_NAME + "," + UPDATED_SUBJECT_NAME);
+
+        // Get all the subjectList where subjectName equals to UPDATED_SUBJECT_NAME
+        defaultSubjectShouldNotBeFound("subjectName.in=" + UPDATED_SUBJECT_NAME);
+    }
+
+    @Test
+    @Transactional
+    void getAllSubjectsBySubjectNameIsNullOrNotNull() throws Exception {
+        // Initialize the database
+        subjectRepository.saveAndFlush(subject);
+
+        // Get all the subjectList where subjectName is not null
+        defaultSubjectShouldBeFound("subjectName.specified=true");
+
+        // Get all the subjectList where subjectName is null
+        defaultSubjectShouldNotBeFound("subjectName.specified=false");
+    }
+
+    @Test
+    @Transactional
+    void getAllSubjectsBySubjectNameContainsSomething() throws Exception {
+        // Initialize the database
+        subjectRepository.saveAndFlush(subject);
+
+        // Get all the subjectList where subjectName contains DEFAULT_SUBJECT_NAME
+        defaultSubjectShouldBeFound("subjectName.contains=" + DEFAULT_SUBJECT_NAME);
+
+        // Get all the subjectList where subjectName contains UPDATED_SUBJECT_NAME
+        defaultSubjectShouldNotBeFound("subjectName.contains=" + UPDATED_SUBJECT_NAME);
+    }
+
+    @Test
+    @Transactional
+    void getAllSubjectsBySubjectNameNotContainsSomething() throws Exception {
+        // Initialize the database
+        subjectRepository.saveAndFlush(subject);
+
+        // Get all the subjectList where subjectName does not contain DEFAULT_SUBJECT_NAME
+        defaultSubjectShouldNotBeFound("subjectName.doesNotContain=" + DEFAULT_SUBJECT_NAME);
+
+        // Get all the subjectList where subjectName does not contain UPDATED_SUBJECT_NAME
+        defaultSubjectShouldBeFound("subjectName.doesNotContain=" + UPDATED_SUBJECT_NAME);
+    }
+
+    @Test
+    @Transactional
+    void getAllSubjectsByDescriptionIsEqualToSomething() throws Exception {
+        // Initialize the database
+        subjectRepository.saveAndFlush(subject);
+
+        // Get all the subjectList where description equals to DEFAULT_DESCRIPTION
+        defaultSubjectShouldBeFound("description.equals=" + DEFAULT_DESCRIPTION);
+
+        // Get all the subjectList where description equals to UPDATED_DESCRIPTION
+        defaultSubjectShouldNotBeFound("description.equals=" + UPDATED_DESCRIPTION);
+    }
+
+    @Test
+    @Transactional
+    void getAllSubjectsByDescriptionIsNotEqualToSomething() throws Exception {
+        // Initialize the database
+        subjectRepository.saveAndFlush(subject);
+
+        // Get all the subjectList where description not equals to DEFAULT_DESCRIPTION
+        defaultSubjectShouldNotBeFound("description.notEquals=" + DEFAULT_DESCRIPTION);
+
+        // Get all the subjectList where description not equals to UPDATED_DESCRIPTION
+        defaultSubjectShouldBeFound("description.notEquals=" + UPDATED_DESCRIPTION);
+    }
+
+    @Test
+    @Transactional
+    void getAllSubjectsByDescriptionIsInShouldWork() throws Exception {
+        // Initialize the database
+        subjectRepository.saveAndFlush(subject);
+
+        // Get all the subjectList where description in DEFAULT_DESCRIPTION or UPDATED_DESCRIPTION
+        defaultSubjectShouldBeFound("description.in=" + DEFAULT_DESCRIPTION + "," + UPDATED_DESCRIPTION);
+
+        // Get all the subjectList where description equals to UPDATED_DESCRIPTION
+        defaultSubjectShouldNotBeFound("description.in=" + UPDATED_DESCRIPTION);
+    }
+
+    @Test
+    @Transactional
+    void getAllSubjectsByDescriptionIsNullOrNotNull() throws Exception {
+        // Initialize the database
+        subjectRepository.saveAndFlush(subject);
+
+        // Get all the subjectList where description is not null
+        defaultSubjectShouldBeFound("description.specified=true");
+
+        // Get all the subjectList where description is null
+        defaultSubjectShouldNotBeFound("description.specified=false");
+    }
+
+    @Test
+    @Transactional
+    void getAllSubjectsByDescriptionContainsSomething() throws Exception {
+        // Initialize the database
+        subjectRepository.saveAndFlush(subject);
+
+        // Get all the subjectList where description contains DEFAULT_DESCRIPTION
+        defaultSubjectShouldBeFound("description.contains=" + DEFAULT_DESCRIPTION);
+
+        // Get all the subjectList where description contains UPDATED_DESCRIPTION
+        defaultSubjectShouldNotBeFound("description.contains=" + UPDATED_DESCRIPTION);
+    }
+
+    @Test
+    @Transactional
+    void getAllSubjectsByDescriptionNotContainsSomething() throws Exception {
+        // Initialize the database
+        subjectRepository.saveAndFlush(subject);
+
+        // Get all the subjectList where description does not contain DEFAULT_DESCRIPTION
+        defaultSubjectShouldNotBeFound("description.doesNotContain=" + DEFAULT_DESCRIPTION);
+
+        // Get all the subjectList where description does not contain UPDATED_DESCRIPTION
+        defaultSubjectShouldBeFound("description.doesNotContain=" + UPDATED_DESCRIPTION);
+    }
+
+    @Test
+    @Transactional
+    void getAllSubjectsByCreatedAtIsEqualToSomething() throws Exception {
+        // Initialize the database
+        subjectRepository.saveAndFlush(subject);
+
+        // Get all the subjectList where createdAt equals to DEFAULT_CREATED_AT
+        defaultSubjectShouldBeFound("createdAt.equals=" + DEFAULT_CREATED_AT);
+
+        // Get all the subjectList where createdAt equals to UPDATED_CREATED_AT
+        defaultSubjectShouldNotBeFound("createdAt.equals=" + UPDATED_CREATED_AT);
+    }
+
+    @Test
+    @Transactional
+    void getAllSubjectsByCreatedAtIsNotEqualToSomething() throws Exception {
+        // Initialize the database
+        subjectRepository.saveAndFlush(subject);
+
+        // Get all the subjectList where createdAt not equals to DEFAULT_CREATED_AT
+        defaultSubjectShouldNotBeFound("createdAt.notEquals=" + DEFAULT_CREATED_AT);
+
+        // Get all the subjectList where createdAt not equals to UPDATED_CREATED_AT
+        defaultSubjectShouldBeFound("createdAt.notEquals=" + UPDATED_CREATED_AT);
+    }
+
+    @Test
+    @Transactional
+    void getAllSubjectsByCreatedAtIsInShouldWork() throws Exception {
+        // Initialize the database
+        subjectRepository.saveAndFlush(subject);
+
+        // Get all the subjectList where createdAt in DEFAULT_CREATED_AT or UPDATED_CREATED_AT
+        defaultSubjectShouldBeFound("createdAt.in=" + DEFAULT_CREATED_AT + "," + UPDATED_CREATED_AT);
+
+        // Get all the subjectList where createdAt equals to UPDATED_CREATED_AT
+        defaultSubjectShouldNotBeFound("createdAt.in=" + UPDATED_CREATED_AT);
+    }
+
+    @Test
+    @Transactional
+    void getAllSubjectsByCreatedAtIsNullOrNotNull() throws Exception {
+        // Initialize the database
+        subjectRepository.saveAndFlush(subject);
+
+        // Get all the subjectList where createdAt is not null
+        defaultSubjectShouldBeFound("createdAt.specified=true");
+
+        // Get all the subjectList where createdAt is null
+        defaultSubjectShouldNotBeFound("createdAt.specified=false");
+    }
+
+    @Test
+    @Transactional
+    void getAllSubjectsByActiveIsEqualToSomething() throws Exception {
+        // Initialize the database
+        subjectRepository.saveAndFlush(subject);
+
+        // Get all the subjectList where active equals to DEFAULT_ACTIVE
+        defaultSubjectShouldBeFound("active.equals=" + DEFAULT_ACTIVE);
+
+        // Get all the subjectList where active equals to UPDATED_ACTIVE
+        defaultSubjectShouldNotBeFound("active.equals=" + UPDATED_ACTIVE);
+    }
+
+    @Test
+    @Transactional
+    void getAllSubjectsByActiveIsNotEqualToSomething() throws Exception {
+        // Initialize the database
+        subjectRepository.saveAndFlush(subject);
+
+        // Get all the subjectList where active not equals to DEFAULT_ACTIVE
+        defaultSubjectShouldNotBeFound("active.notEquals=" + DEFAULT_ACTIVE);
+
+        // Get all the subjectList where active not equals to UPDATED_ACTIVE
+        defaultSubjectShouldBeFound("active.notEquals=" + UPDATED_ACTIVE);
+    }
+
+    @Test
+    @Transactional
+    void getAllSubjectsByActiveIsInShouldWork() throws Exception {
+        // Initialize the database
+        subjectRepository.saveAndFlush(subject);
+
+        // Get all the subjectList where active in DEFAULT_ACTIVE or UPDATED_ACTIVE
+        defaultSubjectShouldBeFound("active.in=" + DEFAULT_ACTIVE + "," + UPDATED_ACTIVE);
+
+        // Get all the subjectList where active equals to UPDATED_ACTIVE
+        defaultSubjectShouldNotBeFound("active.in=" + UPDATED_ACTIVE);
+    }
+
+    @Test
+    @Transactional
+    void getAllSubjectsByActiveIsNullOrNotNull() throws Exception {
+        // Initialize the database
+        subjectRepository.saveAndFlush(subject);
+
+        // Get all the subjectList where active is not null
+        defaultSubjectShouldBeFound("active.specified=true");
+
+        // Get all the subjectList where active is null
+        defaultSubjectShouldNotBeFound("active.specified=false");
+    }
+
+    @Test
+    @Transactional
+    void getAllSubjectsByLessonTimetableIsEqualToSomething() throws Exception {
+        // Initialize the database
+        subjectRepository.saveAndFlush(subject);
+        LessonTimetable lessonTimetable = LessonTimetableResourceIT.createEntity(em);
+        em.persist(lessonTimetable);
+        em.flush();
+        subject.addLessonTimetable(lessonTimetable);
+        subjectRepository.saveAndFlush(subject);
+        Long lessonTimetableId = lessonTimetable.getId();
+
+        // Get all the subjectList where lessonTimetable equals to lessonTimetableId
+        defaultSubjectShouldBeFound("lessonTimetableId.equals=" + lessonTimetableId);
+
+        // Get all the subjectList where lessonTimetable equals to (lessonTimetableId + 1)
+        defaultSubjectShouldNotBeFound("lessonTimetableId.equals=" + (lessonTimetableId + 1));
+    }
+
+    @Test
+    @Transactional
+    void getAllSubjectsByLessonInstanceIsEqualToSomething() throws Exception {
+        // Initialize the database
+        subjectRepository.saveAndFlush(subject);
+        LessonInstance lessonInstance = LessonInstanceResourceIT.createEntity(em);
+        em.persist(lessonInstance);
+        em.flush();
+        subject.addLessonInstance(lessonInstance);
+        subjectRepository.saveAndFlush(subject);
+        Long lessonInstanceId = lessonInstance.getId();
+
+        // Get all the subjectList where lessonInstance equals to lessonInstanceId
+        defaultSubjectShouldBeFound("lessonInstanceId.equals=" + lessonInstanceId);
+
+        // Get all the subjectList where lessonInstance equals to (lessonInstanceId + 1)
+        defaultSubjectShouldNotBeFound("lessonInstanceId.equals=" + (lessonInstanceId + 1));
+    }
+
+    /**
+     * Executes the search, and checks that the default entity is returned.
+     */
+    private void defaultSubjectShouldBeFound(String filter) throws Exception {
+        restSubjectMockMvc
+            .perform(get(ENTITY_API_URL + "?sort=id,desc&" + filter))
+            .andExpect(status().isOk())
+            .andExpect(content().contentType(MediaType.APPLICATION_JSON_VALUE))
+            .andExpect(jsonPath("$.[*].id").value(hasItem(subject.getId().intValue())))
+            .andExpect(jsonPath("$.[*].subjectName").value(hasItem(DEFAULT_SUBJECT_NAME)))
+            .andExpect(jsonPath("$.[*].description").value(hasItem(DEFAULT_DESCRIPTION)))
+            .andExpect(jsonPath("$.[*].createdAt").value(hasItem(DEFAULT_CREATED_AT.toString())))
+            .andExpect(jsonPath("$.[*].active").value(hasItem(DEFAULT_ACTIVE.booleanValue())));
+
+        // Check, that the count call also returns 1
+        restSubjectMockMvc
+            .perform(get(ENTITY_API_URL + "/count?sort=id,desc&" + filter))
+            .andExpect(status().isOk())
+            .andExpect(content().contentType(MediaType.APPLICATION_JSON_VALUE))
+            .andExpect(content().string("1"));
+    }
+
+    /**
+     * Executes the search, and checks that the default entity is not returned.
+     */
+    private void defaultSubjectShouldNotBeFound(String filter) throws Exception {
+        restSubjectMockMvc
+            .perform(get(ENTITY_API_URL + "?sort=id,desc&" + filter))
+            .andExpect(status().isOk())
+            .andExpect(content().contentType(MediaType.APPLICATION_JSON_VALUE))
+            .andExpect(jsonPath("$").isArray())
+            .andExpect(jsonPath("$").isEmpty());
+
+        // Check, that the count call also returns 0
+        restSubjectMockMvc
+            .perform(get(ENTITY_API_URL + "/count?sort=id,desc&" + filter))
+            .andExpect(status().isOk())
+            .andExpect(content().contentType(MediaType.APPLICATION_JSON_VALUE))
+            .andExpect(content().string("0"));
     }
 
     @Test

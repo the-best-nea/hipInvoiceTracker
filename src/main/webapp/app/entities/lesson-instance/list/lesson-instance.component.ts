@@ -4,7 +4,11 @@ import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 
 import { ILessonInstance } from '../lesson-instance.model';
 import { LessonInstanceService } from '../service/lesson-instance.service';
+
 import { LessonInstanceDeleteDialogComponent } from '../delete/lesson-instance-delete-dialog.component';
+
+import {Router} from '@angular/router';
+
 
 @Component({
   selector: 'jhi-lesson-instance',
@@ -14,7 +18,7 @@ export class LessonInstanceComponent implements OnInit {
   lessonInstances?: ILessonInstance[];
   isLoading = false;
 
-  constructor(protected lessonInstanceService: LessonInstanceService, protected modalService: NgbModal) {}
+  constructor(protected lessonInstanceService: LessonInstanceService, protected modalService: NgbModal, private router: Router) {}
 
   loadAll(): void {
     this.isLoading = true;
@@ -47,5 +51,9 @@ export class LessonInstanceComponent implements OnInit {
         this.loadAll();
       }
     });
+  }
+
+  editInstance(lessonInstance: ILessonInstance): void {
+    this.router.navigateByUrl('/lesson-instance/' + lessonInstance.id!.toString() + '/register');
   }
 }

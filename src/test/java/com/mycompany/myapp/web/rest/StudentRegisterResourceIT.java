@@ -6,8 +6,11 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 import com.mycompany.myapp.IntegrationTest;
+import com.mycompany.myapp.domain.LessonInstance;
+import com.mycompany.myapp.domain.Student;
 import com.mycompany.myapp.domain.StudentRegister;
 import com.mycompany.myapp.repository.StudentRegisterRepository;
+import com.mycompany.myapp.service.criteria.StudentRegisterCriteria;
 import java.time.Instant;
 import java.time.temporal.ChronoUnit;
 import java.util.List;
@@ -36,6 +39,7 @@ class StudentRegisterResourceIT {
 
     private static final Float DEFAULT_PAY = 1F;
     private static final Float UPDATED_PAY = 2F;
+    private static final Float SMALLER_PAY = 1F - 1F;
 
     private static final Boolean DEFAULT_ATTENDED = false;
     private static final Boolean UPDATED_ATTENDED = true;
@@ -235,6 +239,416 @@ class StudentRegisterResourceIT {
             .andExpect(jsonPath("$.attended").value(DEFAULT_ATTENDED.booleanValue()))
             .andExpect(jsonPath("$.createdOn").value(DEFAULT_CREATED_ON.toString()))
             .andExpect(jsonPath("$.updatedOn").value(DEFAULT_UPDATED_ON.toString()));
+    }
+
+    @Test
+    @Transactional
+    void getStudentRegistersByIdFiltering() throws Exception {
+        // Initialize the database
+        studentRegisterRepository.saveAndFlush(studentRegister);
+
+        Long id = studentRegister.getId();
+
+        defaultStudentRegisterShouldBeFound("id.equals=" + id);
+        defaultStudentRegisterShouldNotBeFound("id.notEquals=" + id);
+
+        defaultStudentRegisterShouldBeFound("id.greaterThanOrEqual=" + id);
+        defaultStudentRegisterShouldNotBeFound("id.greaterThan=" + id);
+
+        defaultStudentRegisterShouldBeFound("id.lessThanOrEqual=" + id);
+        defaultStudentRegisterShouldNotBeFound("id.lessThan=" + id);
+    }
+
+    @Test
+    @Transactional
+    void getAllStudentRegistersByDateOfLessonIsEqualToSomething() throws Exception {
+        // Initialize the database
+        studentRegisterRepository.saveAndFlush(studentRegister);
+
+        // Get all the studentRegisterList where dateOfLesson equals to DEFAULT_DATE_OF_LESSON
+        defaultStudentRegisterShouldBeFound("dateOfLesson.equals=" + DEFAULT_DATE_OF_LESSON);
+
+        // Get all the studentRegisterList where dateOfLesson equals to UPDATED_DATE_OF_LESSON
+        defaultStudentRegisterShouldNotBeFound("dateOfLesson.equals=" + UPDATED_DATE_OF_LESSON);
+    }
+
+    @Test
+    @Transactional
+    void getAllStudentRegistersByDateOfLessonIsNotEqualToSomething() throws Exception {
+        // Initialize the database
+        studentRegisterRepository.saveAndFlush(studentRegister);
+
+        // Get all the studentRegisterList where dateOfLesson not equals to DEFAULT_DATE_OF_LESSON
+        defaultStudentRegisterShouldNotBeFound("dateOfLesson.notEquals=" + DEFAULT_DATE_OF_LESSON);
+
+        // Get all the studentRegisterList where dateOfLesson not equals to UPDATED_DATE_OF_LESSON
+        defaultStudentRegisterShouldBeFound("dateOfLesson.notEquals=" + UPDATED_DATE_OF_LESSON);
+    }
+
+    @Test
+    @Transactional
+    void getAllStudentRegistersByDateOfLessonIsInShouldWork() throws Exception {
+        // Initialize the database
+        studentRegisterRepository.saveAndFlush(studentRegister);
+
+        // Get all the studentRegisterList where dateOfLesson in DEFAULT_DATE_OF_LESSON or UPDATED_DATE_OF_LESSON
+        defaultStudentRegisterShouldBeFound("dateOfLesson.in=" + DEFAULT_DATE_OF_LESSON + "," + UPDATED_DATE_OF_LESSON);
+
+        // Get all the studentRegisterList where dateOfLesson equals to UPDATED_DATE_OF_LESSON
+        defaultStudentRegisterShouldNotBeFound("dateOfLesson.in=" + UPDATED_DATE_OF_LESSON);
+    }
+
+    @Test
+    @Transactional
+    void getAllStudentRegistersByDateOfLessonIsNullOrNotNull() throws Exception {
+        // Initialize the database
+        studentRegisterRepository.saveAndFlush(studentRegister);
+
+        // Get all the studentRegisterList where dateOfLesson is not null
+        defaultStudentRegisterShouldBeFound("dateOfLesson.specified=true");
+
+        // Get all the studentRegisterList where dateOfLesson is null
+        defaultStudentRegisterShouldNotBeFound("dateOfLesson.specified=false");
+    }
+
+    @Test
+    @Transactional
+    void getAllStudentRegistersByPayIsEqualToSomething() throws Exception {
+        // Initialize the database
+        studentRegisterRepository.saveAndFlush(studentRegister);
+
+        // Get all the studentRegisterList where pay equals to DEFAULT_PAY
+        defaultStudentRegisterShouldBeFound("pay.equals=" + DEFAULT_PAY);
+
+        // Get all the studentRegisterList where pay equals to UPDATED_PAY
+        defaultStudentRegisterShouldNotBeFound("pay.equals=" + UPDATED_PAY);
+    }
+
+    @Test
+    @Transactional
+    void getAllStudentRegistersByPayIsNotEqualToSomething() throws Exception {
+        // Initialize the database
+        studentRegisterRepository.saveAndFlush(studentRegister);
+
+        // Get all the studentRegisterList where pay not equals to DEFAULT_PAY
+        defaultStudentRegisterShouldNotBeFound("pay.notEquals=" + DEFAULT_PAY);
+
+        // Get all the studentRegisterList where pay not equals to UPDATED_PAY
+        defaultStudentRegisterShouldBeFound("pay.notEquals=" + UPDATED_PAY);
+    }
+
+    @Test
+    @Transactional
+    void getAllStudentRegistersByPayIsInShouldWork() throws Exception {
+        // Initialize the database
+        studentRegisterRepository.saveAndFlush(studentRegister);
+
+        // Get all the studentRegisterList where pay in DEFAULT_PAY or UPDATED_PAY
+        defaultStudentRegisterShouldBeFound("pay.in=" + DEFAULT_PAY + "," + UPDATED_PAY);
+
+        // Get all the studentRegisterList where pay equals to UPDATED_PAY
+        defaultStudentRegisterShouldNotBeFound("pay.in=" + UPDATED_PAY);
+    }
+
+    @Test
+    @Transactional
+    void getAllStudentRegistersByPayIsNullOrNotNull() throws Exception {
+        // Initialize the database
+        studentRegisterRepository.saveAndFlush(studentRegister);
+
+        // Get all the studentRegisterList where pay is not null
+        defaultStudentRegisterShouldBeFound("pay.specified=true");
+
+        // Get all the studentRegisterList where pay is null
+        defaultStudentRegisterShouldNotBeFound("pay.specified=false");
+    }
+
+    @Test
+    @Transactional
+    void getAllStudentRegistersByPayIsGreaterThanOrEqualToSomething() throws Exception {
+        // Initialize the database
+        studentRegisterRepository.saveAndFlush(studentRegister);
+
+        // Get all the studentRegisterList where pay is greater than or equal to DEFAULT_PAY
+        defaultStudentRegisterShouldBeFound("pay.greaterThanOrEqual=" + DEFAULT_PAY);
+
+        // Get all the studentRegisterList where pay is greater than or equal to UPDATED_PAY
+        defaultStudentRegisterShouldNotBeFound("pay.greaterThanOrEqual=" + UPDATED_PAY);
+    }
+
+    @Test
+    @Transactional
+    void getAllStudentRegistersByPayIsLessThanOrEqualToSomething() throws Exception {
+        // Initialize the database
+        studentRegisterRepository.saveAndFlush(studentRegister);
+
+        // Get all the studentRegisterList where pay is less than or equal to DEFAULT_PAY
+        defaultStudentRegisterShouldBeFound("pay.lessThanOrEqual=" + DEFAULT_PAY);
+
+        // Get all the studentRegisterList where pay is less than or equal to SMALLER_PAY
+        defaultStudentRegisterShouldNotBeFound("pay.lessThanOrEqual=" + SMALLER_PAY);
+    }
+
+    @Test
+    @Transactional
+    void getAllStudentRegistersByPayIsLessThanSomething() throws Exception {
+        // Initialize the database
+        studentRegisterRepository.saveAndFlush(studentRegister);
+
+        // Get all the studentRegisterList where pay is less than DEFAULT_PAY
+        defaultStudentRegisterShouldNotBeFound("pay.lessThan=" + DEFAULT_PAY);
+
+        // Get all the studentRegisterList where pay is less than UPDATED_PAY
+        defaultStudentRegisterShouldBeFound("pay.lessThan=" + UPDATED_PAY);
+    }
+
+    @Test
+    @Transactional
+    void getAllStudentRegistersByPayIsGreaterThanSomething() throws Exception {
+        // Initialize the database
+        studentRegisterRepository.saveAndFlush(studentRegister);
+
+        // Get all the studentRegisterList where pay is greater than DEFAULT_PAY
+        defaultStudentRegisterShouldNotBeFound("pay.greaterThan=" + DEFAULT_PAY);
+
+        // Get all the studentRegisterList where pay is greater than SMALLER_PAY
+        defaultStudentRegisterShouldBeFound("pay.greaterThan=" + SMALLER_PAY);
+    }
+
+    @Test
+    @Transactional
+    void getAllStudentRegistersByAttendedIsEqualToSomething() throws Exception {
+        // Initialize the database
+        studentRegisterRepository.saveAndFlush(studentRegister);
+
+        // Get all the studentRegisterList where attended equals to DEFAULT_ATTENDED
+        defaultStudentRegisterShouldBeFound("attended.equals=" + DEFAULT_ATTENDED);
+
+        // Get all the studentRegisterList where attended equals to UPDATED_ATTENDED
+        defaultStudentRegisterShouldNotBeFound("attended.equals=" + UPDATED_ATTENDED);
+    }
+
+    @Test
+    @Transactional
+    void getAllStudentRegistersByAttendedIsNotEqualToSomething() throws Exception {
+        // Initialize the database
+        studentRegisterRepository.saveAndFlush(studentRegister);
+
+        // Get all the studentRegisterList where attended not equals to DEFAULT_ATTENDED
+        defaultStudentRegisterShouldNotBeFound("attended.notEquals=" + DEFAULT_ATTENDED);
+
+        // Get all the studentRegisterList where attended not equals to UPDATED_ATTENDED
+        defaultStudentRegisterShouldBeFound("attended.notEquals=" + UPDATED_ATTENDED);
+    }
+
+    @Test
+    @Transactional
+    void getAllStudentRegistersByAttendedIsInShouldWork() throws Exception {
+        // Initialize the database
+        studentRegisterRepository.saveAndFlush(studentRegister);
+
+        // Get all the studentRegisterList where attended in DEFAULT_ATTENDED or UPDATED_ATTENDED
+        defaultStudentRegisterShouldBeFound("attended.in=" + DEFAULT_ATTENDED + "," + UPDATED_ATTENDED);
+
+        // Get all the studentRegisterList where attended equals to UPDATED_ATTENDED
+        defaultStudentRegisterShouldNotBeFound("attended.in=" + UPDATED_ATTENDED);
+    }
+
+    @Test
+    @Transactional
+    void getAllStudentRegistersByAttendedIsNullOrNotNull() throws Exception {
+        // Initialize the database
+        studentRegisterRepository.saveAndFlush(studentRegister);
+
+        // Get all the studentRegisterList where attended is not null
+        defaultStudentRegisterShouldBeFound("attended.specified=true");
+
+        // Get all the studentRegisterList where attended is null
+        defaultStudentRegisterShouldNotBeFound("attended.specified=false");
+    }
+
+    @Test
+    @Transactional
+    void getAllStudentRegistersByCreatedOnIsEqualToSomething() throws Exception {
+        // Initialize the database
+        studentRegisterRepository.saveAndFlush(studentRegister);
+
+        // Get all the studentRegisterList where createdOn equals to DEFAULT_CREATED_ON
+        defaultStudentRegisterShouldBeFound("createdOn.equals=" + DEFAULT_CREATED_ON);
+
+        // Get all the studentRegisterList where createdOn equals to UPDATED_CREATED_ON
+        defaultStudentRegisterShouldNotBeFound("createdOn.equals=" + UPDATED_CREATED_ON);
+    }
+
+    @Test
+    @Transactional
+    void getAllStudentRegistersByCreatedOnIsNotEqualToSomething() throws Exception {
+        // Initialize the database
+        studentRegisterRepository.saveAndFlush(studentRegister);
+
+        // Get all the studentRegisterList where createdOn not equals to DEFAULT_CREATED_ON
+        defaultStudentRegisterShouldNotBeFound("createdOn.notEquals=" + DEFAULT_CREATED_ON);
+
+        // Get all the studentRegisterList where createdOn not equals to UPDATED_CREATED_ON
+        defaultStudentRegisterShouldBeFound("createdOn.notEquals=" + UPDATED_CREATED_ON);
+    }
+
+    @Test
+    @Transactional
+    void getAllStudentRegistersByCreatedOnIsInShouldWork() throws Exception {
+        // Initialize the database
+        studentRegisterRepository.saveAndFlush(studentRegister);
+
+        // Get all the studentRegisterList where createdOn in DEFAULT_CREATED_ON or UPDATED_CREATED_ON
+        defaultStudentRegisterShouldBeFound("createdOn.in=" + DEFAULT_CREATED_ON + "," + UPDATED_CREATED_ON);
+
+        // Get all the studentRegisterList where createdOn equals to UPDATED_CREATED_ON
+        defaultStudentRegisterShouldNotBeFound("createdOn.in=" + UPDATED_CREATED_ON);
+    }
+
+    @Test
+    @Transactional
+    void getAllStudentRegistersByCreatedOnIsNullOrNotNull() throws Exception {
+        // Initialize the database
+        studentRegisterRepository.saveAndFlush(studentRegister);
+
+        // Get all the studentRegisterList where createdOn is not null
+        defaultStudentRegisterShouldBeFound("createdOn.specified=true");
+
+        // Get all the studentRegisterList where createdOn is null
+        defaultStudentRegisterShouldNotBeFound("createdOn.specified=false");
+    }
+
+    @Test
+    @Transactional
+    void getAllStudentRegistersByUpdatedOnIsEqualToSomething() throws Exception {
+        // Initialize the database
+        studentRegisterRepository.saveAndFlush(studentRegister);
+
+        // Get all the studentRegisterList where updatedOn equals to DEFAULT_UPDATED_ON
+        defaultStudentRegisterShouldBeFound("updatedOn.equals=" + DEFAULT_UPDATED_ON);
+
+        // Get all the studentRegisterList where updatedOn equals to UPDATED_UPDATED_ON
+        defaultStudentRegisterShouldNotBeFound("updatedOn.equals=" + UPDATED_UPDATED_ON);
+    }
+
+    @Test
+    @Transactional
+    void getAllStudentRegistersByUpdatedOnIsNotEqualToSomething() throws Exception {
+        // Initialize the database
+        studentRegisterRepository.saveAndFlush(studentRegister);
+
+        // Get all the studentRegisterList where updatedOn not equals to DEFAULT_UPDATED_ON
+        defaultStudentRegisterShouldNotBeFound("updatedOn.notEquals=" + DEFAULT_UPDATED_ON);
+
+        // Get all the studentRegisterList where updatedOn not equals to UPDATED_UPDATED_ON
+        defaultStudentRegisterShouldBeFound("updatedOn.notEquals=" + UPDATED_UPDATED_ON);
+    }
+
+    @Test
+    @Transactional
+    void getAllStudentRegistersByUpdatedOnIsInShouldWork() throws Exception {
+        // Initialize the database
+        studentRegisterRepository.saveAndFlush(studentRegister);
+
+        // Get all the studentRegisterList where updatedOn in DEFAULT_UPDATED_ON or UPDATED_UPDATED_ON
+        defaultStudentRegisterShouldBeFound("updatedOn.in=" + DEFAULT_UPDATED_ON + "," + UPDATED_UPDATED_ON);
+
+        // Get all the studentRegisterList where updatedOn equals to UPDATED_UPDATED_ON
+        defaultStudentRegisterShouldNotBeFound("updatedOn.in=" + UPDATED_UPDATED_ON);
+    }
+
+    @Test
+    @Transactional
+    void getAllStudentRegistersByUpdatedOnIsNullOrNotNull() throws Exception {
+        // Initialize the database
+        studentRegisterRepository.saveAndFlush(studentRegister);
+
+        // Get all the studentRegisterList where updatedOn is not null
+        defaultStudentRegisterShouldBeFound("updatedOn.specified=true");
+
+        // Get all the studentRegisterList where updatedOn is null
+        defaultStudentRegisterShouldNotBeFound("updatedOn.specified=false");
+    }
+
+    @Test
+    @Transactional
+    void getAllStudentRegistersByStudentIsEqualToSomething() throws Exception {
+        // Initialize the database
+        studentRegisterRepository.saveAndFlush(studentRegister);
+        Student student = StudentResourceIT.createEntity(em);
+        em.persist(student);
+        em.flush();
+        studentRegister.setStudent(student);
+        studentRegisterRepository.saveAndFlush(studentRegister);
+        Long studentId = student.getId();
+
+        // Get all the studentRegisterList where student equals to studentId
+        defaultStudentRegisterShouldBeFound("studentId.equals=" + studentId);
+
+        // Get all the studentRegisterList where student equals to (studentId + 1)
+        defaultStudentRegisterShouldNotBeFound("studentId.equals=" + (studentId + 1));
+    }
+
+    @Test
+    @Transactional
+    void getAllStudentRegistersByLessonTimetableIsEqualToSomething() throws Exception {
+        // Initialize the database
+        studentRegisterRepository.saveAndFlush(studentRegister);
+        LessonInstance lessonTimetable = LessonInstanceResourceIT.createEntity(em);
+        em.persist(lessonTimetable);
+        em.flush();
+        studentRegister.setLessonTimetable(lessonTimetable);
+        studentRegisterRepository.saveAndFlush(studentRegister);
+        Long lessonTimetableId = lessonTimetable.getId();
+
+        // Get all the studentRegisterList where lessonTimetable equals to lessonTimetableId
+        defaultStudentRegisterShouldBeFound("lessonTimetableId.equals=" + lessonTimetableId);
+
+        // Get all the studentRegisterList where lessonTimetable equals to (lessonTimetableId + 1)
+        defaultStudentRegisterShouldNotBeFound("lessonTimetableId.equals=" + (lessonTimetableId + 1));
+    }
+
+    /**
+     * Executes the search, and checks that the default entity is returned.
+     */
+    private void defaultStudentRegisterShouldBeFound(String filter) throws Exception {
+        restStudentRegisterMockMvc
+            .perform(get(ENTITY_API_URL + "?sort=id,desc&" + filter))
+            .andExpect(status().isOk())
+            .andExpect(content().contentType(MediaType.APPLICATION_JSON_VALUE))
+            .andExpect(jsonPath("$.[*].id").value(hasItem(studentRegister.getId().intValue())))
+            .andExpect(jsonPath("$.[*].dateOfLesson").value(hasItem(DEFAULT_DATE_OF_LESSON.toString())))
+            .andExpect(jsonPath("$.[*].pay").value(hasItem(DEFAULT_PAY.doubleValue())))
+            .andExpect(jsonPath("$.[*].attended").value(hasItem(DEFAULT_ATTENDED.booleanValue())))
+            .andExpect(jsonPath("$.[*].createdOn").value(hasItem(DEFAULT_CREATED_ON.toString())))
+            .andExpect(jsonPath("$.[*].updatedOn").value(hasItem(DEFAULT_UPDATED_ON.toString())));
+
+        // Check, that the count call also returns 1
+        restStudentRegisterMockMvc
+            .perform(get(ENTITY_API_URL + "/count?sort=id,desc&" + filter))
+            .andExpect(status().isOk())
+            .andExpect(content().contentType(MediaType.APPLICATION_JSON_VALUE))
+            .andExpect(content().string("1"));
+    }
+
+    /**
+     * Executes the search, and checks that the default entity is not returned.
+     */
+    private void defaultStudentRegisterShouldNotBeFound(String filter) throws Exception {
+        restStudentRegisterMockMvc
+            .perform(get(ENTITY_API_URL + "?sort=id,desc&" + filter))
+            .andExpect(status().isOk())
+            .andExpect(content().contentType(MediaType.APPLICATION_JSON_VALUE))
+            .andExpect(jsonPath("$").isArray())
+            .andExpect(jsonPath("$").isEmpty());
+
+        // Check, that the count call also returns 0
+        restStudentRegisterMockMvc
+            .perform(get(ENTITY_API_URL + "/count?sort=id,desc&" + filter))
+            .andExpect(status().isOk())
+            .andExpect(content().contentType(MediaType.APPLICATION_JSON_VALUE))
+            .andExpect(content().string("0"));
     }
 
     @Test

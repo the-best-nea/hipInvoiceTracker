@@ -34,6 +34,7 @@ describe('Service Tests', () => {
         description: 'AAAAAAA',
         createdAt: currentDate,
         active: false,
+        registerTaken: false,
       };
     });
 
@@ -93,6 +94,7 @@ describe('Service Tests', () => {
             description: 'BBBBBB',
             createdAt: currentDate.format(DATE_TIME_FORMAT),
             active: true,
+            registerTaken: true,
           },
           elemDefault
         );
@@ -152,6 +154,7 @@ describe('Service Tests', () => {
             description: 'BBBBBB',
             createdAt: currentDate.format(DATE_TIME_FORMAT),
             active: true,
+            registerTaken: true,
           },
           elemDefault
         );
@@ -210,7 +213,7 @@ describe('Service Tests', () => {
         });
 
         it('should add only unique LessonTimetable to an array', () => {
-          const lessonTimetableArray: ILessonTimetable[] = [{ id: 123 }, { id: 456 }, { id: 41224 }];
+          const lessonTimetableArray: ILessonTimetable[] = [{ id: 123 }, { id: 456 }, { id: 51168 }];
           const lessonTimetableCollection: ILessonTimetable[] = [{ id: 123 }];
           expectedResult = service.addLessonTimetableToCollectionIfMissing(lessonTimetableCollection, ...lessonTimetableArray);
           expect(expectedResult).toHaveLength(3);

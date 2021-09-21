@@ -11,11 +11,11 @@ import org.springframework.stereotype.Repository;
  */
 @SuppressWarnings("unused")
 @Repository
-public interface LessonTimetableTeacherRepository extends JpaRepository<LessonTimetableTeacher, Long> {
+public interface LessonTimetableTeacherRepository
+    extends JpaRepository<LessonTimetableTeacher, Long>, JpaSpecificationExecutor<LessonTimetableTeacher> {
     @Query(
         "select lessonTimetableTeacher from LessonTimetableTeacher lessonTimetableTeacher where lessonTimetableTeacher.internalUser.login = ?#{principal.username}"
     )
     List<LessonTimetableTeacher> findByInternalUserIsCurrentUser();
-
     LessonTimetableTeacher findByLessonTimetable(LessonTimetable lessonTimetable);
 }

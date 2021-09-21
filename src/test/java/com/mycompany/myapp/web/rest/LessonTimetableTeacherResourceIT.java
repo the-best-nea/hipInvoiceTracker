@@ -6,8 +6,11 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 import com.mycompany.myapp.IntegrationTest;
+import com.mycompany.myapp.domain.LessonTimetable;
 import com.mycompany.myapp.domain.LessonTimetableTeacher;
+import com.mycompany.myapp.domain.User;
 import com.mycompany.myapp.repository.LessonTimetableTeacherRepository;
+import com.mycompany.myapp.service.criteria.LessonTimetableTeacherCriteria;
 import java.util.List;
 import java.util.Random;
 import java.util.concurrent.atomic.AtomicLong;
@@ -31,6 +34,7 @@ class LessonTimetableTeacherResourceIT {
 
     private static final Float DEFAULT_PAY = 1F;
     private static final Float UPDATED_PAY = 2F;
+    private static final Float SMALLER_PAY = 1F - 1F;
 
     private static final String ENTITY_API_URL = "/api/lesson-timetable-teachers";
     private static final String ENTITY_API_URL_ID = ENTITY_API_URL + "/{id}";
@@ -167,6 +171,204 @@ class LessonTimetableTeacherResourceIT {
             .andExpect(content().contentType(MediaType.APPLICATION_JSON_VALUE))
             .andExpect(jsonPath("$.id").value(lessonTimetableTeacher.getId().intValue()))
             .andExpect(jsonPath("$.pay").value(DEFAULT_PAY.doubleValue()));
+    }
+
+    @Test
+    @Transactional
+    void getLessonTimetableTeachersByIdFiltering() throws Exception {
+        // Initialize the database
+        lessonTimetableTeacherRepository.saveAndFlush(lessonTimetableTeacher);
+
+        Long id = lessonTimetableTeacher.getId();
+
+        defaultLessonTimetableTeacherShouldBeFound("id.equals=" + id);
+        defaultLessonTimetableTeacherShouldNotBeFound("id.notEquals=" + id);
+
+        defaultLessonTimetableTeacherShouldBeFound("id.greaterThanOrEqual=" + id);
+        defaultLessonTimetableTeacherShouldNotBeFound("id.greaterThan=" + id);
+
+        defaultLessonTimetableTeacherShouldBeFound("id.lessThanOrEqual=" + id);
+        defaultLessonTimetableTeacherShouldNotBeFound("id.lessThan=" + id);
+    }
+
+    @Test
+    @Transactional
+    void getAllLessonTimetableTeachersByPayIsEqualToSomething() throws Exception {
+        // Initialize the database
+        lessonTimetableTeacherRepository.saveAndFlush(lessonTimetableTeacher);
+
+        // Get all the lessonTimetableTeacherList where pay equals to DEFAULT_PAY
+        defaultLessonTimetableTeacherShouldBeFound("pay.equals=" + DEFAULT_PAY);
+
+        // Get all the lessonTimetableTeacherList where pay equals to UPDATED_PAY
+        defaultLessonTimetableTeacherShouldNotBeFound("pay.equals=" + UPDATED_PAY);
+    }
+
+    @Test
+    @Transactional
+    void getAllLessonTimetableTeachersByPayIsNotEqualToSomething() throws Exception {
+        // Initialize the database
+        lessonTimetableTeacherRepository.saveAndFlush(lessonTimetableTeacher);
+
+        // Get all the lessonTimetableTeacherList where pay not equals to DEFAULT_PAY
+        defaultLessonTimetableTeacherShouldNotBeFound("pay.notEquals=" + DEFAULT_PAY);
+
+        // Get all the lessonTimetableTeacherList where pay not equals to UPDATED_PAY
+        defaultLessonTimetableTeacherShouldBeFound("pay.notEquals=" + UPDATED_PAY);
+    }
+
+    @Test
+    @Transactional
+    void getAllLessonTimetableTeachersByPayIsInShouldWork() throws Exception {
+        // Initialize the database
+        lessonTimetableTeacherRepository.saveAndFlush(lessonTimetableTeacher);
+
+        // Get all the lessonTimetableTeacherList where pay in DEFAULT_PAY or UPDATED_PAY
+        defaultLessonTimetableTeacherShouldBeFound("pay.in=" + DEFAULT_PAY + "," + UPDATED_PAY);
+
+        // Get all the lessonTimetableTeacherList where pay equals to UPDATED_PAY
+        defaultLessonTimetableTeacherShouldNotBeFound("pay.in=" + UPDATED_PAY);
+    }
+
+    @Test
+    @Transactional
+    void getAllLessonTimetableTeachersByPayIsNullOrNotNull() throws Exception {
+        // Initialize the database
+        lessonTimetableTeacherRepository.saveAndFlush(lessonTimetableTeacher);
+
+        // Get all the lessonTimetableTeacherList where pay is not null
+        defaultLessonTimetableTeacherShouldBeFound("pay.specified=true");
+
+        // Get all the lessonTimetableTeacherList where pay is null
+        defaultLessonTimetableTeacherShouldNotBeFound("pay.specified=false");
+    }
+
+    @Test
+    @Transactional
+    void getAllLessonTimetableTeachersByPayIsGreaterThanOrEqualToSomething() throws Exception {
+        // Initialize the database
+        lessonTimetableTeacherRepository.saveAndFlush(lessonTimetableTeacher);
+
+        // Get all the lessonTimetableTeacherList where pay is greater than or equal to DEFAULT_PAY
+        defaultLessonTimetableTeacherShouldBeFound("pay.greaterThanOrEqual=" + DEFAULT_PAY);
+
+        // Get all the lessonTimetableTeacherList where pay is greater than or equal to UPDATED_PAY
+        defaultLessonTimetableTeacherShouldNotBeFound("pay.greaterThanOrEqual=" + UPDATED_PAY);
+    }
+
+    @Test
+    @Transactional
+    void getAllLessonTimetableTeachersByPayIsLessThanOrEqualToSomething() throws Exception {
+        // Initialize the database
+        lessonTimetableTeacherRepository.saveAndFlush(lessonTimetableTeacher);
+
+        // Get all the lessonTimetableTeacherList where pay is less than or equal to DEFAULT_PAY
+        defaultLessonTimetableTeacherShouldBeFound("pay.lessThanOrEqual=" + DEFAULT_PAY);
+
+        // Get all the lessonTimetableTeacherList where pay is less than or equal to SMALLER_PAY
+        defaultLessonTimetableTeacherShouldNotBeFound("pay.lessThanOrEqual=" + SMALLER_PAY);
+    }
+
+    @Test
+    @Transactional
+    void getAllLessonTimetableTeachersByPayIsLessThanSomething() throws Exception {
+        // Initialize the database
+        lessonTimetableTeacherRepository.saveAndFlush(lessonTimetableTeacher);
+
+        // Get all the lessonTimetableTeacherList where pay is less than DEFAULT_PAY
+        defaultLessonTimetableTeacherShouldNotBeFound("pay.lessThan=" + DEFAULT_PAY);
+
+        // Get all the lessonTimetableTeacherList where pay is less than UPDATED_PAY
+        defaultLessonTimetableTeacherShouldBeFound("pay.lessThan=" + UPDATED_PAY);
+    }
+
+    @Test
+    @Transactional
+    void getAllLessonTimetableTeachersByPayIsGreaterThanSomething() throws Exception {
+        // Initialize the database
+        lessonTimetableTeacherRepository.saveAndFlush(lessonTimetableTeacher);
+
+        // Get all the lessonTimetableTeacherList where pay is greater than DEFAULT_PAY
+        defaultLessonTimetableTeacherShouldNotBeFound("pay.greaterThan=" + DEFAULT_PAY);
+
+        // Get all the lessonTimetableTeacherList where pay is greater than SMALLER_PAY
+        defaultLessonTimetableTeacherShouldBeFound("pay.greaterThan=" + SMALLER_PAY);
+    }
+
+    @Test
+    @Transactional
+    void getAllLessonTimetableTeachersByLessonTimetableIsEqualToSomething() throws Exception {
+        // Initialize the database
+        lessonTimetableTeacherRepository.saveAndFlush(lessonTimetableTeacher);
+        LessonTimetable lessonTimetable = LessonTimetableResourceIT.createEntity(em);
+        em.persist(lessonTimetable);
+        em.flush();
+        lessonTimetableTeacher.setLessonTimetable(lessonTimetable);
+        lessonTimetableTeacherRepository.saveAndFlush(lessonTimetableTeacher);
+        Long lessonTimetableId = lessonTimetable.getId();
+
+        // Get all the lessonTimetableTeacherList where lessonTimetable equals to lessonTimetableId
+        defaultLessonTimetableTeacherShouldBeFound("lessonTimetableId.equals=" + lessonTimetableId);
+
+        // Get all the lessonTimetableTeacherList where lessonTimetable equals to (lessonTimetableId + 1)
+        defaultLessonTimetableTeacherShouldNotBeFound("lessonTimetableId.equals=" + (lessonTimetableId + 1));
+    }
+
+    @Test
+    @Transactional
+    void getAllLessonTimetableTeachersByInternalUserIsEqualToSomething() throws Exception {
+        // Initialize the database
+        lessonTimetableTeacherRepository.saveAndFlush(lessonTimetableTeacher);
+        User internalUser = UserResourceIT.createEntity(em);
+        em.persist(internalUser);
+        em.flush();
+        lessonTimetableTeacher.setInternalUser(internalUser);
+        lessonTimetableTeacherRepository.saveAndFlush(lessonTimetableTeacher);
+        Long internalUserId = internalUser.getId();
+
+        // Get all the lessonTimetableTeacherList where internalUser equals to internalUserId
+        defaultLessonTimetableTeacherShouldBeFound("internalUserId.equals=" + internalUserId);
+
+        // Get all the lessonTimetableTeacherList where internalUser equals to (internalUserId + 1)
+        defaultLessonTimetableTeacherShouldNotBeFound("internalUserId.equals=" + (internalUserId + 1));
+    }
+
+    /**
+     * Executes the search, and checks that the default entity is returned.
+     */
+    private void defaultLessonTimetableTeacherShouldBeFound(String filter) throws Exception {
+        restLessonTimetableTeacherMockMvc
+            .perform(get(ENTITY_API_URL + "?sort=id,desc&" + filter))
+            .andExpect(status().isOk())
+            .andExpect(content().contentType(MediaType.APPLICATION_JSON_VALUE))
+            .andExpect(jsonPath("$.[*].id").value(hasItem(lessonTimetableTeacher.getId().intValue())))
+            .andExpect(jsonPath("$.[*].pay").value(hasItem(DEFAULT_PAY.doubleValue())));
+
+        // Check, that the count call also returns 1
+        restLessonTimetableTeacherMockMvc
+            .perform(get(ENTITY_API_URL + "/count?sort=id,desc&" + filter))
+            .andExpect(status().isOk())
+            .andExpect(content().contentType(MediaType.APPLICATION_JSON_VALUE))
+            .andExpect(content().string("1"));
+    }
+
+    /**
+     * Executes the search, and checks that the default entity is not returned.
+     */
+    private void defaultLessonTimetableTeacherShouldNotBeFound(String filter) throws Exception {
+        restLessonTimetableTeacherMockMvc
+            .perform(get(ENTITY_API_URL + "?sort=id,desc&" + filter))
+            .andExpect(status().isOk())
+            .andExpect(content().contentType(MediaType.APPLICATION_JSON_VALUE))
+            .andExpect(jsonPath("$").isArray())
+            .andExpect(jsonPath("$").isEmpty());
+
+        // Check, that the count call also returns 0
+        restLessonTimetableTeacherMockMvc
+            .perform(get(ENTITY_API_URL + "/count?sort=id,desc&" + filter))
+            .andExpect(status().isOk())
+            .andExpect(content().contentType(MediaType.APPLICATION_JSON_VALUE))
+            .andExpect(content().string("0"));
     }
 
     @Test

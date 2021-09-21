@@ -13,7 +13,7 @@ import org.springframework.stereotype.Repository;
  * Spring Data SQL repository for the LessonInstance entity.
  */
 @Repository
-public interface LessonInstanceRepository extends JpaRepository<LessonInstance, Long> {
+public interface LessonInstanceRepository extends JpaRepository<LessonInstance, Long>, JpaSpecificationExecutor<LessonInstance> {
     @Query("select lessonInstance from LessonInstance lessonInstance where lessonInstance.internalUser.login = ?#{principal.username}")
     List<LessonInstance> findByInternalUserIsCurrentUser();
 

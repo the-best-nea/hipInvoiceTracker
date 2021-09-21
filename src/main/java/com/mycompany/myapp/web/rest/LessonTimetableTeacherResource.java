@@ -2,7 +2,9 @@ package com.mycompany.myapp.web.rest;
 
 import com.mycompany.myapp.domain.LessonTimetableTeacher;
 import com.mycompany.myapp.repository.LessonTimetableTeacherRepository;
-import com.mycompany.myapp.security.AuthoritiesConstants;
+import com.mycompany.myapp.service.LessonTimetableTeacherQueryService;
+import com.mycompany.myapp.service.LessonTimetableTeacherService;
+import com.mycompany.myapp.service.criteria.LessonTimetableTeacherCriteria;
 import com.mycompany.myapp.web.rest.errors.BadRequestAlertException;
 import java.net.URI;
 import java.net.URISyntaxException;
@@ -15,8 +17,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 import tech.jhipster.web.util.HeaderUtil;
 import tech.jhipster.web.util.ResponseUtil;
@@ -26,8 +26,6 @@ import tech.jhipster.web.util.ResponseUtil;
  */
 @RestController
 @RequestMapping("/api")
-@Transactional
-@PreAuthorize("hasRole(\"" + AuthoritiesConstants.ADMIN + "\")")
 public class LessonTimetableTeacherResource {
 
     private final Logger log = LoggerFactory.getLogger(LessonTimetableTeacherResource.class);
@@ -37,10 +35,20 @@ public class LessonTimetableTeacherResource {
     @Value("${jhipster.clientApp.name}")
     private String applicationName;
 
+    private final LessonTimetableTeacherService lessonTimetableTeacherService;
+
     private final LessonTimetableTeacherRepository lessonTimetableTeacherRepository;
 
-    public LessonTimetableTeacherResource(LessonTimetableTeacherRepository lessonTimetableTeacherRepository) {
+    private final LessonTimetableTeacherQueryService lessonTimetableTeacherQueryService;
+
+    public LessonTimetableTeacherResource(
+        LessonTimetableTeacherService lessonTimetableTeacherService,
+        LessonTimetableTeacherRepository lessonTimetableTeacherRepository,
+        LessonTimetableTeacherQueryService lessonTimetableTeacherQueryService
+    ) {
+        this.lessonTimetableTeacherService = lessonTimetableTeacherService;
         this.lessonTimetableTeacherRepository = lessonTimetableTeacherRepository;
+        this.lessonTimetableTeacherQueryService = lessonTimetableTeacherQueryService;
     }
 
     /**
@@ -58,7 +66,7 @@ public class LessonTimetableTeacherResource {
         if (lessonTimetableTeacher.getId() != null) {
             throw new BadRequestAlertException("A new lessonTimetableTeacher cannot already have an ID", ENTITY_NAME, "idexists");
         }
-        LessonTimetableTeacher result = lessonTimetableTeacherRepository.save(lessonTimetableTeacher);
+        LessonTimetableTeacher result = lessonTimetableTeacherService.save(lessonTimetableTeacher);
         return ResponseEntity
             .created(new URI("/api/lesson-timetable-teachers/" + result.getId()))
             .headers(HeaderUtil.createEntityCreationAlert(applicationName, false, ENTITY_NAME, result.getId().toString()))
@@ -92,7 +100,7 @@ public class LessonTimetableTeacherResource {
             throw new BadRequestAlertException("Entity not found", ENTITY_NAME, "idnotfound");
         }
 
-        LessonTimetableTeacher result = lessonTimetableTeacherRepository.save(lessonTimetableTeacher);
+        LessonTimetableTeacher result = lessonTimetableTeacherService.save(lessonTimetableTeacher);
         return ResponseEntity
             .ok()
             .headers(HeaderUtil.createEntityUpdateAlert(applicationName, false, ENTITY_NAME, lessonTimetableTeacher.getId().toString()))
@@ -127,18 +135,7 @@ public class LessonTimetableTeacherResource {
             throw new BadRequestAlertException("Entity not found", ENTITY_NAME, "idnotfound");
         }
 
-        Optional<LessonTimetableTeacher> result = lessonTimetableTeacherRepository
-            .findById(lessonTimetableTeacher.getId())
-            .map(
-                existingLessonTimetableTeacher -> {
-                    if (lessonTimetableTeacher.getPay() != null) {
-                        existingLessonTimetableTeacher.setPay(lessonTimetableTeacher.getPay());
-                    }
-
-                    return existingLessonTimetableTeacher;
-                }
-            )
-            .map(lessonTimetableTeacherRepository::save);
+        Optional<LessonTimetableTeacher> result = lessonTimetableTeacherService.partialUpdate(lessonTimetableTeacher);
 
         return ResponseUtil.wrapOrNotFound(
             result,
@@ -149,12 +146,26 @@ public class LessonTimetableTeacherResource {
     /**
      * {@code GET  /lesson-timetable-teachers} : get all the lessonTimetableTeachers.
      *
+     * @param criteria the criteria which the requested entities should match.
      * @return the {@link ResponseEntity} with status {@code 200 (OK)} and the list of lessonTimetableTeachers in body.
      */
     @GetMapping("/lesson-timetable-teachers")
-    public List<LessonTimetableTeacher> getAllLessonTimetableTeachers() {
-        log.debug("REST request to get all LessonTimetableTeachers");
-        return lessonTimetableTeacherRepository.findAll();
+    public ResponseEntity<List<LessonTimetableTeacher>> getAllLessonTimetableTeachers(LessonTimetableTeacherCriteria criteria) {
+        log.debug("REST request to get LessonTimetableTeachers by criteria: {}", criteria);
+        List<LessonTimetableTeacher> entityList = lessonTimetableTeacherQueryService.findByCriteria(criteria);
+        return ResponseEntity.ok().body(entityList);
+    }
+
+    /**
+     * {@code GET  /lesson-timetable-teachers/count} : count all the lessonTimetableTeachers.
+     *
+     * @param criteria the criteria which the requested entities should match.
+     * @return the {@link ResponseEntity} with status {@code 200 (OK)} and the count in body.
+     */
+    @GetMapping("/lesson-timetable-teachers/count")
+    public ResponseEntity<Long> countLessonTimetableTeachers(LessonTimetableTeacherCriteria criteria) {
+        log.debug("REST request to count LessonTimetableTeachers by criteria: {}", criteria);
+        return ResponseEntity.ok().body(lessonTimetableTeacherQueryService.countByCriteria(criteria));
     }
 
     /**
@@ -166,7 +177,7 @@ public class LessonTimetableTeacherResource {
     @GetMapping("/lesson-timetable-teachers/{id}")
     public ResponseEntity<LessonTimetableTeacher> getLessonTimetableTeacher(@PathVariable Long id) {
         log.debug("REST request to get LessonTimetableTeacher : {}", id);
-        Optional<LessonTimetableTeacher> lessonTimetableTeacher = lessonTimetableTeacherRepository.findById(id);
+        Optional<LessonTimetableTeacher> lessonTimetableTeacher = lessonTimetableTeacherService.findOne(id);
         return ResponseUtil.wrapOrNotFound(lessonTimetableTeacher);
     }
 
@@ -179,7 +190,7 @@ public class LessonTimetableTeacherResource {
     @DeleteMapping("/lesson-timetable-teachers/{id}")
     public ResponseEntity<Void> deleteLessonTimetableTeacher(@PathVariable Long id) {
         log.debug("REST request to delete LessonTimetableTeacher : {}", id);
-        lessonTimetableTeacherRepository.deleteById(id);
+        lessonTimetableTeacherService.delete(id);
         return ResponseEntity
             .noContent()
             .headers(HeaderUtil.createEntityDeletionAlert(applicationName, false, ENTITY_NAME, id.toString()))

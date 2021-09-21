@@ -34,6 +34,7 @@ export class LessonTimetableUpdateComponent implements OnInit {
     description: [],
     createdAt: [null, [Validators.required]],
     active: [],
+    registerTaken: [],
     location: [],
     subject: [],
   });
@@ -112,6 +113,7 @@ export class LessonTimetableUpdateComponent implements OnInit {
       description: lessonTimetable.description,
       createdAt: lessonTimetable.createdAt ? lessonTimetable.createdAt.format(DATE_TIME_FORMAT) : null,
       active: lessonTimetable.active,
+      registerTaken: lessonTimetable.registerTaken,
       location: lessonTimetable.location,
       subject: lessonTimetable.subject,
     });
@@ -157,6 +159,7 @@ export class LessonTimetableUpdateComponent implements OnInit {
       description: this.editForm.get(['description'])!.value,
       createdAt: this.editForm.get(['createdAt'])!.value ? dayjs(this.editForm.get(['createdAt'])!.value, DATE_TIME_FORMAT) : undefined,
       active: this.editForm.get(['active'])!.value,
+      registerTaken: this.editForm.get(['registerTaken'])!.value,
       location: this.editForm.get(['location'])!.value,
       subject: this.editForm.get(['subject'])!.value,
     };

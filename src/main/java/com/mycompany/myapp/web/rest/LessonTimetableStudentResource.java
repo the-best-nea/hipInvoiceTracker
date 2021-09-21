@@ -2,7 +2,9 @@ package com.mycompany.myapp.web.rest;
 
 import com.mycompany.myapp.domain.LessonTimetableStudent;
 import com.mycompany.myapp.repository.LessonTimetableStudentRepository;
-import com.mycompany.myapp.security.AuthoritiesConstants;
+import com.mycompany.myapp.service.LessonTimetableStudentQueryService;
+import com.mycompany.myapp.service.LessonTimetableStudentService;
+import com.mycompany.myapp.service.criteria.LessonTimetableStudentCriteria;
 import com.mycompany.myapp.web.rest.errors.BadRequestAlertException;
 import java.net.URI;
 import java.net.URISyntaxException;
@@ -13,8 +15,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 import tech.jhipster.web.util.HeaderUtil;
 import tech.jhipster.web.util.ResponseUtil;
@@ -24,8 +24,6 @@ import tech.jhipster.web.util.ResponseUtil;
  */
 @RestController
 @RequestMapping("/api")
-@PreAuthorize("hasRole(\"" + AuthoritiesConstants.ADMIN + "\")")
-@Transactional
 public class LessonTimetableStudentResource {
 
     private final Logger log = LoggerFactory.getLogger(LessonTimetableStudentResource.class);
@@ -35,10 +33,20 @@ public class LessonTimetableStudentResource {
     @Value("${jhipster.clientApp.name}")
     private String applicationName;
 
+    private final LessonTimetableStudentService lessonTimetableStudentService;
+
     private final LessonTimetableStudentRepository lessonTimetableStudentRepository;
 
-    public LessonTimetableStudentResource(LessonTimetableStudentRepository lessonTimetableStudentRepository) {
+    private final LessonTimetableStudentQueryService lessonTimetableStudentQueryService;
+
+    public LessonTimetableStudentResource(
+        LessonTimetableStudentService lessonTimetableStudentService,
+        LessonTimetableStudentRepository lessonTimetableStudentRepository,
+        LessonTimetableStudentQueryService lessonTimetableStudentQueryService
+    ) {
+        this.lessonTimetableStudentService = lessonTimetableStudentService;
         this.lessonTimetableStudentRepository = lessonTimetableStudentRepository;
+        this.lessonTimetableStudentQueryService = lessonTimetableStudentQueryService;
     }
 
     /**
@@ -55,7 +63,7 @@ public class LessonTimetableStudentResource {
         if (lessonTimetableStudent.getId() != null) {
             throw new BadRequestAlertException("A new lessonTimetableStudent cannot already have an ID", ENTITY_NAME, "idexists");
         }
-        LessonTimetableStudent result = lessonTimetableStudentRepository.save(lessonTimetableStudent);
+        LessonTimetableStudent result = lessonTimetableStudentService.save(lessonTimetableStudent);
         return ResponseEntity
             .created(new URI("/api/lesson-timetable-students/" + result.getId()))
             .headers(HeaderUtil.createEntityCreationAlert(applicationName, false, ENTITY_NAME, result.getId().toString()))
@@ -89,7 +97,7 @@ public class LessonTimetableStudentResource {
             throw new BadRequestAlertException("Entity not found", ENTITY_NAME, "idnotfound");
         }
 
-        LessonTimetableStudent result = lessonTimetableStudentRepository.save(lessonTimetableStudent);
+        LessonTimetableStudent result = lessonTimetableStudentService.save(lessonTimetableStudent);
         return ResponseEntity
             .ok()
             .headers(HeaderUtil.createEntityUpdateAlert(applicationName, false, ENTITY_NAME, lessonTimetableStudent.getId().toString()))
@@ -124,18 +132,7 @@ public class LessonTimetableStudentResource {
             throw new BadRequestAlertException("Entity not found", ENTITY_NAME, "idnotfound");
         }
 
-        Optional<LessonTimetableStudent> result = lessonTimetableStudentRepository
-            .findById(lessonTimetableStudent.getId())
-            .map(
-                existingLessonTimetableStudent -> {
-                    if (lessonTimetableStudent.getPay() != null) {
-                        existingLessonTimetableStudent.setPay(lessonTimetableStudent.getPay());
-                    }
-
-                    return existingLessonTimetableStudent;
-                }
-            )
-            .map(lessonTimetableStudentRepository::save);
+        Optional<LessonTimetableStudent> result = lessonTimetableStudentService.partialUpdate(lessonTimetableStudent);
 
         return ResponseUtil.wrapOrNotFound(
             result,
@@ -146,12 +143,26 @@ public class LessonTimetableStudentResource {
     /**
      * {@code GET  /lesson-timetable-students} : get all the lessonTimetableStudents.
      *
+     * @param criteria the criteria which the requested entities should match.
      * @return the {@link ResponseEntity} with status {@code 200 (OK)} and the list of lessonTimetableStudents in body.
      */
     @GetMapping("/lesson-timetable-students")
-    public List<LessonTimetableStudent> getAllLessonTimetableStudents() {
-        log.debug("REST request to get all LessonTimetableStudents");
-        return lessonTimetableStudentRepository.findAll();
+    public ResponseEntity<List<LessonTimetableStudent>> getAllLessonTimetableStudents(LessonTimetableStudentCriteria criteria) {
+        log.debug("REST request to get LessonTimetableStudents by criteria: {}", criteria);
+        List<LessonTimetableStudent> entityList = lessonTimetableStudentQueryService.findByCriteria(criteria);
+        return ResponseEntity.ok().body(entityList);
+    }
+
+    /**
+     * {@code GET  /lesson-timetable-students/count} : count all the lessonTimetableStudents.
+     *
+     * @param criteria the criteria which the requested entities should match.
+     * @return the {@link ResponseEntity} with status {@code 200 (OK)} and the count in body.
+     */
+    @GetMapping("/lesson-timetable-students/count")
+    public ResponseEntity<Long> countLessonTimetableStudents(LessonTimetableStudentCriteria criteria) {
+        log.debug("REST request to count LessonTimetableStudents by criteria: {}", criteria);
+        return ResponseEntity.ok().body(lessonTimetableStudentQueryService.countByCriteria(criteria));
     }
 
     /**
@@ -163,7 +174,7 @@ public class LessonTimetableStudentResource {
     @GetMapping("/lesson-timetable-students/{id}")
     public ResponseEntity<LessonTimetableStudent> getLessonTimetableStudent(@PathVariable Long id) {
         log.debug("REST request to get LessonTimetableStudent : {}", id);
-        Optional<LessonTimetableStudent> lessonTimetableStudent = lessonTimetableStudentRepository.findById(id);
+        Optional<LessonTimetableStudent> lessonTimetableStudent = lessonTimetableStudentService.findOne(id);
         return ResponseUtil.wrapOrNotFound(lessonTimetableStudent);
     }
 
@@ -176,7 +187,7 @@ public class LessonTimetableStudentResource {
     @DeleteMapping("/lesson-timetable-students/{id}")
     public ResponseEntity<Void> deleteLessonTimetableStudent(@PathVariable Long id) {
         log.debug("REST request to delete LessonTimetableStudent : {}", id);
-        lessonTimetableStudentRepository.deleteById(id);
+        lessonTimetableStudentService.delete(id);
         return ResponseEntity
             .noContent()
             .headers(HeaderUtil.createEntityDeletionAlert(applicationName, false, ENTITY_NAME, id.toString()))

@@ -1,68 +1,114 @@
 package com.mycompany.myapp.service;
 
-import com.mycompany.myapp.domain.*;
-import com.mycompany.myapp.repository.*;
-
-import java.util.ArrayList;
-import java.util.Calendar;
+import com.mycompany.myapp.domain.LessonTimetable;
+import com.mycompany.myapp.repository.LessonTimetableRepository;
 import java.util.List;
-import java.util.Set;
-
-import com.mycompany.myapp.security.AuthoritiesConstants;
-import org.springframework.security.core.GrantedAuthority;
-import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.core.userdetails.UserDetails;
+import java.util.Optional;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+/**
+ * Service Implementation for managing {@link LessonTimetable}.
+ */
 @Service
 @Transactional
 public class LessonTimetableService {
-    protected List<LessonTimetable> lessonTimetables = new ArrayList<LessonTimetable>();
 
-    private String getDayOfWeek(int value){
-        String day = "";
-        switch(value){case 1:day="SUNDAY";break;case 2:day="MONDAY";break;case 3:day="TUESDAY";break;case 4:day="WEDNESDAY";break;case 5:day="THURSDAY";break;case 6:day="FRIDAY";break;case 7:day="SATURDAY";break;}
-        return day;
-    }
+    private final Logger log = LoggerFactory.getLogger(LessonTimetableService.class);
 
     private final LessonTimetableRepository lessonTimetableRepository;
-    private final LessonTimetableTeacherRepository lessonTimetableTeacherRepository;
 
-    public LessonTimetableService(LessonTimetableRepository lessonTimetableRepository,
-                                  LessonTimetableTeacherRepository lessonTimetableTeacherRepository) {
+    public LessonTimetableService(LessonTimetableRepository lessonTimetableRepository) {
         this.lessonTimetableRepository = lessonTimetableRepository;
-        this.lessonTimetableTeacherRepository = lessonTimetableTeacherRepository;
     }
 
-    public List<LessonTimetable> getAllLessonTimetableByUser() {
-        lessonTimetables.clear();
+    /**
+     * Save a lessonTimetable.
+     *
+     * @param lessonTimetable the entity to save.
+     * @return the persisted entity.
+     */
+    public LessonTimetable save(LessonTimetable lessonTimetable) {
+        log.debug("Request to save LessonTimetable : {}", lessonTimetable);
+        return lessonTimetableRepository.save(lessonTimetable);
+    }
 
-        UserDetails currentUser = (UserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-        System.out.println(currentUser.getAuthorities());
-        if (currentUser.getAuthorities().stream().anyMatch(a -> a.getAuthority().equals("ROLE_ADMIN"))) {
-            System.out.println("---------------------------------");
-            return lessonTimetableRepository.findAll();
-        } else {
-            List<LessonTimetableTeacher> lessonTimetableTeacher = lessonTimetableTeacherRepository.findByInternalUserIsCurrentUser();
-            System.out.println("lessonTimetableTeacher");
-            System.out.println(lessonTimetableTeacher);
-            for (LessonTimetableTeacher lessonTimetableTeacher1: lessonTimetableTeacher){
-                System.out.println("lessonTimetableTeacher1.getLessonTimetable()");
-                System.out.println(lessonTimetableTeacher1.getLessonTimetable());
-                if(lessonTimetableTeacher1.getLessonTimetable() != null &&
-                    lessonTimetableTeacher1.getLessonTimetable().getDayOfWeek().toString() == getDayOfWeek(Calendar.getInstance().get(Calendar.DAY_OF_WEEK))  &&
-                    lessonTimetableTeacher1.getLessonTimetable().getActive())
-                {
-                    System.out.println("InsideForLoop");
-                    System.out.println(lessonTimetableTeacher1.getLessonTimetable().getDayOfWeek().toString());
-                    this.lessonTimetables.add(lessonTimetableTeacher1.getLessonTimetable());
-                    System.out.println(this.lessonTimetables);
+    /**
+     * Partially update a lessonTimetable.
+     *
+     * @param lessonTimetable the entity to update partially.
+     * @return the persisted entity.
+     */
+    public Optional<LessonTimetable> partialUpdate(LessonTimetable lessonTimetable) {
+        log.debug("Request to partially update LessonTimetable : {}", lessonTimetable);
+
+        return lessonTimetableRepository
+            .findById(lessonTimetable.getId())
+            .map(
+                existingLessonTimetable -> {
+                    if (lessonTimetable.getLessonName() != null) {
+                        existingLessonTimetable.setLessonName(lessonTimetable.getLessonName());
+                    }
+                    if (lessonTimetable.getStartAt() != null) {
+                        existingLessonTimetable.setStartAt(lessonTimetable.getStartAt());
+                    }
+                    if (lessonTimetable.getEndAt() != null) {
+                        existingLessonTimetable.setEndAt(lessonTimetable.getEndAt());
+                    }
+                    if (lessonTimetable.getDayOfWeek() != null) {
+                        existingLessonTimetable.setDayOfWeek(lessonTimetable.getDayOfWeek());
+                    }
+                    if (lessonTimetable.getDescription() != null) {
+                        existingLessonTimetable.setDescription(lessonTimetable.getDescription());
+                    }
+                    if (lessonTimetable.getCreatedAt() != null) {
+                        existingLessonTimetable.setCreatedAt(lessonTimetable.getCreatedAt());
+                    }
+                    if (lessonTimetable.getActive() != null) {
+                        existingLessonTimetable.setActive(lessonTimetable.getActive());
+                    }
+                    if (lessonTimetable.getRegisterTaken() != null) {
+                        existingLessonTimetable.setRegisterTaken(lessonTimetable.getRegisterTaken());
+                    }
+
+                    return existingLessonTimetable;
                 }
-            }
-            System.out.println("lessonTimetableSet");
-            System.out.println(this.lessonTimetables);
-            return this.lessonTimetables;
-        }
+            )
+            .map(lessonTimetableRepository::save);
+    }
+
+    /**
+     * Get all the lessonTimetables.
+     *
+     * @return the list of entities.
+     */
+    @Transactional(readOnly = true)
+    public List<LessonTimetable> findAll() {
+        log.debug("Request to get all LessonTimetables");
+        return lessonTimetableRepository.findAll();
+    }
+
+    /**
+     * Get one lessonTimetable by id.
+     *
+     * @param id the id of the entity.
+     * @return the entity.
+     */
+    @Transactional(readOnly = true)
+    public Optional<LessonTimetable> findOne(Long id) {
+        log.debug("Request to get LessonTimetable : {}", id);
+        return lessonTimetableRepository.findById(id);
+    }
+
+    /**
+     * Delete the lessonTimetable by id.
+     *
+     * @param id the id of the entity.
+     */
+    public void delete(Long id) {
+        log.debug("Request to delete LessonTimetable : {}", id);
+        lessonTimetableRepository.deleteById(id);
     }
 }

@@ -12,6 +12,7 @@ import java.util.List;
  */
 @SuppressWarnings("unused")
 @Repository
-public interface LessonTimetableStudentRepository extends JpaRepository<LessonTimetableStudent, Long> {
+public interface LessonTimetableStudentRepository
+    extends JpaRepository<LessonTimetableStudent, Long>, JpaSpecificationExecutor<LessonTimetableStudent> {
     List<LessonTimetableStudent> findAllByLessonTimetable(LessonTimetable lessonTimetable);
 }

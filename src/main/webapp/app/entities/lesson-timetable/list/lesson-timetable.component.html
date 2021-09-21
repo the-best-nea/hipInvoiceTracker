@@ -24,9 +24,48 @@
 
   <jhi-alert></jhi-alert>
 
+
   <div class="alert alert-warning" id="no-result" *ngIf="lessonTimetables?.length === 0">
     <span>No lessonTimetables found</span>
   </div>
+
+
+  <table class="table table-striped" aria-describedby="page-heading">
+    <thead>
+    <tr>
+      <th scope="col"><span>Id: </span><input type="number" class="form-control" [(ngModel)]="filterId" (change)="updateLessonTimetable()" /></th>
+      <th scope="col"><span>Lesson Name: </span><select class="form-control" name="LessonName" [(ngModel)]="filterLessonName" (change)="updateLessonTimetable()">
+        <option></option>
+        <option *ngFor="let lessonTimetable of lessonTimetables; trackBy: trackId"> {{ lessonTimetable.lessonName }}</option>
+      </select></th>
+      <th scope="col"><span>Day Of Week: </span><select class="form-control" name="DayOfWeek" [(ngModel)]="filterDayOfWeek" (change)="updateLessonTimetable()">
+        <option></option>
+        <option>MONDAY</option>
+        <option>TUESDAY</option>
+        <option>WEDNESDAY</option>
+        <option>THURSDAY</option>
+        <option>FRIDAY</option>
+        <option>SATURDAY</option>
+        <option>SUNDAY</option>
+      </select></th>
+      <th scope="col"><span>Active: </span><select class="form-control" name="Active" [(ngModel)]="filterActive" (change)="updateLessonTimetable()">
+        <option></option>
+        <option>Active</option>
+        <option>Inactive</option>
+      </select></th>
+      <th scope="col"><span>Location: </span><select class="form-control" name="Location" [(ngModel)]="filterLocation" (change)="updateLessonTimetable()">
+        <option></option>
+        <option *ngFor="let lessonTimetable of lessonTimetables; trackBy: trackId"> {{ lessonTimetable.location }}</option>
+      </select></th>
+      <th scope="col"><span>Subjects: </span><select class="form-control" name="LessonName" [(ngModel)]="filterSubject" (change)="updateLessonTimetable()">
+        <option></option>
+        <option *ngFor="let lessonTimetable of lessonTimetables; trackBy: trackId"> {{ lessonTimetable.subject }}</option>
+      </select></th>
+    </tr>
+    </thead>
+    <tbody></tbody>
+  </table>
+
 
   <div class="table-responsive" id="entities" *ngIf="lessonTimetables && lessonTimetables.length > 0">
     <table class="table table-striped" aria-describedby="page-heading">
@@ -40,6 +79,7 @@
           <th scope="col"><span>Description</span></th>
           <th scope="col"><span>Created At</span></th>
           <th scope="col"><span>Active</span></th>
+          <th scope="col"><span>Register Taken</span></th>
           <th scope="col"><span>Location</span></th>
           <th scope="col"><span>Subject</span></th>
           <th scope="col"></th>
@@ -57,6 +97,7 @@
           <td>{{ lessonTimetable.description }}</td>
           <td>{{ lessonTimetable.createdAt | formatMediumDatetime }}</td>
           <td>{{ lessonTimetable.active }}</td>
+          <td>{{ lessonTimetable.registerTaken }}</td>
           <td>
             <div *ngIf="lessonTimetable.location">
               <a [routerLink]="['/location', lessonTimetable.location?.id, 'view']">{{ lessonTimetable.location?.name }}</a>

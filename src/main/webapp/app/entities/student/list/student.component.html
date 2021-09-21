@@ -24,6 +24,26 @@
 
   <jhi-alert></jhi-alert>
 
+
+  <table class="table table-striped" aria-describedby="page-heading">
+    <thead>
+    <tr>
+      <th scope="col"><span>Id: </span><input type="number" class="form-control" [(ngModel)]="filterId" (change)="updateStudent()" /></th>
+      <th scope="col"><span>First Name: </span><input type="text" class="form-control" [(ngModel)]="filterFirstName" (change)="updateStudent()" /></th>
+      <th scope="col"><span>Last Name: </span><input type="text" class="form-control" [(ngModel)]="filterLastName" (change)="updateStudent()" /></th>
+      <th scope="col"><span>Year Group: </span><input type="number" class="form-control" [(ngModel)]="filterYearGroup" (change)="updateStudent()" /></th>
+      <th scope="col"><span>Email: </span><input type="text" class="form-control" [(ngModel)]="filterEmail" (change)="updateStudent()" /></th>
+      <th scope="col"><span>Active: </span><select class="form-control" name="Active" [(ngModel)]="filterActive" (change)="updateStudent()">
+        <option></option>
+        <option>Active</option>
+        <option>Inactive</option>
+      </select></th>
+    </tr>
+    </thead>
+    <tbody></tbody>
+  </table>
+
+
   <div class="alert alert-warning" id="no-result" *ngIf="students?.length === 0">
     <span>No students found</span>
   </div>

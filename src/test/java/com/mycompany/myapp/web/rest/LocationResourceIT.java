@@ -6,8 +6,10 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 import com.mycompany.myapp.IntegrationTest;
+import com.mycompany.myapp.domain.LessonTimetable;
 import com.mycompany.myapp.domain.Location;
 import com.mycompany.myapp.repository.LocationRepository;
+import com.mycompany.myapp.service.criteria.LocationCriteria;
 import java.util.List;
 import java.util.Random;
 import java.util.concurrent.atomic.AtomicLong;
@@ -178,6 +180,238 @@ class LocationResourceIT {
             .andExpect(jsonPath("$.id").value(location.getId().intValue()))
             .andExpect(jsonPath("$.name").value(DEFAULT_NAME))
             .andExpect(jsonPath("$.address").value(DEFAULT_ADDRESS));
+    }
+
+    @Test
+    @Transactional
+    void getLocationsByIdFiltering() throws Exception {
+        // Initialize the database
+        locationRepository.saveAndFlush(location);
+
+        Long id = location.getId();
+
+        defaultLocationShouldBeFound("id.equals=" + id);
+        defaultLocationShouldNotBeFound("id.notEquals=" + id);
+
+        defaultLocationShouldBeFound("id.greaterThanOrEqual=" + id);
+        defaultLocationShouldNotBeFound("id.greaterThan=" + id);
+
+        defaultLocationShouldBeFound("id.lessThanOrEqual=" + id);
+        defaultLocationShouldNotBeFound("id.lessThan=" + id);
+    }
+
+    @Test
+    @Transactional
+    void getAllLocationsByNameIsEqualToSomething() throws Exception {
+        // Initialize the database
+        locationRepository.saveAndFlush(location);
+
+        // Get all the locationList where name equals to DEFAULT_NAME
+        defaultLocationShouldBeFound("name.equals=" + DEFAULT_NAME);
+
+        // Get all the locationList where name equals to UPDATED_NAME
+        defaultLocationShouldNotBeFound("name.equals=" + UPDATED_NAME);
+    }
+
+    @Test
+    @Transactional
+    void getAllLocationsByNameIsNotEqualToSomething() throws Exception {
+        // Initialize the database
+        locationRepository.saveAndFlush(location);
+
+        // Get all the locationList where name not equals to DEFAULT_NAME
+        defaultLocationShouldNotBeFound("name.notEquals=" + DEFAULT_NAME);
+
+        // Get all the locationList where name not equals to UPDATED_NAME
+        defaultLocationShouldBeFound("name.notEquals=" + UPDATED_NAME);
+    }
+
+    @Test
+    @Transactional
+    void getAllLocationsByNameIsInShouldWork() throws Exception {
+        // Initialize the database
+        locationRepository.saveAndFlush(location);
+
+        // Get all the locationList where name in DEFAULT_NAME or UPDATED_NAME
+        defaultLocationShouldBeFound("name.in=" + DEFAULT_NAME + "," + UPDATED_NAME);
+
+        // Get all the locationList where name equals to UPDATED_NAME
+        defaultLocationShouldNotBeFound("name.in=" + UPDATED_NAME);
+    }
+
+    @Test
+    @Transactional
+    void getAllLocationsByNameIsNullOrNotNull() throws Exception {
+        // Initialize the database
+        locationRepository.saveAndFlush(location);
+
+        // Get all the locationList where name is not null
+        defaultLocationShouldBeFound("name.specified=true");
+
+        // Get all the locationList where name is null
+        defaultLocationShouldNotBeFound("name.specified=false");
+    }
+
+    @Test
+    @Transactional
+    void getAllLocationsByNameContainsSomething() throws Exception {
+        // Initialize the database
+        locationRepository.saveAndFlush(location);
+
+        // Get all the locationList where name contains DEFAULT_NAME
+        defaultLocationShouldBeFound("name.contains=" + DEFAULT_NAME);
+
+        // Get all the locationList where name contains UPDATED_NAME
+        defaultLocationShouldNotBeFound("name.contains=" + UPDATED_NAME);
+    }
+
+    @Test
+    @Transactional
+    void getAllLocationsByNameNotContainsSomething() throws Exception {
+        // Initialize the database
+        locationRepository.saveAndFlush(location);
+
+        // Get all the locationList where name does not contain DEFAULT_NAME
+        defaultLocationShouldNotBeFound("name.doesNotContain=" + DEFAULT_NAME);
+
+        // Get all the locationList where name does not contain UPDATED_NAME
+        defaultLocationShouldBeFound("name.doesNotContain=" + UPDATED_NAME);
+    }
+
+    @Test
+    @Transactional
+    void getAllLocationsByAddressIsEqualToSomething() throws Exception {
+        // Initialize the database
+        locationRepository.saveAndFlush(location);
+
+        // Get all the locationList where address equals to DEFAULT_ADDRESS
+        defaultLocationShouldBeFound("address.equals=" + DEFAULT_ADDRESS);
+
+        // Get all the locationList where address equals to UPDATED_ADDRESS
+        defaultLocationShouldNotBeFound("address.equals=" + UPDATED_ADDRESS);
+    }
+
+    @Test
+    @Transactional
+    void getAllLocationsByAddressIsNotEqualToSomething() throws Exception {
+        // Initialize the database
+        locationRepository.saveAndFlush(location);
+
+        // Get all the locationList where address not equals to DEFAULT_ADDRESS
+        defaultLocationShouldNotBeFound("address.notEquals=" + DEFAULT_ADDRESS);
+
+        // Get all the locationList where address not equals to UPDATED_ADDRESS
+        defaultLocationShouldBeFound("address.notEquals=" + UPDATED_ADDRESS);
+    }
+
+    @Test
+    @Transactional
+    void getAllLocationsByAddressIsInShouldWork() throws Exception {
+        // Initialize the database
+        locationRepository.saveAndFlush(location);
+
+        // Get all the locationList where address in DEFAULT_ADDRESS or UPDATED_ADDRESS
+        defaultLocationShouldBeFound("address.in=" + DEFAULT_ADDRESS + "," + UPDATED_ADDRESS);
+
+        // Get all the locationList where address equals to UPDATED_ADDRESS
+        defaultLocationShouldNotBeFound("address.in=" + UPDATED_ADDRESS);
+    }
+
+    @Test
+    @Transactional
+    void getAllLocationsByAddressIsNullOrNotNull() throws Exception {
+        // Initialize the database
+        locationRepository.saveAndFlush(location);
+
+        // Get all the locationList where address is not null
+        defaultLocationShouldBeFound("address.specified=true");
+
+        // Get all the locationList where address is null
+        defaultLocationShouldNotBeFound("address.specified=false");
+    }
+
+    @Test
+    @Transactional
+    void getAllLocationsByAddressContainsSomething() throws Exception {
+        // Initialize the database
+        locationRepository.saveAndFlush(location);
+
+        // Get all the locationList where address contains DEFAULT_ADDRESS
+        defaultLocationShouldBeFound("address.contains=" + DEFAULT_ADDRESS);
+
+        // Get all the locationList where address contains UPDATED_ADDRESS
+        defaultLocationShouldNotBeFound("address.contains=" + UPDATED_ADDRESS);
+    }
+
+    @Test
+    @Transactional
+    void getAllLocationsByAddressNotContainsSomething() throws Exception {
+        // Initialize the database
+        locationRepository.saveAndFlush(location);
+
+        // Get all the locationList where address does not contain DEFAULT_ADDRESS
+        defaultLocationShouldNotBeFound("address.doesNotContain=" + DEFAULT_ADDRESS);
+
+        // Get all the locationList where address does not contain UPDATED_ADDRESS
+        defaultLocationShouldBeFound("address.doesNotContain=" + UPDATED_ADDRESS);
+    }
+
+    @Test
+    @Transactional
+    void getAllLocationsByLessonTimetableIsEqualToSomething() throws Exception {
+        // Initialize the database
+        locationRepository.saveAndFlush(location);
+        LessonTimetable lessonTimetable = LessonTimetableResourceIT.createEntity(em);
+        em.persist(lessonTimetable);
+        em.flush();
+        location.addLessonTimetable(lessonTimetable);
+        locationRepository.saveAndFlush(location);
+        Long lessonTimetableId = lessonTimetable.getId();
+
+        // Get all the locationList where lessonTimetable equals to lessonTimetableId
+        defaultLocationShouldBeFound("lessonTimetableId.equals=" + lessonTimetableId);
+
+        // Get all the locationList where lessonTimetable equals to (lessonTimetableId + 1)
+        defaultLocationShouldNotBeFound("lessonTimetableId.equals=" + (lessonTimetableId + 1));
+    }
+
+    /**
+     * Executes the search, and checks that the default entity is returned.
+     */
+    private void defaultLocationShouldBeFound(String filter) throws Exception {
+        restLocationMockMvc
+            .perform(get(ENTITY_API_URL + "?sort=id,desc&" + filter))
+            .andExpect(status().isOk())
+            .andExpect(content().contentType(MediaType.APPLICATION_JSON_VALUE))
+            .andExpect(jsonPath("$.[*].id").value(hasItem(location.getId().intValue())))
+            .andExpect(jsonPath("$.[*].name").value(hasItem(DEFAULT_NAME)))
+            .andExpect(jsonPath("$.[*].address").value(hasItem(DEFAULT_ADDRESS)));
+
+        // Check, that the count call also returns 1
+        restLocationMockMvc
+            .perform(get(ENTITY_API_URL + "/count?sort=id,desc&" + filter))
+            .andExpect(status().isOk())
+            .andExpect(content().contentType(MediaType.APPLICATION_JSON_VALUE))
+            .andExpect(content().string("1"));
+    }
+
+    /**
+     * Executes the search, and checks that the default entity is not returned.
+     */
+    private void defaultLocationShouldNotBeFound(String filter) throws Exception {
+        restLocationMockMvc
+            .perform(get(ENTITY_API_URL + "?sort=id,desc&" + filter))
+            .andExpect(status().isOk())
+            .andExpect(content().contentType(MediaType.APPLICATION_JSON_VALUE))
+            .andExpect(jsonPath("$").isArray())
+            .andExpect(jsonPath("$").isEmpty());
+
+        // Check, that the count call also returns 0
+        restLocationMockMvc
+            .perform(get(ENTITY_API_URL + "/count?sort=id,desc&" + filter))
+            .andExpect(status().isOk())
+            .andExpect(content().contentType(MediaType.APPLICATION_JSON_VALUE))
+            .andExpect(content().string("0"));
     }
 
     @Test

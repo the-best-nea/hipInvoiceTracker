@@ -17,12 +17,21 @@ export class LessonTimetableComponent implements OnInit {
   lessonTimetables?: ILessonTimetable[];
   isLoading = false;
 
+  filterId?: number;
+  filterLessonName?: string;
+  filterDayOfWeek?: string;
+  filterActive?: string;
+  filterLocation?: string;
+  filterSubject?: string;
+
+  filterQuery: any = {};
+
   constructor(protected lessonTimetableService: LessonTimetableService, protected modalService: NgbModal, private router: Router) {}
 
   loadAll(): void {
     this.isLoading = true;
 
-    this.lessonTimetableService.query().subscribe(
+    this.lessonTimetableService.query(this.filterQuery).subscribe(
       (res: HttpResponse<ILessonTimetable[]>) => {
         this.isLoading = false;
         this.lessonTimetables = res.body ?? [];
@@ -57,6 +66,34 @@ export class LessonTimetableComponent implements OnInit {
       const resString = JSON.stringify(response.body!.id);
       this.router.navigateByUrl('/lesson-instance/' + resString + '/register');
     } );
-
   }
+
+  updateLessonTimetable(): void {
+    this.filterQuery = {};
+    if (this.filterId != null) {
+      this.filterQuery['id.equals'] = this.filterId;
+    }
+    if (this.filterLessonName != null && this.filterLessonName !== "") {
+      this.filterQuery['lessonName.equals'] = this.filterLessonName;
+    }
+    if (this.filterDayOfWeek != null && this.filterDayOfWeek !== "") {
+      this.filterQuery['dayOfWeek.equals'] = this.filterDayOfWeek;
+    }
+    if (this.filterActive === "Active") {
+      this.filterQuery['active.equals'] = true;
+    }
+    if (this.filterActive === "Inactive") {
+      this.filterQuery['active.equals'] = false;
+    }
+    if (this.filterLocation != null && this.filterLocation !== "") {
+      this.filterQuery['location.equals'] = this.filterLocation;
+    }
+    if (this.filterSubject != null && this.filterSubject !== "") {
+      this.filterQuery['subject.equals'] = this.filterSubject;
+    }
+
+
+    this.loadAll();
+  }
+
 }
