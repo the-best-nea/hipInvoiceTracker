@@ -48,4 +48,5 @@ export class LessonTimetableTeacherComponent implements OnInit {
       }
     });
   }
+
 }

@@ -2,14 +2,18 @@ package com.mycompany.myapp.web.rest;
 
 import com.mycompany.myapp.domain.LessonInstance;
 import com.mycompany.myapp.domain.LessonInstanceRequest;
+import com.mycompany.myapp.domain.User;
 import com.mycompany.myapp.repository.LessonInstanceRepository;
+import com.mycompany.myapp.security.AuthoritiesConstants;
 import com.mycompany.myapp.service.LessonInstanceQueryService;
 import com.mycompany.myapp.service.LessonInstanceService;
 import com.mycompany.myapp.service.RegistrationService;
+import com.mycompany.myapp.service.UserService;
 import com.mycompany.myapp.service.criteria.LessonInstanceCriteria;
 import com.mycompany.myapp.web.rest.errors.BadRequestAlertException;
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.util.Collection;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
@@ -19,7 +23,11 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.*;
+import tech.jhipster.service.filter.LongFilter;
 import tech.jhipster.web.util.HeaderUtil;
 import tech.jhipster.web.util.ResponseUtil;
 
@@ -43,16 +51,18 @@ public class LessonInstanceResource {
 
     private final LessonInstanceQueryService lessonInstanceQueryService;
     private final RegistrationService registrationService;
+    private final UserService userService;
 
     public LessonInstanceResource(
         LessonInstanceService lessonInstanceService,
         LessonInstanceRepository lessonInstanceRepository,
         LessonInstanceQueryService lessonInstanceQueryService,
-        RegistrationService registrationService) {
+        RegistrationService registrationService, UserService userService) {
         this.lessonInstanceService = lessonInstanceService;
         this.lessonInstanceRepository = lessonInstanceRepository;
         this.lessonInstanceQueryService = lessonInstanceQueryService;
         this.registrationService = registrationService;
+        this.userService = userService;
     }
 
     /**
@@ -155,7 +165,20 @@ public class LessonInstanceResource {
     @GetMapping("/lesson-instances")
     public ResponseEntity<List<LessonInstance>> getAllLessonInstances(LessonInstanceCriteria criteria) {
         log.debug("REST request to get LessonInstances by criteria: {}", criteria);
+
+        UserDetails userDetails = (UserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        User user = userService.getUserWithAuthoritiesByLogin(userDetails.getUsername()).orElseThrow(RuntimeException::new);
+        if (user.getAuthorities().contains(AuthoritiesConstants.ADMIN)){
+            log.debug("User is an admin");
+        } else  {
+            log.debug("User is not an admin");
+            LongFilter longFilter = new LongFilter();
+            longFilter.setEquals(user.getId());
+            criteria.setInternalUserId(longFilter);
+        }
+
         List<LessonInstance> entityList = lessonInstanceQueryService.findByCriteria(criteria);
+
         return ResponseEntity.ok().body(entityList);
     }
 

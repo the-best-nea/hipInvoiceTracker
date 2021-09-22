@@ -1,6 +1,7 @@
 package com.mycompany.myapp.service;
 
 import com.mycompany.myapp.domain.LessonTimetableStudent;
+import com.mycompany.myapp.domain.Student;
 import com.mycompany.myapp.repository.LessonTimetableStudentRepository;
 import java.util.List;
 import java.util.Optional;
@@ -89,5 +90,11 @@ public class LessonTimetableStudentService {
     public void delete(Long id) {
         log.debug("Request to delete LessonTimetableStudent : {}", id);
         lessonTimetableStudentRepository.deleteById(id);
+    }
+
+    @Transactional(readOnly = true)
+    public List<LessonTimetableStudent> findAllByStudent(Student student) {
+        log.debug("Request to get LessonTimetableStudent by student ID : {}", student.getId());
+        return lessonTimetableStudentRepository.findAllByStudent(student);
     }
 }

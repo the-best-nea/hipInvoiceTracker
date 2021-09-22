@@ -2,6 +2,7 @@ package com.mycompany.myapp.repository;
 
 import com.mycompany.myapp.domain.LessonTimetable;
 import com.mycompany.myapp.domain.LessonTimetableStudent;
+import com.mycompany.myapp.domain.Student;
 import org.springframework.data.jpa.repository.*;
 import org.springframework.stereotype.Repository;
 
@@ -15,4 +16,6 @@ import java.util.List;
 public interface LessonTimetableStudentRepository
     extends JpaRepository<LessonTimetableStudent, Long>, JpaSpecificationExecutor<LessonTimetableStudent> {
     List<LessonTimetableStudent> findAllByLessonTimetable(LessonTimetable lessonTimetable);
+
+    List<LessonTimetableStudent> findAllByStudent(Student student);
 }

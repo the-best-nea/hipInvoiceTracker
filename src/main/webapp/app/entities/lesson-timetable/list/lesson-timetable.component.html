@@ -1,6 +1,6 @@
 <div>
   <h2 id="page-heading" data-cy="LessonTimetableHeading">
-    <span>Lesson Timetables</span>
+    <span>Lesson Timetable</span>
 
     <div class="d-flex justify-content-end">
       <button class="btn btn-info mr-2" (click)="loadAll()" [disabled]="isLoading">
@@ -15,7 +15,7 @@
         [routerLink]="['/lesson-timetable/new']"
       >
         <fa-icon icon="plus"></fa-icon>
-        <span> Create a new Lesson Timetable </span>
+        <span> Create a new Lesson in Timetable</span>
       </button>
     </div>
   </h2>
@@ -68,6 +68,8 @@
 
 
   <div class="table-responsive" id="entities" *ngIf="lessonTimetables && lessonTimetables.length > 0">
+    <h4>Monday</h4>
+    <br/>
     <table class="table table-striped" aria-describedby="page-heading">
       <thead>
         <tr>
@@ -87,28 +89,28 @@
       </thead>
       <tbody>
         <tr *ngFor="let lessonTimetable of lessonTimetables; trackBy: trackId" data-cy="entityTable">
-          <td>
+          <td *ngIf="lessonTimetable.dayOfWeek==('MONDAY')">
             <a [routerLink]="['/lesson-timetable', lessonTimetable.id, 'view']">{{ lessonTimetable.id }}</a>
           </td>
-          <td>{{ lessonTimetable.lessonName }}</td>
-          <td>{{ lessonTimetable.startAt | formatMediumDatetime }}</td>
-          <td>{{ lessonTimetable.endAt | formatMediumDatetime }}</td>
-          <td>{{ lessonTimetable.dayOfWeek }}</td>
-          <td>{{ lessonTimetable.description }}</td>
-          <td>{{ lessonTimetable.createdAt | formatMediumDatetime }}</td>
-          <td>{{ lessonTimetable.active }}</td>
-          <td>{{ lessonTimetable.registerTaken }}</td>
-          <td>
+          <td *ngIf="lessonTimetable.dayOfWeek==('MONDAY')" >{{ lessonTimetable.lessonName }}</td>
+          <td *ngIf="lessonTimetable.dayOfWeek==('MONDAY')">{{ lessonTimetable.startAt | formatMediumDatetime }}</td>
+          <td *ngIf="lessonTimetable.dayOfWeek==('MONDAY')">{{ lessonTimetable.endAt | formatMediumDatetime }}</td>
+          <td *ngIf="lessonTimetable.dayOfWeek==('MONDAY')">{{ lessonTimetable.dayOfWeek }}</td>
+          <td *ngIf="lessonTimetable.dayOfWeek==('MONDAY')">{{ lessonTimetable.description }}</td>
+          <td *ngIf="lessonTimetable.dayOfWeek==('MONDAY')">{{ lessonTimetable.createdAt | formatMediumDatetime }}</td>
+          <td *ngIf="lessonTimetable.dayOfWeek==('MONDAY')">{{ lessonTimetable.active }}</td>
+          <td *ngIf="lessonTimetable.dayOfWeek==('MONDAY')">{{ lessonTimetable.registerTaken }}</td>
+          <td *ngIf="lessonTimetable.dayOfWeek==('MONDAY')">
             <div *ngIf="lessonTimetable.location">
               <a [routerLink]="['/location', lessonTimetable.location?.id, 'view']">{{ lessonTimetable.location?.name }}</a>
             </div>
           </td>
-          <td>
+          <td *ngIf="lessonTimetable.dayOfWeek==('MONDAY')">
             <div *ngIf="lessonTimetable.subject">
               <a [routerLink]="['/subject', lessonTimetable.subject?.id, 'view']">{{ lessonTimetable.subject?.subjectName }}</a>
             </div>
           </td>
-          <td class="text-right">
+          <td class="text-right" *ngIf="lessonTimetable.dayOfWeek==('MONDAY')">
             <div class="btn-group">
               <button
                 type="submit"
@@ -148,6 +150,510 @@
             </div>
           </td>
         </tr>
+      </tbody>
+    </table>
+    <h4>Tuesday</h4>
+    <br/>
+    <table class="table table-striped" aria-describedby="page-heading">
+      <thead>
+      <tr>
+        <th scope="col"><span>ID</span></th>
+        <th scope="col"><span>Lesson Name</span></th>
+        <th scope="col"><span>Start At</span></th>
+        <th scope="col"><span>End At</span></th>
+        <th scope="col"><span>Day Of Week</span></th>
+        <th scope="col"><span>Description</span></th>
+        <th scope="col"><span>Created At</span></th>
+        <th scope="col"><span>Active</span></th>
+        <th scope="col"><span>Register Taken</span></th>
+        <th scope="col"><span>Location</span></th>
+        <th scope="col"><span>Subject</span></th>
+        <th scope="col"></th>
+      </tr>
+      </thead>
+      <tbody>
+      <tr *ngFor="let lessonTimetable of lessonTimetables; trackBy: trackId" data-cy="entityTable">
+        <td *ngIf="lessonTimetable.dayOfWeek==('TUESDAY')">
+          <a [routerLink]="['/lesson-timetable', lessonTimetable.id, 'view']">{{ lessonTimetable.id }}</a>
+        </td>
+        <td *ngIf="lessonTimetable.dayOfWeek==('TUESDAY')" >{{ lessonTimetable.lessonName }}</td>
+        <td *ngIf="lessonTimetable.dayOfWeek==('TUESDAY')">{{ lessonTimetable.startAt | formatMediumDatetime }}</td>
+        <td *ngIf="lessonTimetable.dayOfWeek==('TUESDAY')">{{ lessonTimetable.endAt | formatMediumDatetime }}</td>
+        <td *ngIf="lessonTimetable.dayOfWeek==('TUESDAY')">{{ lessonTimetable.dayOfWeek }}</td>
+        <td *ngIf="lessonTimetable.dayOfWeek==('TUESDAY')">{{ lessonTimetable.description }}</td>
+        <td *ngIf="lessonTimetable.dayOfWeek==('TUESDAY')">{{ lessonTimetable.createdAt | formatMediumDatetime }}</td>
+        <td *ngIf="lessonTimetable.dayOfWeek==('TUESDAY')">{{ lessonTimetable.active }}</td>
+        <td *ngIf="lessonTimetable.dayOfWeek==('TUESDAY')">{{ lessonTimetable.registerTaken }}</td>
+        <td *ngIf="lessonTimetable.dayOfWeek==('TUESDAY')">
+          <div *ngIf="lessonTimetable.location">
+            <a [routerLink]="['/location', lessonTimetable.location?.id, 'view']">{{ lessonTimetable.location?.name }}</a>
+          </div>
+        </td>
+        <td *ngIf="lessonTimetable.dayOfWeek==('TUESDAY')">
+          <div *ngIf="lessonTimetable.subject">
+            <a [routerLink]="['/subject', lessonTimetable.subject?.id, 'view']">{{ lessonTimetable.subject?.subjectName }}</a>
+          </div>
+        </td>
+        <td class="text-right" *ngIf="lessonTimetable.dayOfWeek==('TUESDAY')">
+          <div class="btn-group">
+            <button
+              type="submit"
+              [routerLink]="['/lesson-timetable', lessonTimetable.id, 'view']"
+              class="btn btn-info btn-sm"
+              data-cy="entityDetailsButton"
+            >
+              <fa-icon icon="eye"></fa-icon>
+              <span class="d-none d-md-inline">View</span>
+            </button>
+
+            <button
+              type="submit"
+              [routerLink]="['/lesson-timetable', lessonTimetable.id, 'edit']"
+              class="btn btn-primary btn-sm"
+              data-cy="entityEditButton"
+            >
+              <fa-icon icon="pencil-alt"></fa-icon>
+              <span class="d-none d-md-inline">Edit</span>
+            </button>
+
+            <button type="submit" (click)="delete(lessonTimetable)" class="btn btn-danger btn-sm" data-cy="entityDeleteButton">
+              <fa-icon icon="times"></fa-icon>
+              <span class="d-none d-md-inline">Delete</span>
+            </button>
+
+            <button
+              type="button"
+              (click)="createInstance(lessonTimetable)"
+
+              class="btn btn-info btn-sm"
+              data-cy="entityCreateInstanceButton"
+            >
+              <fa-icon icon="plus"></fa-icon>
+              <span class="d-none d-md-inline">Take Register</span>
+            </button>
+          </div>
+        </td>
+      </tr>
+      </tbody>
+    </table>
+    <h4>Wednesday</h4>
+    <br/>
+    <table class="table table-striped" aria-describedby="page-heading">
+      <thead>
+      <tr>
+        <th scope="col"><span>ID</span></th>
+        <th scope="col"><span>Lesson Name</span></th>
+        <th scope="col"><span>Start At</span></th>
+        <th scope="col"><span>End At</span></th>
+        <th scope="col"><span>Day Of Week</span></th>
+        <th scope="col"><span>Description</span></th>
+        <th scope="col"><span>Created At</span></th>
+        <th scope="col"><span>Active</span></th>
+        <th scope="col"><span>Register Taken</span></th>
+        <th scope="col"><span>Location</span></th>
+        <th scope="col"><span>Subject</span></th>
+        <th scope="col"></th>
+      </tr>
+      </thead>
+      <tbody>
+      <tr *ngFor="let lessonTimetable of lessonTimetables; trackBy: trackId" data-cy="entityTable">
+        <td *ngIf="lessonTimetable.dayOfWeek==('WEDNESDAY')">
+          <a [routerLink]="['/lesson-timetable', lessonTimetable.id, 'view']">{{ lessonTimetable.id }}</a>
+        </td>
+        <td *ngIf="lessonTimetable.dayOfWeek==('WEDNESDAY')" >{{ lessonTimetable.lessonName }}</td>
+        <td *ngIf="lessonTimetable.dayOfWeek==('WEDNESDAY')">{{ lessonTimetable.startAt | formatMediumDatetime }}</td>
+        <td *ngIf="lessonTimetable.dayOfWeek==('WEDNESDAY')">{{ lessonTimetable.endAt | formatMediumDatetime }}</td>
+        <td *ngIf="lessonTimetable.dayOfWeek==('WEDNESDAY')">{{ lessonTimetable.dayOfWeek }}</td>
+        <td *ngIf="lessonTimetable.dayOfWeek==('WEDNESDAY')">{{ lessonTimetable.description }}</td>
+        <td *ngIf="lessonTimetable.dayOfWeek==('WEDNESDAY')">{{ lessonTimetable.createdAt | formatMediumDatetime }}</td>
+        <td *ngIf="lessonTimetable.dayOfWeek==('WEDNESDAY')">{{ lessonTimetable.active }}</td>
+        <td *ngIf="lessonTimetable.dayOfWeek==('WEDNESDAY')">{{ lessonTimetable.registerTaken }}</td>
+        <td *ngIf="lessonTimetable.dayOfWeek==('WEDNESDAY')">
+          <div *ngIf="lessonTimetable.location">
+            <a [routerLink]="['/location', lessonTimetable.location?.id, 'view']">{{ lessonTimetable.location?.name }}</a>
+          </div>
+        </td>
+        <td *ngIf="lessonTimetable.dayOfWeek==('WEDNESDAY')">
+          <div *ngIf="lessonTimetable.subject">
+            <a [routerLink]="['/subject', lessonTimetable.subject?.id, 'view']">{{ lessonTimetable.subject?.subjectName }}</a>
+          </div>
+        </td>
+        <td class="text-right" *ngIf="lessonTimetable.dayOfWeek==('WEDNESDAY')">
+          <div class="btn-group">
+            <button
+              type="submit"
+              [routerLink]="['/lesson-timetable', lessonTimetable.id, 'view']"
+              class="btn btn-info btn-sm"
+              data-cy="entityDetailsButton"
+            >
+              <fa-icon icon="eye"></fa-icon>
+              <span class="d-none d-md-inline">View</span>
+            </button>
+
+            <button
+              type="submit"
+              [routerLink]="['/lesson-timetable', lessonTimetable.id, 'edit']"
+              class="btn btn-primary btn-sm"
+              data-cy="entityEditButton"
+            >
+              <fa-icon icon="pencil-alt"></fa-icon>
+              <span class="d-none d-md-inline">Edit</span>
+            </button>
+
+            <button type="submit" (click)="delete(lessonTimetable)" class="btn btn-danger btn-sm" data-cy="entityDeleteButton">
+              <fa-icon icon="times"></fa-icon>
+              <span class="d-none d-md-inline">Delete</span>
+            </button>
+
+            <button
+              type="button"
+              (click)="createInstance(lessonTimetable)"
+
+              class="btn btn-info btn-sm"
+              data-cy="entityCreateInstanceButton"
+            >
+              <fa-icon icon="plus"></fa-icon>
+              <span class="d-none d-md-inline">Take Register</span>
+            </button>
+          </div>
+        </td>
+      </tr>
+      </tbody>
+    </table>
+    <h4>Thursday</h4>
+    <br/>
+    <table class="table table-striped" aria-describedby="page-heading">
+      <thead>
+      <tr>
+        <th scope="col"><span>ID</span></th>
+        <th scope="col"><span>Lesson Name</span></th>
+        <th scope="col"><span>Start At</span></th>
+        <th scope="col"><span>End At</span></th>
+        <th scope="col"><span>Day Of Week</span></th>
+        <th scope="col"><span>Description</span></th>
+        <th scope="col"><span>Created At</span></th>
+        <th scope="col"><span>Active</span></th>
+        <th scope="col"><span>Register Taken</span></th>
+        <th scope="col"><span>Location</span></th>
+        <th scope="col"><span>Subject</span></th>
+        <th scope="col"></th>
+      </tr>
+      </thead>
+      <tbody>
+      <tr *ngFor="let lessonTimetable of lessonTimetables; trackBy: trackId" data-cy="entityTable">
+        <td *ngIf="lessonTimetable.dayOfWeek==('THURSDAY')">
+          <a [routerLink]="['/lesson-timetable', lessonTimetable.id, 'view']">{{ lessonTimetable.id }}</a>
+        </td>
+        <td *ngIf="lessonTimetable.dayOfWeek==('THURSDAY')" >{{ lessonTimetable.lessonName }}</td>
+        <td *ngIf="lessonTimetable.dayOfWeek==('THURSDAY')">{{ lessonTimetable.startAt | formatMediumDatetime }}</td>
+        <td *ngIf="lessonTimetable.dayOfWeek==('THURSDAY')">{{ lessonTimetable.endAt | formatMediumDatetime }}</td>
+        <td *ngIf="lessonTimetable.dayOfWeek==('THURSDAY')">{{ lessonTimetable.dayOfWeek }}</td>
+        <td *ngIf="lessonTimetable.dayOfWeek==('THURSDAY')">{{ lessonTimetable.description }}</td>
+        <td *ngIf="lessonTimetable.dayOfWeek==('THURSDAY')">{{ lessonTimetable.createdAt | formatMediumDatetime }}</td>
+        <td *ngIf="lessonTimetable.dayOfWeek==('THURSDAY')">{{ lessonTimetable.active }}</td>
+        <td *ngIf="lessonTimetable.dayOfWeek==('THURSDAY')">{{ lessonTimetable.registerTaken }}</td>
+        <td *ngIf="lessonTimetable.dayOfWeek==('THURSDAY')">
+          <div *ngIf="lessonTimetable.location">
+            <a [routerLink]="['/location', lessonTimetable.location?.id, 'view']">{{ lessonTimetable.location?.name }}</a>
+          </div>
+        </td>
+        <td *ngIf="lessonTimetable.dayOfWeek==('THURSDAY')">
+          <div *ngIf="lessonTimetable.subject">
+            <a [routerLink]="['/subject', lessonTimetable.subject?.id, 'view']">{{ lessonTimetable.subject?.subjectName }}</a>
+          </div>
+        </td>
+        <td class="text-right" *ngIf="lessonTimetable.dayOfWeek==('THURSDAY')">
+          <div class="btn-group">
+            <button
+              type="submit"
+              [routerLink]="['/lesson-timetable', lessonTimetable.id, 'view']"
+              class="btn btn-info btn-sm"
+              data-cy="entityDetailsButton"
+            >
+              <fa-icon icon="eye"></fa-icon>
+              <span class="d-none d-md-inline">View</span>
+            </button>
+
+            <button
+              type="submit"
+              [routerLink]="['/lesson-timetable', lessonTimetable.id, 'edit']"
+              class="btn btn-primary btn-sm"
+              data-cy="entityEditButton"
+            >
+              <fa-icon icon="pencil-alt"></fa-icon>
+              <span class="d-none d-md-inline">Edit</span>
+            </button>
+
+            <button type="submit" (click)="delete(lessonTimetable)" class="btn btn-danger btn-sm" data-cy="entityDeleteButton">
+              <fa-icon icon="times"></fa-icon>
+              <span class="d-none d-md-inline">Delete</span>
+            </button>
+
+            <button
+              type="button"
+              (click)="createInstance(lessonTimetable)"
+
+              class="btn btn-info btn-sm"
+              data-cy="entityCreateInstanceButton"
+            >
+              <fa-icon icon="plus"></fa-icon>
+              <span class="d-none d-md-inline">Take Register</span>
+            </button>
+          </div>
+        </td>
+      </tr>
+      </tbody>
+    </table>
+    <h4>Friday</h4>
+    <br/>
+    <table class="table table-striped" aria-describedby="page-heading">
+      <thead>
+      <tr>
+        <th scope="col"><span>ID</span></th>
+        <th scope="col"><span>Lesson Name</span></th>
+        <th scope="col"><span>Start At</span></th>
+        <th scope="col"><span>End At</span></th>
+        <th scope="col"><span>Day Of Week</span></th>
+        <th scope="col"><span>Description</span></th>
+        <th scope="col"><span>Created At</span></th>
+        <th scope="col"><span>Active</span></th>
+        <th scope="col"><span>Register Taken</span></th>
+        <th scope="col"><span>Location</span></th>
+        <th scope="col"><span>Subject</span></th>
+        <th scope="col"></th>
+      </tr>
+      </thead>
+      <tbody>
+      <tr *ngFor="let lessonTimetable of lessonTimetables; trackBy: trackId" data-cy="entityTable">
+        <td *ngIf="lessonTimetable.dayOfWeek==('FRIDAY')">
+          <a [routerLink]="['/lesson-timetable', lessonTimetable.id, 'view']">{{ lessonTimetable.id }}</a>
+        </td>
+        <td *ngIf="lessonTimetable.dayOfWeek==('FRIDAY')" >{{ lessonTimetable.lessonName }}</td>
+        <td *ngIf="lessonTimetable.dayOfWeek==('FRIDAY')">{{ lessonTimetable.startAt | formatMediumDatetime }}</td>
+        <td *ngIf="lessonTimetable.dayOfWeek==('FRIDAY')">{{ lessonTimetable.endAt | formatMediumDatetime }}</td>
+        <td *ngIf="lessonTimetable.dayOfWeek==('FRIDAY')">{{ lessonTimetable.dayOfWeek }}</td>
+        <td *ngIf="lessonTimetable.dayOfWeek==('FRIDAY')">{{ lessonTimetable.description }}</td>
+        <td *ngIf="lessonTimetable.dayOfWeek==('FRIDAY')">{{ lessonTimetable.createdAt | formatMediumDatetime }}</td>
+        <td *ngIf="lessonTimetable.dayOfWeek==('FRIDAY')">{{ lessonTimetable.active }}</td>
+        <td *ngIf="lessonTimetable.dayOfWeek==('FRIDAY')">{{ lessonTimetable.registerTaken }}</td>
+        <td *ngIf="lessonTimetable.dayOfWeek==('FRIDAY')">
+          <div *ngIf="lessonTimetable.location">
+            <a [routerLink]="['/location', lessonTimetable.location?.id, 'view']">{{ lessonTimetable.location?.name }}</a>
+          </div>
+        </td>
+        <td *ngIf="lessonTimetable.dayOfWeek==('FRIDAY')">
+          <div *ngIf="lessonTimetable.subject">
+            <a [routerLink]="['/subject', lessonTimetable.subject?.id, 'view']">{{ lessonTimetable.subject?.subjectName }}</a>
+          </div>
+        </td>
+        <td class="text-right" *ngIf="lessonTimetable.dayOfWeek==('FRIDAY')">
+          <div class="btn-group">
+            <button
+              type="submit"
+              [routerLink]="['/lesson-timetable', lessonTimetable.id, 'view']"
+              class="btn btn-info btn-sm"
+              data-cy="entityDetailsButton"
+            >
+              <fa-icon icon="eye"></fa-icon>
+              <span class="d-none d-md-inline">View</span>
+            </button>
+
+            <button
+              type="submit"
+              [routerLink]="['/lesson-timetable', lessonTimetable.id, 'edit']"
+              class="btn btn-primary btn-sm"
+              data-cy="entityEditButton"
+            >
+              <fa-icon icon="pencil-alt"></fa-icon>
+              <span class="d-none d-md-inline">Edit</span>
+            </button>
+
+            <button type="submit" (click)="delete(lessonTimetable)" class="btn btn-danger btn-sm" data-cy="entityDeleteButton">
+              <fa-icon icon="times"></fa-icon>
+              <span class="d-none d-md-inline">Delete</span>
+            </button>
+
+            <button
+              type="button"
+              (click)="createInstance(lessonTimetable)"
+
+              class="btn btn-info btn-sm"
+              data-cy="entityCreateInstanceButton"
+            >
+              <fa-icon icon="plus"></fa-icon>
+              <span class="d-none d-md-inline">Take Register</span>
+            </button>
+          </div>
+        </td>
+      </tr>
+      </tbody>
+    </table>
+    <h4>Saturday</h4>
+    <br/>
+    <table class="table table-striped" aria-describedby="page-heading">
+      <thead>
+      <tr>
+        <th scope="col"><span>ID</span></th>
+        <th scope="col"><span>Lesson Name</span></th>
+        <th scope="col"><span>Start At</span></th>
+        <th scope="col"><span>End At</span></th>
+        <th scope="col"><span>Day Of Week</span></th>
+        <th scope="col"><span>Description</span></th>
+        <th scope="col"><span>Created At</span></th>
+        <th scope="col"><span>Active</span></th>
+        <th scope="col"><span>Register Taken</span></th>
+        <th scope="col"><span>Location</span></th>
+        <th scope="col"><span>Subject</span></th>
+        <th scope="col"></th>
+      </tr>
+      </thead>
+      <tbody>
+      <tr *ngFor="let lessonTimetable of lessonTimetables; trackBy: trackId" data-cy="entityTable">
+        <td *ngIf="lessonTimetable.dayOfWeek==('SATURDAY')">
+          <a [routerLink]="['/lesson-timetable', lessonTimetable.id, 'view']">{{ lessonTimetable.id }}</a>
+        </td>
+        <td *ngIf="lessonTimetable.dayOfWeek==('SATURDAY')" >{{ lessonTimetable.lessonName }}</td>
+        <td *ngIf="lessonTimetable.dayOfWeek==('SATURDAY')">{{ lessonTimetable.startAt | formatMediumDatetime }}</td>
+        <td *ngIf="lessonTimetable.dayOfWeek==('SATURDAY')">{{ lessonTimetable.endAt | formatMediumDatetime }}</td>
+        <td *ngIf="lessonTimetable.dayOfWeek==('SATURDAY')">{{ lessonTimetable.dayOfWeek }}</td>
+        <td *ngIf="lessonTimetable.dayOfWeek==('SATURDAY')">{{ lessonTimetable.description }}</td>
+        <td *ngIf="lessonTimetable.dayOfWeek==('SATURDAY')">{{ lessonTimetable.createdAt | formatMediumDatetime }}</td>
+        <td *ngIf="lessonTimetable.dayOfWeek==('SATURDAY')">{{ lessonTimetable.active }}</td>
+        <td *ngIf="lessonTimetable.dayOfWeek==('SATURDAY')">{{ lessonTimetable.registerTaken }}</td>
+        <td *ngIf="lessonTimetable.dayOfWeek==('SATURDAY')">
+          <div *ngIf="lessonTimetable.location">
+            <a [routerLink]="['/location', lessonTimetable.location?.id, 'view']">{{ lessonTimetable.location?.name }}</a>
+          </div>
+        </td>
+        <td *ngIf="lessonTimetable.dayOfWeek==('SATURDAY')">
+          <div *ngIf="lessonTimetable.subject">
+            <a [routerLink]="['/subject', lessonTimetable.subject?.id, 'view']">{{ lessonTimetable.subject?.subjectName }}</a>
+          </div>
+        </td>
+        <td class="text-right" *ngIf="lessonTimetable.dayOfWeek==('SATURDAY')">
+          <div class="btn-group">
+            <button
+              type="submit"
+              [routerLink]="['/lesson-timetable', lessonTimetable.id, 'view']"
+              class="btn btn-info btn-sm"
+              data-cy="entityDetailsButton"
+            >
+              <fa-icon icon="eye"></fa-icon>
+              <span class="d-none d-md-inline">View</span>
+            </button>
+
+            <button
+              type="submit"
+              [routerLink]="['/lesson-timetable', lessonTimetable.id, 'edit']"
+              class="btn btn-primary btn-sm"
+              data-cy="entityEditButton"
+            >
+              <fa-icon icon="pencil-alt"></fa-icon>
+              <span class="d-none d-md-inline">Edit</span>
+            </button>
+
+            <button type="submit" (click)="delete(lessonTimetable)" class="btn btn-danger btn-sm" data-cy="entityDeleteButton">
+              <fa-icon icon="times"></fa-icon>
+              <span class="d-none d-md-inline">Delete</span>
+            </button>
+
+            <button
+              type="button"
+              (click)="createInstance(lessonTimetable)"
+
+              class="btn btn-info btn-sm"
+              data-cy="entityCreateInstanceButton"
+            >
+              <fa-icon icon="plus"></fa-icon>
+              <span class="d-none d-md-inline">Take Register</span>
+            </button>
+          </div>
+        </td>
+      </tr>
+      </tbody>
+    </table>
+    <h4>Sunday</h4>
+    <br/>
+    <table class="table table-striped" aria-describedby="page-heading">
+      <thead>
+      <tr>
+        <th scope="col"><span>ID</span></th>
+        <th scope="col"><span>Lesson Name</span></th>
+        <th scope="col"><span>Start At</span></th>
+        <th scope="col"><span>End At</span></th>
+        <th scope="col"><span>Day Of Week</span></th>
+        <th scope="col"><span>Description</span></th>
+        <th scope="col"><span>Created At</span></th>
+        <th scope="col"><span>Active</span></th>
+        <th scope="col"><span>Register Taken</span></th>
+        <th scope="col"><span>Location</span></th>
+        <th scope="col"><span>Subject</span></th>
+        <th scope="col"></th>
+      </tr>
+      </thead>
+      <tbody>
+      <tr *ngFor="let lessonTimetable of lessonTimetables; trackBy: trackId" data-cy="entityTable">
+        <td *ngIf="lessonTimetable.dayOfWeek==('SUNDAY')">
+          <a [routerLink]="['/lesson-timetable', lessonTimetable.id, 'view']">{{ lessonTimetable.id }}</a>
+        </td>
+        <td *ngIf="lessonTimetable.dayOfWeek==('SUNDAY')" >{{ lessonTimetable.lessonName }}</td>
+        <td *ngIf="lessonTimetable.dayOfWeek==('SUNDAY')">{{ lessonTimetable.startAt | formatMediumDatetime }}</td>
+        <td *ngIf="lessonTimetable.dayOfWeek==('SUNDAY')">{{ lessonTimetable.endAt | formatMediumDatetime }}</td>
+        <td *ngIf="lessonTimetable.dayOfWeek==('SUNDAY')">{{ lessonTimetable.dayOfWeek }}</td>
+        <td *ngIf="lessonTimetable.dayOfWeek==('SUNDAY')">{{ lessonTimetable.description }}</td>
+        <td *ngIf="lessonTimetable.dayOfWeek==('SUNDAY')">{{ lessonTimetable.createdAt | formatMediumDatetime }}</td>
+        <td *ngIf="lessonTimetable.dayOfWeek==('SUNDAY')">{{ lessonTimetable.active }}</td>
+        <td *ngIf="lessonTimetable.dayOfWeek==('SUNDAY')">{{ lessonTimetable.registerTaken }}</td>
+        <td *ngIf="lessonTimetable.dayOfWeek==('SUNDAY')">
+          <div *ngIf="lessonTimetable.location">
+            <a [routerLink]="['/location', lessonTimetable.location?.id, 'view']">{{ lessonTimetable.location?.name }}</a>
+          </div>
+        </td>
+        <td *ngIf="lessonTimetable.dayOfWeek==('SUNDAY')">
+          <div *ngIf="lessonTimetable.subject">
+            <a [routerLink]="['/subject', lessonTimetable.subject?.id, 'view']">{{ lessonTimetable.subject?.subjectName }}</a>
+          </div>
+        </td>
+        <td class="text-right" *ngIf="lessonTimetable.dayOfWeek==('SUNDAY')">
+          <div class="btn-group">
+            <button
+              type="submit"
+              [routerLink]="['/lesson-timetable', lessonTimetable.id, 'view']"
+              class="btn btn-info btn-sm"
+              data-cy="entityDetailsButton"
+            >
+              <fa-icon icon="eye"></fa-icon>
+              <span class="d-none d-md-inline">View</span>
+            </button>
+
+            <button
+              type="submit"
+              [routerLink]="['/lesson-timetable', lessonTimetable.id, 'edit']"
+              class="btn btn-primary btn-sm"
+              data-cy="entityEditButton"
+            >
+              <fa-icon icon="pencil-alt"></fa-icon>
+              <span class="d-none d-md-inline">Edit</span>
+            </button>
+
+            <button type="submit" (click)="delete(lessonTimetable)" class="btn btn-danger btn-sm" data-cy="entityDeleteButton">
+              <fa-icon icon="times"></fa-icon>
+              <span class="d-none d-md-inline">Delete</span>
+            </button>
+
+            <button
+              type="button"
+              (click)="createInstance(lessonTimetable)"
+
+              class="btn btn-info btn-sm"
+              data-cy="entityCreateInstanceButton"
+            >
+              <fa-icon icon="plus"></fa-icon>
+              <span class="d-none d-md-inline">Take Register</span>
+            </button>
+          </div>
+        </td>
+      </tr>
       </tbody>
     </table>
   </div>

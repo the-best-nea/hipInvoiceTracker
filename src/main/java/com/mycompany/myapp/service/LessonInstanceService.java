@@ -83,6 +83,7 @@ public class LessonInstanceService {
     @Transactional(readOnly = true)
     public List<LessonInstance> findAll() {
         log.debug("Request to get all LessonInstances");
+        List<LessonInstance> lessonInstances = lessonInstanceRepository.findAllWithEagerRelationships();
         return lessonInstanceRepository.findAllWithEagerRelationships();
     }
 

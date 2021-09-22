@@ -15,8 +15,12 @@ Navbar
   width: 1.75em;
 }
 
+.navbar-custom {
+  background-color: rgba(14,43,87,1);
+}
+
 .navbar {
-  padding: 0.2rem 1rem;
+  padding: 0.5rem 2rem;
 
   ul.navbar-nav {
     .nav-item {
@@ -29,6 +33,15 @@ Navbar
   }
 }
 
+.navbar-title {
+  margin-left: 0.7em;
+  color: white;
+}
+
+.nav-white {
+  color: white;
+}
+
 /* ==========================================================================
 Logo styles
 ========================================================================== */
@@ -37,6 +50,6 @@ Logo styles
   width: 45px;
   display: inline-block;
   vertical-align: middle;
-  background: url('../../../content/images/logo-jhipster.png') no-repeat center center;
+  background: url('../../../content/images/logo.png') no-repeat center center;
   background-size: contain;
 }

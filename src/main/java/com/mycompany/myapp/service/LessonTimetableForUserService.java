@@ -37,7 +37,6 @@ public class LessonTimetableForUserService {
         UserDetails currentUser = (UserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
         System.out.println(currentUser.getAuthorities());
         if (currentUser.getAuthorities().stream().anyMatch(a -> a.getAuthority().equals("ROLE_ADMIN"))) {
-            System.out.println("---------------------------------");
             return lessonTimetableRepository.findAll();
         } else {
             List<LessonTimetableTeacher> lessonTimetableTeacher = lessonTimetableTeacherRepository.findByInternalUserIsCurrentUser();
@@ -47,7 +46,7 @@ public class LessonTimetableForUserService {
                 System.out.println("lessonTimetableTeacher1.getLessonTimetable()");
                 System.out.println(lessonTimetableTeacher1.getLessonTimetable());
                 if(lessonTimetableTeacher1.getLessonTimetable() != null &&
-                    lessonTimetableTeacher1.getLessonTimetable().getDayOfWeek().toString() == getDayOfWeek(Calendar.getInstance().get(Calendar.DAY_OF_WEEK))  &&
+                    //lessonTimetableTeacher1.getLessonTimetable().getDayOfWeek().toString() == getDayOfWeek(Calendar.getInstance().get(Calendar.DAY_OF_WEEK))  &&
                     lessonTimetableTeacher1.getLessonTimetable().getActive() && !lessonTimetableTeacher1.getLessonTimetable().getRegisterTaken())
                 {
                     System.out.println("InsideForLoop");
